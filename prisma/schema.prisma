@@ -1,11 +1,229 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Albums {
+  id            String          @id @db.VarChar(64)
+  createdAt     DateTime        @default(now()) @db.DateTime(0)
+  modifiedAt    DateTime        @default(now()) @db.DateTime(0)
+  isDeleted     Int             @default(0) @db.TinyInt
+  title         String          @db.VarChar(100)
+  subHead       String?         @db.VarChar(100)
+  coupleId      String          @db.VarChar(64)
+  userId        String          @db.VarChar(64)
+  Couples       Couples         @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_Couple_FK")
+  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_Users_FK")
+  Albums_Photos Albums_Photos[]
+
+  @@index([userId], map: "Albums_Users_FK_idx")
+}
+
+model Albums_Photos {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  albumId   String   @db.VarChar(64)
+  photoId   String   @db.VarChar(64)
+  Albums    Albums   @relation(fields: [albumId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_FK")
+  Photos    Photos   @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_FK")
+
+  @@index([albumId], map: "Albums_FK_idx")
+  @@index([photoId], map: "Photos_FK_idx")
+}
+
+model ChattingStorage {
+  id         String    @id @db.VarChar(64)
+  createdAt  DateTime  @default(now()) @db.DateTime(0)
+  isDeleted  Int       @default(0) @db.TinyInt
+  chattingId String    @db.VarChar(64)
+  coupleId   String    @db.VarChar(64)
+  userId     String    @db.VarChar(64)
+  Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Storage_Chattings_FK")
+  Couples    Couples   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Storage_Couples_FK")
+  Users      Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Storage_Users_FK")
+
+  @@index([chattingId], map: "Storage_Chattings_FK_idx")
+  @@index([coupleId], map: "Storage_Couples_FK_idx")
+  @@index([userId], map: "Storage_Users_FK_idx")
+}
+
+model Chattings {
+  id              String            @id @db.VarChar(64)
+  createdAt       DateTime          @default(now()) @db.DateTime(0)
+  modifiedAt      DateTime          @default(now()) @db.DateTime(0)
+  isDeleted       Int               @default(0) @db.TinyInt
+  isNoticed       Int               @default(0) @db.TinyInt
+  content         String?           @db.VarChar(1000)
+  coupleId        String            @db.VarChar(64)
+  userId          String            @db.VarChar(64)
+  parentId        String?           @db.VarChar(64)
+  photoId         String?           @db.VarChar(64)
+  Chattings       Chattings?        @relation("ChattingsToChattings", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Chattings_FK")
+  Couples         Couples           @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Couples_FK")
+  Photos          Photos?           @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Photo_FK")
+  Users           Users             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Users_FK")
+  ChattingStorage ChattingStorage[]
+  other_Chattings Chattings[]       @relation("ChattingsToChattings")
+
+  @@index([parentId], map: "Chattings_Chattings_FK_idx")
+  @@index([coupleId], map: "Chattings_Couples_FK_idx")
+  @@index([photoId], map: "Chattings_Photo_FK_idx")
+  @@index([userId], map: "Chattings_Users_FK_idx")
+}
+
+model Couples {
+  id               String            @id @db.VarChar(64)
+  createdAt        DateTime          @default(now()) @db.DateTime(0)
+  modifiedAt       DateTime          @default(now()) @db.DateTime(0)
+  isDeleted        Int               @default(0) @db.TinyInt
+  anniversaryDay   DateTime          @db.DateTime(0)
+  lastVistADay     Int               @default(0)
+  verificationCode String            @db.VarChar(45)
+  Albums           Albums?
+  ChattingStorage  ChattingStorage[]
+  Chattings        Chattings[]
+  Pets             Pets[]
+  Photos           Photos[]
+  QuestionStorage  QuestionStorage[]
+  Users            Users[]
+  VoiceStorage     VoiceStorage[]
+}
+
+model PetCare {
+  touchCount         Int    @default(0)
+  isHaveDinner       Int    @default(0) @db.TinyInt
+  isHaveBreakfast    Int    @default(0) @db.TinyInt
+  isUseStorage       Int    @default(0) @db.TinyInt
+  isMaleSpeakLoveU   Int    @default(0) @db.TinyInt
+  isFemaleSpeakLoveU Int    @default(0) @db.TinyInt
+  id                 String @id @db.VarChar(64)
+  Pets               Pets[]
+}
+
+model PetImages {
+  id                String @id @db.VarChar(64)
+  name              String @db.VarChar(100)
+  level             Int    @default(1) @db.TinyInt
+  normalReactionUrl String @db.VarChar(500)
+  eatReactionUrl    String @db.VarChar(500)
+  touchReactionUrl  String @db.VarChar(500)
+  Pets              Pets[]
+}
+
+model Pets {
+  id             String    @id @db.VarChar(64)
+  createdAt      DateTime  @default(now()) @db.DateTime(0)
+  modifiedAt     DateTime  @default(now()) @db.DateTime(0)
+  endedAt        DateTime? @db.DateTime(0)
+  isDeleted      Int       @default(0) @db.TinyInt
+  name           String    @db.VarChar(100)
+  description    String?   @db.VarChar(500)
+  level          Int       @default(1)
+  hungryGauge    Int       @default(0)
+  attentionGauge Int       @default(0)
+  loveGauge      Int       @default(0)
+  careId         String    @db.VarChar(64)
+  coupleId       String    @db.VarChar(64)
+  petImageId     String    @db.VarChar(64)
+  PetCare        PetCare   @relation(fields: [careId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_Care_FK")
+  Couples        Couples   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_Couples_FK")
+  PetImages      PetImages @relation(fields: [petImageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_PetImages")
+
+  @@index([careId], map: "Pets_Care_FK_idx")
+  @@index([coupleId], map: "Pets_Couples_idx")
+  @@index([petImageId], map: "Pets_PetImages_idx")
+}
+
+model PhotoComments {
+  id         String   @id @db.VarChar(64)
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  modifiedAt DateTime @default(now()) @db.DateTime(0)
+  isDeleted  Int      @default(0) @db.TinyInt
+  content    String   @db.VarChar(1000)
+  photoId    String   @db.VarChar(64)
+  userId     String   @db.VarChar(64)
+  Photos     Photos   @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_Photos_FK")
+  Users      Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_Users_FK")
+
+  @@index([photoId], map: "Comments_Photos_FK_idx")
+  @@index([userId], map: "Comments_Users_FK_idx")
+}
+
+model Photos {
+  id            String          @id @db.VarChar(64)
+  createdAt     DateTime        @default(now()) @db.DateTime(0)
+  modifiedAt    DateTime        @default(now()) @db.DateTime(0)
+  isDeleted     Int             @default(0) @db.TinyInt
+  where         String          @db.VarChar(45)
+  s3Path        String          @db.VarChar(500)
+  coupleId      String          @db.VarChar(64)
+  userId        String          @db.VarChar(64)
+  Couples       Couples         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
+  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
+  Albums_Photos Albums_Photos[]
+  Chattings     Chattings[]
+  PhotoComments PhotoComments[]
+
+  @@index([coupleId], map: "Photos_Couples_FK_idx")
+  @@index([userId], map: "Photos_Users_FK_idx")
+}
+
+model QuestionStorage {
+  id                    String            @id @db.VarChar(64)
+  createdAt             DateTime          @default(now()) @db.DateTime(0)
+  modifiedAt            DateTime          @default(now()) @db.DateTime(0)
+  content               String            @db.VarChar(1000)
+  coupleId              String            @db.VarChar(64)
+  parentId              String            @db.VarChar(64)
+  userId                String            @db.VarChar(64)
+  Couples               Couples           @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Question_Couples_FK")
+  QuestionStorage       QuestionStorage   @relation("QuestionStorageToQuestionStorage", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Question_Question_FK")
+  Users                 Users             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Question_Users_FK")
+  other_QuestionStorage QuestionStorage[] @relation("QuestionStorageToQuestionStorage")
+
+  @@index([coupleId], map: "Question_Couples_FK_idx")
+  @@index([parentId], map: "Question_Question_FK_idx")
+  @@index([userId], map: "Question_Users_FK_idx")
+}
+
+model Users {
+  id                 String            @id @db.VarChar(64)
+  createdAt          DateTime          @default(now()) @db.DateTime(0)
+  modifiedAt         DateTime          @default(now()) @db.DateTime(0)
+  isDeleted          Int               @default(0) @db.TinyInt
+  name               String            @db.VarChar(100)
+  nickName           String            @db.VarChar(100)
+  profileImageS3Path String?           @db.VarChar(500)
+  gender             String            @db.VarChar(45)
+  birthDay           DateTime          @db.DateTime(0)
+  coupleId           String?           @db.VarChar(64)
+  password           String?           @db.VarChar(45)
+  Couples            Couples?          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
+  Albums             Albums[]
+  ChattingStorage    ChattingStorage[]
+  Chattings          Chattings[]
+  PhotoComments      PhotoComments[]
+  Photos             Photos[]
+  QuestionStorage    QuestionStorage[]
+  VoiceStorage       VoiceStorage[]
+
+  @@index([coupleId], map: "Users_Couples_FK_idx")
+}
+
+model VoiceStorage {
+  id        String   @id @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  isDeleted Int      @default(0) @db.TinyInt
+  s3Path    String   @db.VarChar(500)
+  coupleId  String   @db.VarChar(64)
+  userId    String   @db.VarChar(64)
+  Couples   Couples  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Couples_FK")
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Users_FK")
+
+  @@index([coupleId], map: "Voice_Couples_FK_idx")
+  @@index([userId], map: "Voice_Users_FK_idx")
 }
