@@ -11,6 +11,20 @@ export class CoupleDBService {
     });
   }
 
+  async findUnique(coupleId: string) {
+    return await this.prismaService.couples.findUnique({
+      where: { id: coupleId },
+      include: {
+        Users: true,
+        Pets: {
+          where: {
+            endedAt: null,
+          },
+        },
+      },
+    });
+  }
+
   async create(data: Prisma.CouplesUncheckedCreateInput) {
     return await this.prismaService.couples.create({ data });
   }
