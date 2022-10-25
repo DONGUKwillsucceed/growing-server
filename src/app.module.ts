@@ -9,6 +9,6 @@ import { CoupleModule } from './module/couple/couple.module';
 @Module({
   imports: [UserModule, CoupleModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, S3Service],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}
