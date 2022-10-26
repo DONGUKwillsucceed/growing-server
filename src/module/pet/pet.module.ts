@@ -1,0 +1,17 @@
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
+import { PrismaService } from 'src/service/prisma.service';
+import { PetController } from './controller/pet.controller';
+import { GetPetService } from './service/get-pet.service';
+import { PetDBService } from './service/pet-db.service';
+import { PetProxyService } from './service/pet-proxy.service';
+
+@Module({
+  controllers: [PetController],
+  providers: [PrismaService, PetProxyService, GetPetService, PetDBService],
+})
+export class PetModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserAuthMiddleware).forRoutes(PetController);
+  }
+}

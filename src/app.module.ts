@@ -2,14 +2,14 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './service/prisma.service';
-import { S3Service } from './service/S3.service';
 import { UserModule } from './module/user/user.module';
 import { CoupleModule } from './module/couple/couple.module';
 import { AuthMiddleWare } from './common/middleware/auth.middleware';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { PetModule } from './module/pet/pet.module';
 
 @Module({
-  imports: [UserModule, CoupleModule, JwtModule],
+  imports: [UserModule, CoupleModule, JwtModule, PetModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
 })

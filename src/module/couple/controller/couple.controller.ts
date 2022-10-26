@@ -19,13 +19,10 @@ export class CoupleController {
   constructor(private readonly coupleProxyService: CoupleProxyService) {}
 
   @Get(':coupleId')
-  async findUnique(
-    @Param('coupleId') coupleId: string,
-    @Req() req: UserAuthRequest,
-  ) {
+  async findUnique(@Req() req: UserAuthRequest) {
     const couple = await this.coupleProxyService.findUnique(
-      coupleId,
-      '10509d8b-7aac-44c3-bc4d-8dcde71f0929',
+      req.params.coupleId,
+      req.user.id,
     );
     if (!couple) {
       throw new NotFoundException('Couple not found');
@@ -34,8 +31,8 @@ export class CoupleController {
   }
 
   @Post('create')
-  async create(@Body() body: any) {
-    const dto = plainToInstance(CreateCoupleAndPetDto, body);
+  async create(@Req() req: UserAuthRequest) {
+    const dto = plainToInstance(CreateCoupleAndPetDto, req.body);
     const errors = await validate(dto);
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
