@@ -1,4 +1,4 @@
-import { PetCare, Pets, Prisma } from '@prisma/client';
+import { Pets, Prisma } from '@prisma/client';
 import { PetReactionDto } from '../dto/PetReaction.dto';
 import { PetInterfaceForMapping } from '../interfaces/PetInterfaces';
 import { GrowPetInterface } from '../interfaces/GrowPetInterface';
@@ -34,7 +34,7 @@ export class FeedPetService implements GrowPetInterface {
     if (hours > 3 && hours < 15) {
       return await this.giveDinner(petId);
     }
-    return this.giveBreakfast(petId);
+    return await this.giveBreakfast(petId);
   }
 
   private async giveDinner(petId: string) {
