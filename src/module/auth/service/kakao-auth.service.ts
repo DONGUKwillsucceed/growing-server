@@ -3,7 +3,10 @@ import { env } from 'process';
 import { PrismaService } from 'src/service/prisma.service';
 import { KakaoData } from '../types/KakaoData';
 import { Injectable } from '@nestjs/common';
-import { UserProxyService } from 'src/module/user/service/user-proxy.service';
+import { UserDBService } from 'src/module/user/service/user-db.service';
+import { Prisma } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
+import { CreateUserService } from 'src/module/user/service/create-user.service';
 
 @Injectable()
 export class KakaoAuthService {
@@ -16,7 +19,7 @@ export class KakaoAuthService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly userProxyService: UserProxyService,
+    private readonly createUserService: CreateUserService,
   ) {}
 
   async login(kakoData: KakaoData) {
@@ -25,16 +28,14 @@ export class KakaoAuthService {
     if (user) {
       return {
         userId: user.id,
-        origin: null,
-        kakao: null,
       };
     }
 
-    const userCreated = await this.userProxyService.createWithKakaoData(
+    const userCreated = await this.createUserService.createWithKakaoData(
       kakoData,
     );
 
-    return { userId: userCreated.id, origin: null, kakao: null };
+    return { userId: userCreated.id };
   }
 
   async findOneForUserWithKakaoId(kakaoId: number) {
