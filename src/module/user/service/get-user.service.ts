@@ -2,7 +2,9 @@ import { UserDto } from '../dto/User.dto';
 import { UserCoupleImageUrlInterface } from '../types/User.interface';
 import { UserDBService } from './user-db.service';
 import { UserS3Service } from './user-s3.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class GetUserService {
   constructor(
     private readonly userDBService: UserDBService,

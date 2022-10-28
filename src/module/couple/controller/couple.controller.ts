@@ -38,6 +38,6 @@ export class CoupleController {
       throw new BadRequestException(errors[0].toString());
     }
 
-    return await this.coupleProxyService.initCouple(dto);
+    return await this.coupleProxyService.initCouple(req.user.id, dto);
   }
 }

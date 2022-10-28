@@ -18,7 +18,8 @@ export class UserProxyService {
 
   async isCouple(userId: string) {
     const user = await this.getUserService.findUserDto(userId);
-    return !!user.coupleId;
+    const result = !!user.coupleId;
+    return { result };
   }
 
   async update(userId: string, dto: UpdateUserDto) {

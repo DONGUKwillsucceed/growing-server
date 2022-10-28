@@ -5,20 +5,23 @@ import { CoupleDBService } from './couple-db.service';
 import { Injectable } from '@nestjs/common';
 import { PetDBService } from './pet-db.service';
 import { PetCareDBService } from './pet-care-db.service';
+import { UserDBService } from './user-db.service';
 @Injectable()
 export class InitCoupleService {
   constructor(
     private readonly coupleDBService: CoupleDBService,
     private readonly petDBService: PetDBService,
     private readonly petCareDBService: PetCareDBService,
+    private readonly userDBService: UserDBService,
   ) {}
-  async init(dto: CreateCoupleAndPetDto) {
+  async init(userId: string, dto: CreateCoupleAndPetDto) {
     const couple = await this.coupleDBService.create(
       this.createCoupleData(dto.anniversaryDay),
     );
     const petCare = await this.petCareDBService.create(
       this.createPetCareData(),
     );
+    this.userDBService.update(userId, couple.id);
     await this.petDBService.create(this.createPetData(couple.id, petCare.id));
 
     return couple;

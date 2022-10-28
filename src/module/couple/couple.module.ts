@@ -8,6 +8,7 @@ import { GetCoupleService } from './service/get-couple.service';
 import { InitCoupleService } from './service/init-couple.service';
 import { PetCareDBService } from './service/pet-care-db.service';
 import { PetDBService } from './service/pet-db.service';
+import { UserDBService } from './service/user-db.service';
 
 @Module({
   controllers: [CoupleController],
@@ -19,6 +20,7 @@ import { PetDBService } from './service/pet-db.service';
     PetCareDBService,
     PetDBService,
     GetCoupleService,
+    UserDBService,
   ],
 })
 export class CoupleModule {

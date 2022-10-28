@@ -9,8 +9,8 @@ export class CoupleProxyService {
     private readonly initCoupleService: InitCoupleService,
     private readonly getCoupleService: GetCoupleService,
   ) {}
-  async initCouple(dto: CreateCoupleAndPetDto) {
-    return await this.initCoupleService.init(dto);
+  async initCouple(userId: string, dto: CreateCoupleAndPetDto) {
+    return await this.initCoupleService.init(userId, dto);
   }
 
   async findUnique(coupleId: string, userId: string) {
