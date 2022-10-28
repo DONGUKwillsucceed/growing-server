@@ -1,11 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { KakaoData } from 'src/module/auth/types/KakaoData';
-import { CreateUserService } from './create-user.service';
+import { UpdateUserDto } from '../dto/UpdateUser.dto';
+import { GetUserService } from './get-user.service';
+import { UpdateUserService } from './update-user.service';
+import { UserCodeService } from './user-code.service';
 
 @Injectable()
 export class UserProxyService {
-  constructor(private readonly createUserService: CreateUserService) {}
-  async createWithKakaoData(kakaoData: KakaoData) {
-    return await this.createUserService.createWithKakaoData(kakaoData);
+  constructor(
+    private readonly userCodeService: UserCodeService,
+    private readonly getUserService: GetUserService,
+    private readonly updateUserService: UpdateUserService,
+  ) {}
+
+  async findUnique(userId: string) {
+    return await this.getUserService.findUserDto(userId);
+  }
+
+  async isCouple(userId: string) {
+    const user = await this.getUserService.findUserDto(userId);
+    return !!user.coupleId;
+  }
+
+  async update(userId: string, dto: UpdateUserDto) {
+    return this.updateUserService.update(userId, dto);
+  }
+
+  async verifyCodeAndGetPartnerId(code: string) {
+    const user = await this.userCodeService.verify(code);
+    return { partnerId: user.id };
   }
 }
