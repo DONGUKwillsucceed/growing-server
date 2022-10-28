@@ -8,6 +8,7 @@ import { PetCareDBService } from './service/pet-care-db.service';
 import { PetDBService } from './service/pet-db.service';
 import { PetImageDBService } from './service/pet-image-db.service';
 import { PetProxyService } from './service/pet-proxy.service';
+import { TouchPetService } from './service/touch-pet.service';
 
 @Module({
   controllers: [PetController],
@@ -19,6 +20,7 @@ import { PetProxyService } from './service/pet-proxy.service';
     PetCareDBService,
     PetImageDBService,
     FeedPetService,
+    TouchPetService,
   ],
 })
 export class PetModule {

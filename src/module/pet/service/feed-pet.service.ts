@@ -76,10 +76,12 @@ export class FeedPetService implements GrowPetInterface {
   }
 
   async increasePetGauge(petId: string) {
-    return await this.petDBService.increaseOneHungryGauge(petId);
+    const data = this.createPetDataForIncrease();
+    return await this.petDBService.update(petId, data);
   }
   async decreasePetGauge(petId: string) {
-    return await this.petDBService.decreaseOneHungryGuage(petId);
+    const data = this.createPetDataForDecrease();
+    return await this.petDBService.update(petId, data);
   }
 
   createPetCareDataForIsHaveBreakfast() {
@@ -92,6 +94,24 @@ export class FeedPetService implements GrowPetInterface {
   createPetCareDataForIsHaveDinner() {
     const data: Prisma.PetCareUpdateInput = {
       isHaveDinner: 1,
+    };
+    return data;
+  }
+
+  createPetDataForIncrease() {
+    const data: Prisma.PetsUpdateInput = {
+      hungryGauge: {
+        increment: 2,
+      },
+    };
+    return data;
+  }
+
+  createPetDataForDecrease() {
+    const data: Prisma.PetsUpdateInput = {
+      hungryGauge: {
+        decrement: 2,
+      },
     };
     return data;
   }

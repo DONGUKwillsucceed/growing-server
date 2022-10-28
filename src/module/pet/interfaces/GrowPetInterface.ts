@@ -12,6 +12,4 @@ export interface GrowPetInterface {
   getReactionImageUrl(petId: string): Promise<string>;
 
   increasePetGauge(petId: string): Promise<Pets>;
-
-  decreasePetGauge(petId: string): Promise<Pets>;
 }

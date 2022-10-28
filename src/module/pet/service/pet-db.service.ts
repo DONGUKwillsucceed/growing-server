@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/service/prisma.service';
 
 @Injectable()
@@ -18,29 +19,10 @@ export class PetDBService {
     });
   }
 
-  async increaseOneHungryGauge(petId: string) {
+  async update(id: string, data: Prisma.PetsUpdateInput) {
     return await this.prismaService.pets.update({
-      where: {
-        id: petId,
-      },
-      data: {
-        hungryGauge: {
-          increment: 2,
-        },
-      },
-    });
-  }
-
-  async decreaseOneHungryGuage(petId: string) {
-    return await this.prismaService.pets.update({
-      where: {
-        id: petId,
-      },
-      data: {
-        hungryGauge: {
-          decrement: 2,
-        },
-      },
+      where: { id },
+      data,
     });
   }
 }
