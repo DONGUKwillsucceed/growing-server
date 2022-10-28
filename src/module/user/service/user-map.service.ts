@@ -8,14 +8,13 @@ import {
 @Injectable()
 export class UserMapperService {
   mapUserDto(user: UserCoupleImageUrlInterface) {
-    const { id, name, nickName, birthDay, coupleId, Couples, imageUrl } = user;
+    const { id, nickName, birthDay, coupleId, Couples, imageUrl } = user;
     let anniversaryDay: Date | null = null;
     if (coupleId) {
       anniversaryDay = Couples.anniversaryDay;
     }
     const userDto: UserDto = {
       id,
-      name,
       nickName,
       birthDay,
       coupleId,

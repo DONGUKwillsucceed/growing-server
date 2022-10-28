@@ -64,6 +64,7 @@ export class UserService {
       gender,
       birthDay: new Date(birthDay),
       verificationCode: code,
+      kakaoId: 1,
     };
     return data;
   }
