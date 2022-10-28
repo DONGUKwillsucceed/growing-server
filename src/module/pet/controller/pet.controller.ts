@@ -11,7 +11,9 @@ export class PetController {
   }
 
   @Post(':petId/feed')
-  async feed() {}
+  async feed(@Req() req: UserAuthRequest) {
+    return await this.petProxyService.feedAndFindReactionDto(req.params.petId);
+  }
 
   @Post(':petId/touch')
   async touch() {}

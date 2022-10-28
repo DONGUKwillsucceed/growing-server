@@ -129,13 +129,13 @@ model Pets {
   careId         String    @db.VarChar(64)
   coupleId       String    @db.VarChar(64)
   petImageId     String    @db.VarChar(64)
-  PetCare        PetCare   @relation(fields: [careId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_Care_FK")
   Couples        Couples   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_Couples_FK")
-  PetImages      PetImages @relation(fields: [petImageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_PetImages")
+  PetCare        PetCare   @relation(fields: [careId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_PetCare_FK")
+  PetImages      PetImages @relation(fields: [petImageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Pets_PetImages_FK")
 
-  @@index([careId], map: "Pets_Care_FK_idx")
   @@index([coupleId], map: "Pets_Couples_idx")
   @@index([petImageId], map: "Pets_PetImages_idx")
+  @@index([careId], map: "Pets_PetCare_FK_idx")
 }
 
 model PhotoComments {

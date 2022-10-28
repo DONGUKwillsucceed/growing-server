@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PetDto } from '../dto/Pet.dto';
-import { PetIncludeQueryType } from '../types/PetIncludeQuery.type';
+import { PetIncludeQueryType } from '../interfaces/PetIncludeQuery.type';
 import { PetDBService } from './pet-db.service';
 @Injectable()
 export class GetPetService {

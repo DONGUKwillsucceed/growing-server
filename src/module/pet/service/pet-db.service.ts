@@ -17,4 +17,30 @@ export class PetDBService {
       },
     });
   }
+
+  async increaseOneHungryGauge(petId: string) {
+    return await this.prismaService.pets.update({
+      where: {
+        id: petId,
+      },
+      data: {
+        hungryGauge: {
+          increment: 1,
+        },
+      },
+    });
+  }
+
+  async decreaseOneHungryGuage(petId: string) {
+    return await this.prismaService.pets.update({
+      where: {
+        id: petId,
+      },
+      data: {
+        hungryGauge: {
+          decrement: 1,
+        },
+      },
+    });
+  }
 }

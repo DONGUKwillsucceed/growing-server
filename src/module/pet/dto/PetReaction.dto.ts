@@ -1,6 +1,6 @@
 export interface PetReactionDto {
   petImageUrl: string;
-  hungryGauge?: number;
-  attentionGauge?: number;
-  loveGauge?: number;
+  hungryGauge: number;
+  attentionGauge: number;
+  loveGauge: number;
 }
