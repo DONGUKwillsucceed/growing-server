@@ -25,7 +25,7 @@ export class PetDBService {
       },
       data: {
         hungryGauge: {
-          increment: 1,
+          increment: 2,
         },
       },
     });
@@ -38,7 +38,7 @@ export class PetDBService {
       },
       data: {
         hungryGauge: {
-          decrement: 1,
+          decrement: 2,
         },
       },
     });
