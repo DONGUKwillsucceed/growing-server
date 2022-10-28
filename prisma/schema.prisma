@@ -76,21 +76,20 @@ model Chattings {
 }
 
 model Couples {
-  id               String            @id @db.VarChar(64)
-  createdAt        DateTime          @default(now()) @db.DateTime(0)
-  modifiedAt       DateTime          @default(now()) @db.DateTime(0)
-  isDeleted        Int               @default(0) @db.TinyInt
-  anniversaryDay   DateTime          @db.DateTime(0)
-  lastVistADay     Int               @default(0)
-  verificationCode String            @db.VarChar(45)
-  Albums           Albums?
-  ChattingStorage  ChattingStorage[]
-  Chattings        Chattings[]
-  Pets             Pets[]
-  Photos           Photos[]
-  QuestionStorage  QuestionStorage[]
-  Users            Users[]
-  VoiceStorage     VoiceStorage[]
+  id              String            @id @db.VarChar(64)
+  createdAt       DateTime          @default(now()) @db.DateTime(0)
+  modifiedAt      DateTime          @default(now()) @db.DateTime(0)
+  isDeleted       Int               @default(0) @db.TinyInt
+  anniversaryDay  DateTime          @db.DateTime(0)
+  lastVistADay    Int               @default(0)
+  Albums          Albums?
+  ChattingStorage ChattingStorage[]
+  Chattings       Chattings[]
+  Pets            Pets[]
+  Photos          Photos[]
+  QuestionStorage QuestionStorage[]
+  Users           Users[]
+  VoiceStorage    VoiceStorage[]
 }
 
 model PetCare {
@@ -195,13 +194,14 @@ model Users {
   createdAt          DateTime          @default(now()) @db.DateTime(0)
   modifiedAt         DateTime          @default(now()) @db.DateTime(0)
   isDeleted          Int               @default(0) @db.TinyInt
-  name               String            @db.VarChar(100)
-  nickName           String            @db.VarChar(100)
+  nickName           String            @default("나") @db.VarChar(100)
   profileImageS3Path String?           @db.VarChar(500)
-  gender             String            @db.VarChar(45)
-  birthDay           DateTime          @db.DateTime(0)
+  gender             String?           @db.VarChar(45)
+  birthDay           DateTime?         @db.DateTime(0)
   coupleId           String?           @db.VarChar(64)
   password           String?           @db.VarChar(45)
+  verificationCode   String            @db.VarChar(45)
+  kakaoId            Int
   Couples            Couples?          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
   Albums             Albums[]
   ChattingStorage    ChattingStorage[]

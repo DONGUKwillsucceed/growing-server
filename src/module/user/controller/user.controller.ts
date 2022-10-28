@@ -7,11 +7,14 @@ import {
   Body,
   BadRequestException,
   Post,
+  Req,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreateUserDto } from '../dto/CreateUser.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
+import { VerifyCodeDto } from '../dto/VerifyCode.dto';
 import { UserService } from '../service/user.service';
 
 @Controller('users')
@@ -55,7 +58,12 @@ export class UserController {
     return await this.userService.create(dto);
   }
 
-  // TODO: 카카오 싱크에 대해 공부할 필요가 있음.
-  @Post('log-in')
-  async logIn(@Body() body: any) {}
+  @Post('codes/verify')
+  async verify(@Req() req: UserAuthRequest) {
+    const dto = plainToInstance(VerifyCodeDto, req.body);
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors[0].toString());
+    }
+  }
 }

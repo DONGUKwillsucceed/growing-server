@@ -3,9 +3,6 @@ import { Gender } from '../types/Gender.enum';
 
 export class CreateUserDto {
   @IsString()
-  name: string;
-
-  @IsString()
   nickName: string;
 
   @IsEnum(Gender)

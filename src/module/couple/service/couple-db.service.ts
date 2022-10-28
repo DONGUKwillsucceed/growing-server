@@ -5,12 +5,6 @@ import { PrismaService } from 'src/service/prisma.service';
 export class CoupleDBService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findOneWithCode(code: string) {
-    return await this.prismaService.couples.findFirst({
-      where: { verificationCode: code },
-    });
-  }
-
   async findUnique(coupleId: string) {
     return await this.prismaService.couples.findUnique({
       where: { id: coupleId },

@@ -1,11 +1,11 @@
-import { CoupleDBService } from './couple-db.service';
 import { Injectable } from '@nestjs/common';
+import { UserDBService } from './user-db.service';
 @Injectable()
-export class CoupleCodeService {
+export class UserCodeService {
   private characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  constructor(private readonly coupleDBService: CoupleDBService) {}
+  constructor(private readonly userDBService: UserDBService) {}
 
   async generateOne() {
     let code: string;
@@ -19,7 +19,7 @@ export class CoupleCodeService {
   }
 
   async verify(code: string) {
-    return await this.coupleDBService.findOneWithCode(code);
+    return await this.userDBService.findOneWithCode(code);
   }
 
   private makeString() {
@@ -34,6 +34,6 @@ export class CoupleCodeService {
   }
 
   private async isOverlapped(code: string) {
-    return !!(await this.coupleDBService.findOneWithCode(code));
+    return !!(await this.userDBService.findOneWithCode(code));
   }
 }

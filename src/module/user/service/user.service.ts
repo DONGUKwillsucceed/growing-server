@@ -6,6 +6,7 @@ import { UserMapperService } from './user-map.service';
 import { UserS3Service } from './user-s3.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
+import { UserCodeService } from './user-code.service';
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,10 @@ export class UserService {
     private readonly userDBService: UserDBService,
     private readonly userMapper: UserMapperService,
     private readonly userS3Service: UserS3Service,
+    private readonly userCodeService: UserCodeService,
   ) {}
+
+  async findUserWithCode(code: string) {}
 
   async findOne(userId: string) {
     return await this.userDBService
@@ -23,7 +27,8 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto) {
-    const data = this.createUserData(dto);
+    const code = await this.userCodeService.generateOne();
+    const data = this.createUserData(dto, code);
     return await this.userDBService.create(data);
   }
 
@@ -51,14 +56,14 @@ export class UserService {
     return data;
   }
 
-  private createUserData(dto: CreateUserDto) {
-    const { name, nickName, gender, birthDay } = dto;
+  private createUserData(dto: CreateUserDto, code: string) {
+    const { nickName, gender, birthDay } = dto;
     const data: Prisma.UsersUncheckedCreateInput = {
       id: uuidv4(),
-      name,
       nickName,
       gender,
       birthDay: new Date(birthDay),
+      verificationCode: code,
     };
     return data;
   }

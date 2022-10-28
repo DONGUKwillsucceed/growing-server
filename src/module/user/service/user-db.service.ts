@@ -35,4 +35,12 @@ export class UserDBService {
       data,
     });
   }
+
+  async findOneWithCode(code: string) {
+    return await this.prismaService.users.findFirst({
+      where: {
+        verificationCode: code,
+      },
+    });
+  }
 }

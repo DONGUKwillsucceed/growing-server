@@ -3,7 +3,6 @@ import { CreateCoupleAndPetDto } from '../dto/CreateCoupleAndPet.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { CoupleDBService } from './couple-db.service';
 import { Injectable } from '@nestjs/common';
-import { CoupleCodeService } from './couple-code.service';
 import { PetDBService } from './pet-db.service';
 import { PetCareDBService } from './pet-care-db.service';
 @Injectable()
@@ -12,19 +11,15 @@ export class InitCoupleService {
     private readonly coupleDBService: CoupleDBService,
     private readonly petDBService: PetDBService,
     private readonly petCareDBService: PetCareDBService,
-    private readonly coupleCodeService: CoupleCodeService,
   ) {}
   async init(dto: CreateCoupleAndPetDto) {
-    const code = await this.coupleCodeService.generateOne();
     const couple = await this.coupleDBService.create(
-      this.createCoupleData(dto.anniversaryDay, code),
+      this.createCoupleData(dto.anniversaryDay),
     );
     const petCare = await this.petCareDBService.create(
       this.createPetCareData(),
     );
-    await this.petDBService.create(
-      this.createPetData(dto.petName, couple.id, petCare.id),
-    );
+    await this.petDBService.create(this.createPetData(couple.id, petCare.id));
 
     return couple;
   }
@@ -36,10 +31,10 @@ export class InitCoupleService {
     return data;
   }
 
-  private createPetData(name: string, coupleId: string, careId: string) {
+  private createPetData(coupleId: string, careId: string) {
     const data: Prisma.PetsUncheckedCreateInput = {
       id: careId,
-      name,
+      name: '',
       careId,
       coupleId,
       petImageId: '1',
@@ -47,11 +42,10 @@ export class InitCoupleService {
     return data;
   }
 
-  private createCoupleData(anniversaryDay: string, code: string) {
+  private createCoupleData(anniversaryDay: string) {
     const data: Prisma.CouplesUncheckedCreateInput = {
       id: uuidv4(),
       anniversaryDay: new Date(anniversaryDay),
-      verificationCode: code,
     };
     return data;
   }

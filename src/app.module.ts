@@ -7,9 +7,10 @@ import { CoupleModule } from './module/couple/couple.module';
 import { AuthMiddleWare } from './common/middleware/auth.middleware';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PetModule } from './module/pet/pet.module';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
-  imports: [UserModule, CoupleModule, JwtModule, PetModule],
+  imports: [UserModule, CoupleModule, JwtModule, PetModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
 })
