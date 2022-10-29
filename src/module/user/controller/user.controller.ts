@@ -8,9 +8,11 @@ import {
   BadRequestException,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { VerifyCodeDto } from '../dto/VerifyCode.dto';
@@ -21,6 +23,7 @@ export class UserController {
   constructor(private readonly userProxyService: UserProxyService) {}
 
   @Get(':userId')
+  @UseGuards(UserAuthGuard)
   async findOne(@Param('userId') userId: string) {
     const user = await this.userProxyService.findUnique(userId);
     if (!user) {
@@ -31,11 +34,13 @@ export class UserController {
   }
 
   @Get(':userId/is-couple')
+  @UseGuards(UserAuthGuard)
   async isCouple(@Param('userId') userId: string) {
     return await this.userProxyService.isCouple(userId);
   }
 
   @Patch(':userId/update')
+  @UseGuards(UserAuthGuard)
   async patch(@Param('userId') userId: string, @Body() body: any) {
     const dto = plainToInstance(UpdateUserDto, body);
     const errors = await validate(dto);

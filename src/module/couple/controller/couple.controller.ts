@@ -7,9 +7,11 @@ import {
   Param,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreateCoupleAndPetDto } from '../dto/CreateCoupleAndPet.dto';
 import { CoupleProxyService } from '../service/couple-proxy.service';
@@ -19,6 +21,7 @@ export class CoupleController {
   constructor(private readonly coupleProxyService: CoupleProxyService) {}
 
   @Get(':coupleId')
+  @UseGuards(UserAuthGuard)
   async findUnique(@Req() req: UserAuthRequest) {
     const couple = await this.coupleProxyService.findUnique(
       req.params.coupleId,

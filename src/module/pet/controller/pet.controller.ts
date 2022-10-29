@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { PetProxyService } from '../service/pet-proxy.service';
 
 @Controller('couples/:coupleId/pets')
+@UseGuards(UserAuthGuard)
 export class PetController {
   constructor(private readonly petProxyService: PetProxyService) {}
   @Get(':petId')

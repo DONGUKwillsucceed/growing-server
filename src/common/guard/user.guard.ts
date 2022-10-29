@@ -3,8 +3,7 @@ import { Observable } from 'rxjs';
 import { UserAuthRequest } from '../interface/UserAuthRequest';
 
 /**
- * 키오스크 컨트롤러에서 `:id` param 으로 들어오는 값이
- * auth middleware 를 통해 받은 `user` 객체와 일치하는지 확인
+ * req userId가 있을 때, coupleId가 있을 때로 나눠진다.
  */
 @Injectable()
 export class UserAuthGuard implements CanActivate {
@@ -18,11 +17,15 @@ export class UserAuthGuard implements CanActivate {
       return false;
     }
 
+    const { userId } = req.params;
     const { coupleId } = req.params;
-    if (!coupleId) {
-      return true;
+    if (userId) {
+      return user.id === userId;
+    }
+    if (coupleId) {
+      return user.coupleId === coupleId;
     }
 
-    return user.coupleId === coupleId;
+    return false;
   }
 }

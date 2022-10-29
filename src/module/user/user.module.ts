@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { UserController } from './controller/user.controller';
@@ -25,4 +26,8 @@ import { UserS3Service } from './service/user-s3.service';
   ],
   exports: [UserDBService, UserCodeService, CreateUserService],
 })
-export class UserModule {}
+export class UserModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserAuthMiddleware).forRoutes(UserController);
+  }
+}
