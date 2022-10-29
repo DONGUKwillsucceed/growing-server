@@ -14,7 +14,8 @@ export class GetCoupleService {
   }
 
   mapFromRelation(couple: CoupleIncludeQueryType, userId: string) {
-    const dayCount = new Date().getTime() - couple.anniversaryDay.getTime();
+    const dayDiff = new Date().getTime() - couple.anniversaryDay.getTime();
+    const dayCount = Math.floor(dayDiff / (60 * 60 * 1000 * 24));
     const myName = couple.Users.find((user) => user.id === userId).nickName;
     const partnerName = couple.Users.find(
       (user) => user.id !== userId,

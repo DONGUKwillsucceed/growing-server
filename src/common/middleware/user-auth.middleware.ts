@@ -12,11 +12,12 @@ export class UserAuthMiddleware implements NestMiddleware {
       return next();
     }
     const { uid } = claims;
-    const user = await this.prismaService.couples.findUnique({
+    const user = await this.prismaService.users.findUnique({
       where: {
         id: uid,
       },
     });
+    console.log(user);
     req['user'] = user ?? undefined;
     next();
   }

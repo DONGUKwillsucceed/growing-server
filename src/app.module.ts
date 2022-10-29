@@ -10,7 +10,14 @@ import { PetModule } from './module/pet/pet.module';
 import { AuthModule } from './module/auth/auth.module';
 
 @Module({
-  imports: [UserModule, CoupleModule, JwtModule, PetModule, AuthModule],
+  imports: [
+    UserModule,
+    CoupleModule,
+    JwtModule,
+    PetModule,
+    AuthModule,
+    JwtModule,
+  ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
 })
