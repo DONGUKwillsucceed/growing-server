@@ -61,17 +61,17 @@ model Chattings {
   coupleId        String            @db.VarChar(64)
   userId          String            @db.VarChar(64)
   parentId        String?           @db.VarChar(64)
-  photoId         String?           @db.VarChar(64)
   Chattings       Chattings?        @relation("ChattingsToChattings", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Chattings_FK")
   Couples         Couples           @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Couples_FK")
-  Photos          Photos?           @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Photo_FK")
   Users           Users             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Users_FK")
   ChattingStorage ChattingStorage[]
+  Chatting_Emoji  Chatting_Emoji[]
+  Chatting_Photo  Chatting_Photo[]
   other_Chattings Chattings[]       @relation("ChattingsToChattings")
+  VoiceStorage    VoiceStorage[]
 
   @@index([parentId], map: "Chattings_Chattings_FK_idx")
   @@index([coupleId], map: "Chattings_Couples_FK_idx")
-  @@index([photoId], map: "Chattings_Photo_FK_idx")
   @@index([userId], map: "Chattings_Users_FK_idx")
 }
 
@@ -153,19 +153,19 @@ model PhotoComments {
 }
 
 model Photos {
-  id            String          @id @db.VarChar(64)
-  createdAt     DateTime        @default(now()) @db.DateTime(0)
-  modifiedAt    DateTime        @default(now()) @db.DateTime(0)
-  isDeleted     Int             @default(0) @db.TinyInt
-  where         String          @db.VarChar(45)
-  s3Path        String          @db.VarChar(500)
-  coupleId      String          @db.VarChar(64)
-  userId        String          @db.VarChar(64)
-  Couples       Couples         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
-  Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
-  Albums_Photos Albums_Photos[]
-  Chattings     Chattings[]
-  PhotoComments PhotoComments[]
+  id             String           @id @db.VarChar(64)
+  createdAt      DateTime         @default(now()) @db.DateTime(0)
+  modifiedAt     DateTime         @default(now()) @db.DateTime(0)
+  isDeleted      Int              @default(0) @db.TinyInt
+  where          String           @db.VarChar(45)
+  s3Path         String           @db.VarChar(500)
+  coupleId       String           @db.VarChar(64)
+  userId         String           @db.VarChar(64)
+  Couples        Couples          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
+  Users          Users            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
+  Albums_Photos  Albums_Photos[]
+  Chatting_Photo Chatting_Photo[]
+  PhotoComments  PhotoComments[]
 
   @@index([coupleId], map: "Photos_Couples_FK_idx")
   @@index([userId], map: "Photos_Users_FK_idx")
@@ -215,15 +215,63 @@ model Users {
 }
 
 model VoiceStorage {
-  id        String   @id @db.VarChar(64)
-  createdAt DateTime @default(now()) @db.DateTime(0)
-  isDeleted Int      @default(0) @db.TinyInt
-  s3Path    String   @db.VarChar(500)
-  coupleId  String   @db.VarChar(64)
-  userId    String   @db.VarChar(64)
-  Couples   Couples  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Couples_FK")
-  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Users_FK")
+  id         String    @id @db.VarChar(64)
+  createdAt  DateTime  @default(now()) @db.DateTime(0)
+  isDeleted  Int       @default(0) @db.TinyInt
+  s3Path     String    @db.VarChar(500)
+  coupleId   String    @db.VarChar(64)
+  userId     String    @db.VarChar(64)
+  chattingId String    @db.VarChar(64)
+  Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Chatting_FK")
+  Couples    Couples   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Couples_FK")
+  Users      Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Users_FK")
 
   @@index([coupleId], map: "Voice_Couples_FK_idx")
   @@index([userId], map: "Voice_Users_FK_idx")
+  @@index([chattingId], map: "Voice_Chatting_FK_idx")
+}
+
+model Chatting_Photo {
+  id         Int       @id @default(autoincrement())
+  chattingId String    @db.VarChar(64)
+  photoId    String    @db.VarChar(64)
+  Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "CP_Chatting_FK")
+  Photos     Photos    @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "CP_Photo_FK")
+
+  @@index([chattingId], map: "CP_Chatting_FK_idx")
+  @@index([photoId], map: "CP_Photo_FK_idx")
+}
+
+model Emoji_Package {
+  id         String   @id @db.VarChar(64)
+  name       String   @db.VarChar(100)
+  isDeleted  Int      @default(0) @db.TinyInt
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  modifiedAt DateTime @default(now()) @db.DateTime(0)
+  Emojis     Emojis[]
+}
+
+model Emojis {
+  id             String           @id @db.VarChar(64)
+  name           String?          @db.VarChar(100)
+  s3Path         String           @db.VarChar(45)
+  packageId      String           @db.VarChar(64)
+  isDeleted      Int              @default(0) @db.TinyInt
+  createdAt      DateTime         @default(now()) @db.DateTime(0)
+  modifiedAt     DateTime         @default(now()) @db.DateTime(0)
+  Emoji_Package  Emoji_Package    @relation(fields: [packageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Emoji_EP_FK")
+  Chatting_Emoji Chatting_Emoji[]
+
+  @@index([packageId], map: "Emoji_EP_FK_idx")
+}
+
+model Chatting_Emoji {
+  id         Int       @id @default(autoincrement())
+  chattingId String    @db.VarChar(64)
+  emojiId    String    @db.VarChar(64)
+  Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "CE_Chatting_FK")
+  Emojis     Emojis    @relation(fields: [emojiId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "CE_Emoji_FK")
+
+  @@index([chattingId], map: "CE_Chatting_FK_idx")
+  @@index([emojiId], map: "CE_Emoji_FK_idx")
 }
