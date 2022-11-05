@@ -34,4 +34,12 @@ export class NoticedChattingController {
       noticeId,
     );
   }
+
+  @Post('notices/:noticeId/invisible')
+  @UseGuards(UserAuthGuard)
+  async delete(@Req() req: UserAuthRequest) {
+    const noticeId = req.params.noticeId;
+    const userId = req.user.id;
+    await this.noticedChattingProxyService.delete(userId, noticeId);
+  }
 }

@@ -15,7 +15,11 @@ export class RemoveChattingService {
     return { result: false };
   }
 
-  async getOneForIsFolden(userId: string, noticeId: string) {
+  async delete(userId: string, noticeId: string) {
+    await this.updateOneWithIsDeleted(userId, noticeId);
+  }
+
+  private async getOneForIsFolden(userId: string, noticeId: string) {
     const noticedChatting =
       await this.prismaService.user_NoticedChatting_IsDeleted.findFirst({
         where: {
@@ -26,7 +30,7 @@ export class RemoveChattingService {
     return noticedChatting.isFolden;
   }
 
-  async fold(userId: string, noticeId: string) {
+  private async fold(userId: string, noticeId: string) {
     return await this.prismaService.user_NoticedChatting_IsDeleted.updateMany({
       where: {
         userId,
@@ -38,7 +42,7 @@ export class RemoveChattingService {
     });
   }
 
-  async unfold(userId: string, noticeId: string) {
+  private async unfold(userId: string, noticeId: string) {
     return await this.prismaService.user_NoticedChatting_IsDeleted.updateMany({
       where: {
         userId,
@@ -46,6 +50,18 @@ export class RemoveChattingService {
       },
       data: {
         isFolden: 0,
+      },
+    });
+  }
+
+  private async updateOneWithIsDeleted(userId: string, noticeId: string) {
+    return await this.prismaService.user_NoticedChatting_IsDeleted.updateMany({
+      where: {
+        userId,
+        noticedChattingId: noticeId,
+      },
+      data: {
+        isDeleted: 1,
       },
     });
   }

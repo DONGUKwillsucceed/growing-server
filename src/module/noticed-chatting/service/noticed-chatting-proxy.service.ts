@@ -20,4 +20,8 @@ export class NoticedChattingProxyService {
   async foldOrUnFold(userId: string, coupleId: string) {
     return await this.removeChattingService.foldOrUnFold(userId, coupleId);
   }
+
+  async delete(userId: string, coupleId: string) {
+    return await this.removeChattingService.delete(userId, coupleId);
+  }
 }
