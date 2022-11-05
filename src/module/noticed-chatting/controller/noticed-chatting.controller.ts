@@ -18,8 +18,20 @@ export class NoticedChattingController {
   }
 
   @Get('notices')
+  @UseGuards(UserAuthGuard)
   async findOne(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
     return await this.noticedChattingProxyService.findOne(userId);
+  }
+
+  @Post('notices/:noticeId/fold')
+  @UseGuards(UserAuthGuard)
+  async fold(@Req() req: UserAuthRequest) {
+    const noticeId = req.params.noticeId;
+    const userId = req.user.id;
+    return await this.noticedChattingProxyService.foldOrUnFold(
+      userId,
+      noticeId,
+    );
   }
 }
