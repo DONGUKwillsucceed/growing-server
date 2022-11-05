@@ -10,6 +10,7 @@ import { PetModule } from './module/pet/pet.module';
 import { AuthModule } from './module/auth/auth.module';
 import { ChattingModule } from './module/chatting/chatting.module';
 import { NoticedChattingModule } from './module/noticed-chatting/noticed-chatting.module';
+import { ArchivedChattingModule } from './module/archived-chatting/archived-chatting.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NoticedChattingModule } from './module/noticed-chatting/noticed-chattin
     JwtModule,
     ChattingModule,
     NoticedChattingModule,
+    ArchivedChattingModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
