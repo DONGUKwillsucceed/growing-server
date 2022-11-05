@@ -21,6 +21,13 @@ export class ArchivedChattingController {
     );
   }
 
+  @Get('archived-chattings')
+  @UseGuards(UserAuthGuard)
+  async findMany(@Req() req: UserAuthRequest) {
+    const coupleId = req.params.coupleId;
+    return await this.archivedChattingProxyService.findMany(coupleId);
+  }
+
   @Delete('archived-chattings/:chattingId')
   @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {

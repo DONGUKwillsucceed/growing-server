@@ -4,6 +4,7 @@ import { PrismaService } from 'src/service/prisma.service';
 import { ArchivedChattingController } from './controller/archived-chatting.controller';
 import { ArchiveChattingService } from './service/archive-chatting.service';
 import { ArchivedChattingProxyService } from './service/archived-chatting-proxy.service';
+import { GetArchivedChattingService } from './service/get-archived-chatting.service';
 import { UnStoreChattingService } from './service/unstore-chatting.service';
 
 @Module({
@@ -13,6 +14,7 @@ import { UnStoreChattingService } from './service/unstore-chatting.service';
     ArchivedChattingProxyService,
     PrismaService,
     UnStoreChattingService,
+    GetArchivedChattingService,
   ],
 })
 export class ArchivedChattingModule {
