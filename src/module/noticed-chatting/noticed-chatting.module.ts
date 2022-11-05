@@ -4,6 +4,7 @@ import { NoticedChattingController } from './controller/noticed-chatting.control
 import { NotifyChattingService } from './service/notify-chatting.service';
 import { NoticedChattingProxyService } from './service/noticed-chatting-proxy.service';
 import { PrismaService } from 'src/service/prisma.service';
+import { GetChattingService } from './service/get-chatting.service';
 
 @Module({
   controllers: [NoticedChattingController],
@@ -11,6 +12,7 @@ import { PrismaService } from 'src/service/prisma.service';
     NoticedChattingProxyService,
     NotifyChattingService,
     PrismaService,
+    GetChattingService,
   ],
 })
 export class NoticedChattingModule {

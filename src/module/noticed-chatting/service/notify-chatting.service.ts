@@ -14,6 +14,7 @@ export class NotifyChattingService {
       chattingId,
     );
     for (const user of users) {
+      await this.updateForNoticedChattingWithIsDeleted(user.id);
       await this.createForNoticedChatting_IsDeleted(
         user.id,
         noticedChatting.id,
@@ -32,6 +33,15 @@ export class NotifyChattingService {
     });
 
     return couple.Users;
+  }
+
+  async updateForNoticedChattingWithIsDeleted(userId: string) {
+    await this.prismaService.user_NoticedChatting_IsDeleted.updateMany({
+      where: {
+        userId,
+      },
+      data: { isDeleted: 1 },
+    });
   }
 
   async createForNoticedChatting(userId: string, chattingId: string) {
