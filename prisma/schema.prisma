@@ -52,23 +52,23 @@ model ChattingStorage {
 }
 
 model Chattings {
-  id              String            @id @db.VarChar(64)
-  createdAt       DateTime          @default(now()) @db.DateTime(0)
-  modifiedAt      DateTime          @default(now()) @db.DateTime(0)
-  isDeleted       Int               @default(0) @db.TinyInt
-  isNoticed       Int               @default(0) @db.TinyInt
-  content         String?           @db.VarChar(1000)
-  coupleId        String            @db.VarChar(64)
-  userId          String            @db.VarChar(64)
-  parentId        String?           @db.VarChar(64)
-  Chattings       Chattings?        @relation("ChattingsToChattings", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Chattings_FK")
-  Couples         Couples           @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Couples_FK")
-  Users           Users             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Users_FK")
-  ChattingStorage ChattingStorage[]
-  Chatting_Emoji  Chatting_Emoji[]
-  Chatting_Photo  Chatting_Photo[]
-  other_Chattings Chattings[]       @relation("ChattingsToChattings")
-  VoiceStorage    VoiceStorage[]
+  id                      String                    @id @db.VarChar(64)
+  createdAt               DateTime                  @default(now()) @db.DateTime(0)
+  modifiedAt              DateTime                  @default(now()) @db.DateTime(0)
+  isNoticed               Int                       @default(0) @db.TinyInt
+  content                 String?                   @db.VarChar(1000)
+  coupleId                String                    @db.VarChar(64)
+  userId                  String                    @db.VarChar(64)
+  parentId                String?                   @db.VarChar(64)
+  Chattings               Chattings?                @relation("ChattingsToChattings", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Chattings_FK")
+  Couples                 Couples                   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Couples_FK")
+  Users                   Users                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Users_FK")
+  ChattingStorage         ChattingStorage[]
+  Chatting_Emoji          Chatting_Emoji[]
+  Chatting_Photo          Chatting_Photo[]
+  other_Chattings         Chattings[]               @relation("ChattingsToChattings")
+  User_Chatting_IsDeleted User_Chatting_IsDeleted[]
+  VoiceStorage            VoiceStorage[]
 
   @@index([parentId], map: "Chattings_Chattings_FK_idx")
   @@index([coupleId], map: "Chattings_Couples_FK_idx")
@@ -190,26 +190,27 @@ model QuestionStorage {
 }
 
 model Users {
-  id                 String            @id @db.VarChar(64)
-  createdAt          DateTime          @default(now()) @db.DateTime(0)
-  modifiedAt         DateTime          @default(now()) @db.DateTime(0)
-  isDeleted          Int               @default(0) @db.TinyInt
-  nickName           String            @default("나") @db.VarChar(100)
-  profileImageS3Path String?           @db.VarChar(500)
-  gender             String?           @db.VarChar(45)
-  birthDay           DateTime?         @db.DateTime(0)
-  coupleId           String?           @db.VarChar(64)
-  password           String?           @db.VarChar(45)
-  verificationCode   String            @db.VarChar(45)
-  kakaoId            Int
-  Couples            Couples?          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
-  Albums             Albums[]
-  ChattingStorage    ChattingStorage[]
-  Chattings          Chattings[]
-  PhotoComments      PhotoComments[]
-  Photos             Photos[]
-  QuestionStorage    QuestionStorage[]
-  VoiceStorage       VoiceStorage[]
+  id                      String                    @id @db.VarChar(64)
+  createdAt               DateTime                  @default(now()) @db.DateTime(0)
+  modifiedAt              DateTime                  @default(now()) @db.DateTime(0)
+  isDeleted               Int                       @default(0) @db.TinyInt
+  nickName                String                    @default("나") @db.VarChar(100)
+  profileImageS3Path      String?                   @db.VarChar(500)
+  gender                  String?                   @db.VarChar(45)
+  birthDay                DateTime?                 @db.DateTime(0)
+  coupleId                String?                   @db.VarChar(64)
+  password                String?                   @db.VarChar(45)
+  verificationCode        String                    @db.VarChar(45)
+  kakaoId                 Int
+  Couples                 Couples?                  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
+  Albums                  Albums[]
+  ChattingStorage         ChattingStorage[]
+  Chattings               Chattings[]
+  PhotoComments           PhotoComments[]
+  Photos                  Photos[]
+  QuestionStorage         QuestionStorage[]
+  User_Chatting_IsDeleted User_Chatting_IsDeleted[]
+  VoiceStorage            VoiceStorage[]
 
   @@index([coupleId], map: "Users_Couples_FK_idx")
 }
@@ -274,4 +275,16 @@ model Chatting_Emoji {
 
   @@index([chattingId], map: "CE_Chatting_FK_idx")
   @@index([emojiId], map: "CE_Emoji_FK_idx")
+}
+
+model User_Chatting_IsDeleted {
+  id         Int       @id @default(autoincrement())
+  userId     String    @db.VarChar(64)
+  chattingId String    @db.VarChar(64)
+  isDeleted  Int       @default(0) @db.TinyInt
+  Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UCID_Chatting_FK")
+  Users      Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UCID_User_FK")
+
+  @@index([chattingId], map: "UCID_Chatting_FK_idx")
+  @@index([userId], map: "UCID_User_FK_idx")
 }

@@ -21,10 +21,16 @@ export class ChattingDBService {
     },
   };
 
-  async findMany(coupleId: string) {
+  async findMany(coupleId: string, userId: string) {
     return await this.prismaService.chattings.findMany({
       where: {
         coupleId,
+        User_Chatting_IsDeleted: {
+          none: {
+            userId,
+            isDeleted: 1,
+          },
+        },
       },
       include: {
         Users: true,
@@ -57,6 +63,32 @@ export class ChattingDBService {
             },
           },
         },
+      },
+    });
+  }
+
+  async updateOneForIsDeletedWithChattingId(chattingId: string) {
+    return await this.prismaService.user_Chatting_IsDeleted.updateMany({
+      where: {
+        chattingId,
+      },
+      data: {
+        isDeleted: 1,
+      },
+    });
+  }
+
+  async updateOneForIsDeletedWithChattingIdAndUserId(
+    chattingId: string,
+    userId: string,
+  ) {
+    return await this.prismaService.user_Chatting_IsDeleted.updateMany({
+      where: {
+        chattingId,
+        userId,
+      },
+      data: {
+        isDeleted: 1,
       },
     });
   }

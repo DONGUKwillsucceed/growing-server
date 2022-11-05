@@ -18,7 +18,7 @@ export class GetChattingService {
   ) {}
   async findManyForChattingDto(coupleId: string, userId: string) {
     return await this.chattingDBService
-      .findMany(coupleId)
+      .findMany(coupleId, userId)
       .then((chattings) => this.getImageUrl(chattings))
       .then((chattings) => this.getVoiceMsgUrl(chattings))
       .then((chattings) => this.getEmogiUrl(chattings))
