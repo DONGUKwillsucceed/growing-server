@@ -67,6 +67,7 @@ model Chattings {
   Chatting_Emoji          Chatting_Emoji[]
   Chatting_Photo          Chatting_Photo[]
   other_Chattings         Chattings[]               @relation("ChattingsToChattings")
+  NoticedChatting         NoticedChatting[]
   User_Chatting_IsDeleted User_Chatting_IsDeleted[]
   VoiceStorage            VoiceStorage[]
 
@@ -190,27 +191,29 @@ model QuestionStorage {
 }
 
 model Users {
-  id                      String                    @id @db.VarChar(64)
-  createdAt               DateTime                  @default(now()) @db.DateTime(0)
-  modifiedAt              DateTime                  @default(now()) @db.DateTime(0)
-  isDeleted               Int                       @default(0) @db.TinyInt
-  nickName                String                    @default("나") @db.VarChar(100)
-  profileImageS3Path      String?                   @db.VarChar(500)
-  gender                  String?                   @db.VarChar(45)
-  birthDay                DateTime?                 @db.DateTime(0)
-  coupleId                String?                   @db.VarChar(64)
-  password                String?                   @db.VarChar(45)
-  verificationCode        String                    @db.VarChar(45)
-  kakaoId                 Int
-  Couples                 Couples?                  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
-  Albums                  Albums[]
-  ChattingStorage         ChattingStorage[]
-  Chattings               Chattings[]
-  PhotoComments           PhotoComments[]
-  Photos                  Photos[]
-  QuestionStorage         QuestionStorage[]
-  User_Chatting_IsDeleted User_Chatting_IsDeleted[]
-  VoiceStorage            VoiceStorage[]
+  id                             String                           @id @db.VarChar(64)
+  createdAt                      DateTime                         @default(now()) @db.DateTime(0)
+  modifiedAt                     DateTime                         @default(now()) @db.DateTime(0)
+  isDeleted                      Int                              @default(0) @db.TinyInt
+  nickName                       String                           @default("나") @db.VarChar(100)
+  profileImageS3Path             String?                          @db.VarChar(500)
+  gender                         String?                          @db.VarChar(45)
+  birthDay                       DateTime?                        @db.DateTime(0)
+  coupleId                       String?                          @db.VarChar(64)
+  password                       String?                          @db.VarChar(45)
+  verificationCode               String                           @db.VarChar(45)
+  kakaoId                        Int
+  Couples                        Couples?                         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
+  Albums                         Albums[]
+  ChattingStorage                ChattingStorage[]
+  Chattings                      Chattings[]
+  NoticedChatting                NoticedChatting[]
+  PhotoComments                  PhotoComments[]
+  Photos                         Photos[]
+  QuestionStorage                QuestionStorage[]
+  User_Chatting_IsDeleted        User_Chatting_IsDeleted[]
+  User_NoticedChatting_IsDeleted User_NoticedChatting_IsDeleted[]
+  VoiceStorage                   VoiceStorage[]
 
   @@index([coupleId], map: "Users_Couples_FK_idx")
 }
@@ -287,4 +290,30 @@ model User_Chatting_IsDeleted {
 
   @@index([chattingId], map: "UCID_Chatting_FK_idx")
   @@index([userId], map: "UCID_User_FK_idx")
+}
+
+model User_NoticedChatting_IsDeleted {
+  id                Int             @id @default(autoincrement())
+  noticedChattingId String          @db.VarChar(64)
+  userId            String          @db.VarChar(64)
+  isDeleted         Int?            @default(0) @db.TinyInt
+  isFolden          Int?            @default(0) @db.TinyInt
+  NoticedChatting   NoticedChatting @relation(fields: [noticedChattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UNC_NC_FK")
+  Users             Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UNC_User_FK")
+
+  @@index([userId], map: "UNC_User_FK_idx")
+  @@index([noticedChattingId], map: "UNK_Chatting_FK_idx")
+}
+
+model NoticedChatting {
+  id                             String                           @id @db.VarChar(64)
+  userId                         String                           @db.VarChar(64)
+  chattingID                     String                           @db.VarChar(64)
+  createdAt                      DateTime                         @default(now()) @db.DateTime(0)
+  Chattings                      Chattings                        @relation(fields: [chattingID], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "AC_Chatting_FK")
+  Users                          Users                            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "AC_User_FK")
+  User_NoticedChatting_IsDeleted User_NoticedChatting_IsDeleted[]
+
+  @@index([chattingID], map: "AC_Chatting_FK_idx")
+  @@index([userId], map: "AC_User_FK_idx")
 }

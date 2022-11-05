@@ -9,6 +9,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PetModule } from './module/pet/pet.module';
 import { AuthModule } from './module/auth/auth.module';
 import { ChattingModule } from './module/chatting/chatting.module';
+import { NoticedChattingModule } from './module/noticed-chatting/noticed-chatting.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ChattingModule } from './module/chatting/chatting.module';
     AuthModule,
     JwtModule,
     ChattingModule,
+    NoticedChattingModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],

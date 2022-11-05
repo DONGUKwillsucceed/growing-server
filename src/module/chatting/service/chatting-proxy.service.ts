@@ -20,6 +20,9 @@ export class ChattingProxyService {
   }
 
   async removeOneForMine(chattingId: string, userId: string) {
-    return this.deleteChattingService.removeOneForMine(chattingId, userId);
+    return await this.deleteChattingService.removeOneForMine(
+      chattingId,
+      userId,
+    );
   }
 }

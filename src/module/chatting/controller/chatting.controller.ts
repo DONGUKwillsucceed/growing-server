@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ChattingProxyService } from '../service/chatting-proxy.service';
