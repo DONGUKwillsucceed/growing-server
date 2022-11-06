@@ -14,7 +14,7 @@ export class GetArchivedChattingService {
 
   async getMany(coupleId: string) {
     return await this.prismaService.chattingStorage.findMany({
-      where: { coupleId },
+      where: { coupleId, isDeleted: 0 },
       include: {
         Chattings: {
           include: {

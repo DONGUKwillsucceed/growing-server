@@ -18,7 +18,15 @@ export class GetUserService {
   }
 
   mapFromRelation(user: UserCoupleImageUrlInterface) {
-    const { id, nickName, birthDay, coupleId, Couples, imageUrl } = user;
+    const {
+      id,
+      nickName,
+      birthDay,
+      coupleId,
+      Couples,
+      imageUrl,
+      verificationCode,
+    } = user;
     let anniversaryDay: Date | null = null;
     if (coupleId) {
       anniversaryDay = Couples.anniversaryDay;
@@ -30,6 +38,7 @@ export class GetUserService {
       coupleId,
       anniversaryDay,
       imageUrl,
+      code: verificationCode,
     };
     return userDto;
   }

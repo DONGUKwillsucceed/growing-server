@@ -5,4 +5,5 @@ export interface UserDto {
   anniversaryDay: Date;
   imageUrl: string | null;
   coupleId: string | null;
+  code: string;
 }
