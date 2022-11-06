@@ -9,8 +9,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PetModule } from './module/pet/pet.module';
 import { AuthModule } from './module/auth/auth.module';
 import { ChattingModule } from './module/chatting/chatting.module';
-import { NoticedChattingModule } from './module/noticed-chatting/noticed-chatting.module';
-import { ArchivedChattingModule } from './module/archived-chatting/archived-chatting.module';
+import { NoticedChattingModule } from './module/chatting-noticed/noticed-chatting.module';
+import { ArchivedChattingModule } from './module/chatting-archived/archived-chatting.module';
+import { PhotoChattingModule } from './module/chatting-photo/chatting-photo.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ArchivedChattingModule } from './module/archived-chatting/archived-chat
     ChattingModule,
     NoticedChattingModule,
     ArchivedChattingModule,
+    PhotoChattingModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
