@@ -7,6 +7,7 @@ import { ChattingDBService } from './service/chatting-db.service';
 import { ChattingProxyService } from './service/chatting-proxy.service';
 import { ChattingS3Service } from './service/chatting-s3.service';
 import { DeleteChattingService } from './service/delete-chatting.service';
+import { GetChattingPhotoService } from './service/get-chatting-photo.service';
 import { GetChattingService } from './service/get-chatting.service';
 
 @Module({
@@ -19,6 +20,7 @@ import { GetChattingService } from './service/get-chatting.service';
     PrismaService,
     S3Service,
     DeleteChattingService,
+    GetChattingPhotoService,
   ],
 })
 export class ChattingModule {

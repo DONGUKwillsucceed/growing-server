@@ -14,6 +14,13 @@ export class ChattingController {
     return await this.chattingProxyService.findMany(coupleId, userId);
   }
 
+  @Get(':chattingId/photos')
+  @UseGuards(UserAuthGuard)
+  async findManyForPhoto(@Req() req: UserAuthRequest) {
+    const chattingId = req.params.chattingId;
+    return await this.chattingProxyService.findManyForPhoto(chattingId);
+  }
+
   @Delete(':chattingId/delete-ours')
   @UseGuards(UserAuthGuard)
   async deleteOneForOurs(@Req() req: UserAuthRequest) {

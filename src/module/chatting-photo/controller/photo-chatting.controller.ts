@@ -21,9 +21,6 @@ export class PhotoChattingController {
   @Get('')
   async findMany() {}
 
-  @Get(':photoId')
-  async findOne() {}
-
   @Post(':photoId/put-gallery')
   async putGallery(@Req() req: UserAuthRequest) {
     try {

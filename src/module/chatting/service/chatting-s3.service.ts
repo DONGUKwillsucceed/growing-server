@@ -15,4 +15,7 @@ export class ChattingS3Service {
     return imageUrls;
   }
 
+  async getSingedUrl(s3Path: string) {
+    return await this.s3Service.getObjectUrl(new URL(s3Path));
+  }
 }
