@@ -19,7 +19,15 @@ export class PhotoChattingController {
     private readonly photoChattingProxyService: PhotoChattingProxyService,
   ) {}
   @Get('')
-  async findMany() {}
+  async findMany(@Req() req: UserAuthRequest) {
+    try {
+      const coupleId = req.params.coupleId;
+      return await this.photoChattingProxyService.findMany(coupleId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server Error');
+    }
+  }
 
   @Post(':photoId/put-gallery')
   async putGallery(@Req() req: UserAuthRequest) {

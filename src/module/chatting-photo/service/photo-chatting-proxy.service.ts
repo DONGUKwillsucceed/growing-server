@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
 import { CreatePhotoService } from './create-photo.service';
+import { GetPhotoChattingService } from './get-photo-chatting.service';
 import { GetUrlService } from './get-url.service';
 import { PutGalleryService } from './put-gallery.service';
 
@@ -10,7 +11,12 @@ export class PhotoChattingProxyService {
     private readonly putGalleryService: PutGalleryService,
     private readonly getUrlService: GetUrlService,
     private readonly createPhotoService: CreatePhotoService,
+    private readonly getPhotoChattingService: GetPhotoChattingService,
   ) {}
+
+  async findMany(coupleId: string) {
+    return await this.getPhotoChattingService.findMany(coupleId);
+  }
 
   async putGallery(photoId: string) {
     await this.putGalleryService.putGallery(photoId);

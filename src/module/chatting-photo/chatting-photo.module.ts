@@ -4,6 +4,7 @@ import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { PhotoChattingController } from './controller/photo-chatting.controller';
 import { CreatePhotoService } from './service/create-photo.service';
+import { GetPhotoChattingService } from './service/get-photo-chatting.service';
 import { GetUrlService } from './service/get-url.service';
 import { PhotoChattingProxyService } from './service/photo-chatting-proxy.service';
 import { PutGalleryService } from './service/put-gallery.service';
@@ -17,6 +18,7 @@ import { PutGalleryService } from './service/put-gallery.service';
     GetUrlService,
     CreatePhotoService,
     S3Service,
+    GetPhotoChattingService,
   ],
 })
 export class PhotoChattingModule {
