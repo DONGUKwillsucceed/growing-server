@@ -12,6 +12,7 @@ import { ChattingModule } from './module/chatting/chatting.module';
 import { NoticedChattingModule } from './module/chatting-noticed/noticed-chatting.module';
 import { ArchivedChattingModule } from './module/chatting-archived/archived-chatting.module';
 import { PhotoChattingModule } from './module/chatting-photo/chatting-photo.module';
+import { VoiceMessageModule } from './module/voice-message/voice-message.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PhotoChattingModule } from './module/chatting-photo/chatting-photo.modu
     NoticedChattingModule,
     ArchivedChattingModule,
     PhotoChattingModule,
+    VoiceMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
