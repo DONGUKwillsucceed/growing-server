@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { QuestionStorage } from '@prisma/client';
 import { PrismaService } from 'src/service/prisma.service';
 import { QuestionsAndAnswersDto } from '../dto/QuestionAnswer.dto';
+import { Answer } from '../types/Answer.interface';
 import { QuestionAnswerInterface } from '../types/Question.interface';
 
 @Injectable()
@@ -23,30 +25,40 @@ export class GetQuestionService {
 
   mapFromRelation(questions: QuestionAnswerInterface[], userId: string) {
     return questions.map((question) => {
-      const myAnswer = question.other_QuestionStorage.find(
+      const mine = question.other_QuestionStorage.find(
         (question) => question.userId === userId,
       );
-      const partnerAnswer = question.other_QuestionStorage.find(
+      const partners = question.other_QuestionStorage.find(
         (question) => question.userId !== userId,
       );
+      let myAnswer: Answer | null = null;
+      let partnerAnswer: Answer | null = null;
+      if (mine) {
+        myAnswer = this.mapToAnswer(mine);
+      }
+      if (partners) {
+        partnerAnswer = this.mapToAnswer(partners);
+      }
+
       const dto: QuestionsAndAnswersDto = {
         question: {
           id: question.id,
           content: question.content,
           createdAt: question.createdAt,
         },
-        myAnswer: {
-          id: myAnswer.id,
-          content: myAnswer.content,
-          createdAt: myAnswer.createdAt,
-        },
-        partnerAnswer: {
-          id: partnerAnswer.id,
-          content: partnerAnswer.content,
-          createdAt: partnerAnswer.createdAt,
-        },
+        myAnswer,
+        partnerAnswer,
       };
       return dto;
     });
+  }
+
+  mapToAnswer(qs: QuestionStorage) {
+    const answer: Answer = {
+      id: qs.id,
+      content: qs.content,
+      createdAt: qs.createdAt,
+    };
+    return answer;
   }
 }
