@@ -317,3 +317,11 @@ model NoticedChatting {
   @@index([chattingID], map: "AC_Chatting_FK_idx")
   @@index([userId], map: "AC_User_FK_idx")
 }
+
+model Questions_Warehouse {
+  id         Int      @id
+  content    String   @db.VarChar(800)
+  level      Int
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  modifiedAt DateTime @default(now()) @db.DateTime(0)
+}
