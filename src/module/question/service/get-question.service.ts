@@ -16,7 +16,7 @@ export class GetQuestionService {
 
   async getMany(coupleId: string) {
     return await this.prismaService.questionStorage.findMany({
-      where: { coupleId },
+      where: { coupleId, parentId: null },
       include: {
         other_QuestionStorage: true,
       },
