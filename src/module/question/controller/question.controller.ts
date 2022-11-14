@@ -20,9 +20,13 @@ export class QuestionController {
   @Get()
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
+    const toDo = req.query['to-do'] as string;
     const coupleId = req.params.coupleId;
     const userId = req.user.id;
     try {
+      if (toDo === 'true') {
+        return await this.questionProxyService.isRemain(coupleId, userId);
+      }
       return await this.questionProxyService.findMany(coupleId, userId);
     } catch (err) {
       console.log(err);

@@ -14,6 +14,10 @@ export class QuestionProxyService {
     return await this.getQuestionService.findMany(coupleId, userId);
   }
 
+  async isRemain(coupleId: string, userId: string) {
+    return await this.getQuestionService.isRemain(coupleId, userId);
+  }
+
   async answer(
     dto: AnswerDto,
     questionId: string,
