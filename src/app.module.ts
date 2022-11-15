@@ -14,6 +14,7 @@ import { ArchivedChattingModule } from './module/chatting-archived/archived-chat
 import { PhotoChattingModule } from './module/chatting-photo/chatting-photo.module';
 import { VoiceMessageModule } from './module/voice-message/voice-message.module';
 import { QuestionModule } from './module/question/question.module';
+import { GalleryModule } from './module/gallery/gallery.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { QuestionModule } from './module/question/question.module';
     PhotoChattingModule,
     VoiceMessageModule,
     QuestionModule,
+    GalleryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService],
