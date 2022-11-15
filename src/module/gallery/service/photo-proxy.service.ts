@@ -16,6 +16,10 @@ export class PhotoProxyService {
     return await this.getPhotoService.findMany(coupleId);
   }
 
+  async findOne(photoId: string) {
+    return await this.getPhotoService.findOne(photoId);
+  }
+
   async findOneForUploadUrl(coupleId: string, name: string) {
     return await this.getUrlService.getOneForUploadUrl(coupleId, name);
   }

@@ -3,8 +3,13 @@ import { Photos } from '@prisma/client';
 import { map } from 'rxjs';
 import { Where } from 'src/module/chatting-photo/types/Where.enum';
 import { PrismaService } from 'src/service/prisma.service';
+import { PhotoDto } from '../dto/Photo.dto';
 import { PhotoLineDto } from '../dto/PhotoLine.dto';
-import { PhotoImageUrlInterface } from '../types/PhotoInterfaces';
+import {
+  PhotoImageUrlInterface,
+  PhotoUserImageUrlInterface,
+  PhotoUserInterface,
+} from '../types/PhotoInterfaces';
 import { PhotoS3Service } from './photo-s3.service';
 
 @Injectable()
@@ -16,7 +21,13 @@ export class GetPhotoService {
   async findMany(coupleId: string) {
     return await this.getMany(coupleId)
       .then((photos) => this.getManyForImageUrl(photos))
-      .then((photos) => this.mapFromRelation(photos));
+      .then((photos) => this.mapFromRelationForPhotoLine(photos));
+  }
+
+  async findOne(photoId: string) {
+    return await this.getUnique(photoId)
+      .then((photo) => this.getOneForImageUrl2(photo))
+      .then((photo) => this.mapFromRelationForPhoto(photo));
   }
 
   async getMany(coupleId: string) {
@@ -25,6 +36,15 @@ export class GetPhotoService {
         coupleId,
         isDeleted: 0,
         OR: [{ where: Where.Both }, { where: Where.Gallery }],
+      },
+    });
+  }
+
+  async getUnique(photoId: string) {
+    return await this.prismaService.photos.findUnique({
+      where: { id: photoId },
+      include: {
+        Users: true,
       },
     });
   }
@@ -38,7 +58,17 @@ export class GetPhotoService {
     );
   }
 
-  mapFromRelation(photos: PhotoImageUrlInterface[]) {
+  async getOneForImageUrl(photo: Photos) {
+    const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
+    return { imageUrl, ...photo };
+  }
+
+  async getOneForImageUrl2(photo: PhotoUserInterface) {
+    const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
+    return { imageUrl, ...photo };
+  }
+
+  mapFromRelationForPhotoLine(photos: PhotoImageUrlInterface[]) {
     return photos.map((photo) => {
       const dto: PhotoLineDto = {
         i: photo.id,
@@ -47,5 +77,15 @@ export class GetPhotoService {
       };
       return dto;
     });
+  }
+
+  mapFromRelationForPhoto(photo: PhotoUserImageUrlInterface) {
+    const dto: PhotoDto = {
+      id: photo.id,
+      urls: photo.imageUrl,
+      createdAt: photo.createdAt,
+      name: photo.Users.nickName,
+    };
+    return dto;
   }
 }

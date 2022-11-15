@@ -32,7 +32,15 @@ export class GalleryPhotoController {
 
   @Get(':photoId')
   @UseGuards(UserAuthGuard)
-  async findOne(@Req() req: UserAuthRequest) {}
+  async findOne(@Req() req: UserAuthRequest) {
+    try {
+      const photoId = req.params.photoId;
+      return await this.photoProxyService.findOne(photoId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server Error');
+    }
+  }
 
   @Post('get-upload-url')
   @UseGuards(UserAuthGuard)
