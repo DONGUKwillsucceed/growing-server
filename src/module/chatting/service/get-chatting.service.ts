@@ -16,9 +16,14 @@ export class GetChattingService {
     private readonly chattingDBService: ChattingDBService,
     private readonly chattingS3Service: ChattingS3Service,
   ) {}
-  async findManyForChattingDto(coupleId: string, userId: string) {
+  async findManyForChattingDto(
+    coupleId: string,
+    userId: string,
+    base: number,
+    limit: number,
+  ) {
     return await this.chattingDBService
-      .findMany(coupleId, userId)
+      .findMany(coupleId, userId, base, limit)
       .then((chattings) => this.getImageUrl(chattings))
       .then((chattings) => this.getVoiceMsgUrl(chattings))
       .then((chattings) => this.getEmogiUrl(chattings))

@@ -10,10 +10,17 @@ export class ChattingProxyService {
     private readonly deleteChattingService: DeleteChattingService,
     private readonly getChattingPhotoService: GetChattingPhotoService,
   ) {}
-  async findMany(coupleId: string, userId: string) {
+  async findMany(
+    coupleId: string,
+    userId: string,
+    base: number,
+    limit: number,
+  ) {
     return await this.getChattingService.findManyForChattingDto(
       coupleId,
       userId,
+      base,
+      limit,
     );
   }
 

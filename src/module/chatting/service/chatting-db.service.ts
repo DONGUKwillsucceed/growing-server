@@ -21,7 +21,7 @@ export class ChattingDBService {
     },
   };
 
-  async findMany(coupleId: string, userId: string) {
+  async findMany(coupleId: string, userId: string, skip: number, take: number) {
     return await this.prismaService.chattings.findMany({
       where: {
         coupleId,
@@ -32,6 +32,8 @@ export class ChattingDBService {
           },
         },
       },
+      skip,
+      take,
       include: {
         Users: true,
         Couples: true,

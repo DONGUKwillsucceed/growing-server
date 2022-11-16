@@ -11,7 +11,17 @@ export class ChattingController {
   async findMany(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
     const userId = req.user.id;
-    return await this.chattingProxyService.findMany(coupleId, userId);
+    let query1 = req.query.base as string;
+    let query2 = req.query.limit as string;
+    const base = parseInt(query1);
+    const limit = parseInt(query2);
+
+    return await this.chattingProxyService.findMany(
+      coupleId,
+      userId,
+      base,
+      limit,
+    );
   }
 
   @Get(':chattingId/photos')
