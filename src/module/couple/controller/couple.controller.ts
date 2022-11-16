@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -16,6 +17,7 @@ import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreateCoupleAndPetDto } from '../dto/CreateCoupleAndPet.dto';
 import { CoupleProxyService } from '../service/couple-proxy.service';
 
+@ApiTags('couples에 대한 Rest API')
 @Controller('couples')
 export class CoupleController {
   constructor(private readonly coupleProxyService: CoupleProxyService) {}

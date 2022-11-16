@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { PetProxyService } from '../service/pet-proxy.service';
 
+@ApiTags('Pet에 대한 Rest API')
 @Controller('couples/:coupleId/pets')
 @UseGuards(UserAuthGuard)
 export class PetController {

@@ -6,6 +6,7 @@ import {
   InternalServerErrorException,
   BadRequestException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
@@ -13,6 +14,7 @@ import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
 import { UploadUrlRequestDto } from '../dto/UploadUrlRequest.dto';
 import { PhotoChattingProxyService } from '../service/photo-chatting-proxy.service';
 
+@ApiTags('Chatting-Photo에 접근하는 Rest API')
 @Controller('couples/:coupleId/chattings/photos')
 export class PhotoChattingController {
   constructor(

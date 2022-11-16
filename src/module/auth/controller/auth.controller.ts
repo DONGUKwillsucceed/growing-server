@@ -5,6 +5,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response } from 'express';
@@ -12,6 +13,7 @@ import { KakaoCodeDto } from '../dto/KakaoCodeDto';
 import { AuthProxyService } from '../service/auth-proxy.service';
 import { Cookie } from '../types/Cookie';
 
+@ApiTags('Auth에 접근하는 Rest API')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authProxyService: AuthProxyService) {}

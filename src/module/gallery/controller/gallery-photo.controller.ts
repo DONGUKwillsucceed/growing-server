@@ -7,6 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -15,6 +16,7 @@ import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
 import { UploadUrlRequestDto } from '../dto/UploadUrlRequest.dto';
 import { PhotoProxyService } from '../service/photo-proxy.service';
 
+@ApiTags('Gallery에 대한 Rest API')
 @Controller('couples/:coupleId/gallerys/photos')
 export class GalleryPhotoController {
   constructor(private readonly photoProxyService: PhotoProxyService) {}

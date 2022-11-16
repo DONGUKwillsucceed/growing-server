@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -18,6 +19,7 @@ import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { VerifyCodeDto } from '../dto/VerifyCode.dto';
 import { UserProxyService } from '../service/user-proxy.service';
 
+@ApiTags('users에 대한 Rest API')
 @Controller('users')
 export class UserController {
   constructor(private readonly userProxyService: UserProxyService) {}

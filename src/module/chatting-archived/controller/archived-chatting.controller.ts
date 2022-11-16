@@ -1,8 +1,10 @@
 import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ArchivedChattingProxyService } from '../service/archived-chatting-proxy.service';
 
+@ApiTags('Chatting-archived에 접근하는 Rest API')
 @Controller('couples/:coupleId')
 export class ArchivedChattingController {
   constructor(

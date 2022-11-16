@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -12,6 +13,8 @@ import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreateVoiceMesageDto } from '../dto/CreateVoiceMessage.dto';
 import { GetUploadUrlRequestDto } from '../dto/GetUploadUrlRequest.dto';
 import { VoiceMessageProxyService } from '../service/voice-message-proxy.service';
+
+@ApiTags('Voice-messages에 접근하는 Rest API')
 @Controller('couples/:coupleId/chattings/voice-messages')
 export class VoiceMessageController {
   constructor(private readonly voiceMessageProxy: VoiceMessageProxyService) {}
