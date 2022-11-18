@@ -13,15 +13,14 @@ export class S3Service {
     const { SIGNATUREVERSION, REGION, ACCESS_KEY_ID, SECRET_ACCESS_KEY } =
       process.env;
     if (!SIGNATUREVERSION || !REGION || !ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
-      console.log('envError');
-      // throw new NoEnvVarError(
-      //   JSON.stringify({
-      //     SIGNATUREVERSION,
-      //     REGION,
-      //     ACCESS_KEY_ID,
-      //     SECRET_ACCESS_KEY,
-      //   }),
-      // );
+      throw new NoEnvVarError(
+        JSON.stringify({
+          SIGNATUREVERSION,
+          REGION,
+          ACCESS_KEY_ID,
+          SECRET_ACCESS_KEY,
+        }),
+      );
     }
 
     this.s3 = new S3({
