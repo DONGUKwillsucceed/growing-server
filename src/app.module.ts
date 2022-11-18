@@ -15,6 +15,7 @@ import { PhotoChattingModule } from './module/chatting-photo/chatting-photo.modu
 import { VoiceMessageModule } from './module/voice-message/voice-message.module';
 import { QuestionModule } from './module/question/question.module';
 import { GalleryModule } from './module/gallery/gallery.module';
+import { S3Service } from './service/S3.service';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { GalleryModule } from './module/gallery/gallery.module';
     GalleryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, JwtService],
+  providers: [AppService, PrismaService, JwtService, S3Service],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
