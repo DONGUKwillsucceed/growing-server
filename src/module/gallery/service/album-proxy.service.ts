@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { AddPhotoDto } from '../dto/AddPhoto.dto';
 import { CreateAlbumDto } from '../dto/CreateAlbum.dto';
 import { PatchAlbumDto } from '../dto/PatchAlbum.dto';
+import { AddPhotoService } from './add-photo.service';
 import { CreateAlbumService } from './create-album.service';
 import { GetAlbumService } from './get-album.service';
 import { PatchAlbumService } from './patch-album.service';
@@ -10,6 +12,7 @@ export class AlbumeProxyService {
     private readonly getAlbumService: GetAlbumService,
     private readonly createAlbumService: CreateAlbumService,
     private readonly patchAlbumService: PatchAlbumService,
+    private readonly addPhotoService: AddPhotoService,
   ) {}
 
   async findMany(coupleId: string) {
@@ -22,5 +25,9 @@ export class AlbumeProxyService {
 
   async patch(albumId: string, dto: PatchAlbumDto) {
     await this.patchAlbumService.patch(albumId, dto);
+  }
+
+  async addPhoto(albumId: string, dto: AddPhotoDto) {
+    await this.addPhotoService.add(albumId, dto);
   }
 }

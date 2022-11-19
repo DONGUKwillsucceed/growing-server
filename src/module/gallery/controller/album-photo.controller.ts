@@ -38,7 +38,7 @@ export class AlbumPhotoController {
       return await this.albumProxyService.findMany(coupleId);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 
@@ -52,7 +52,7 @@ export class AlbumPhotoController {
       return await this.photoProxyService.findManyWithAlbumId(albumId);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 
@@ -70,7 +70,7 @@ export class AlbumPhotoController {
       await this.albumProxyService.create(coupleId, req.user.id, dto);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 
@@ -80,15 +80,16 @@ export class AlbumPhotoController {
   @UseGuards(UserAuthGuard)
   async createForPhoto(@Req() req: UserAuthRequest) {
     try {
-      const coupleId = req.params.coupleId;
+      const albumId = req.params.albumId;
       const dto = plainToInstance(AddPhotoDto, req.body);
       const errors = await validate(dto);
       if (errors.length > 0) {
         throw new BadRequestException(errors[0].toString());
       }
+      await this.albumProxyService.addPhoto(albumId, dto);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 
@@ -107,7 +108,7 @@ export class AlbumPhotoController {
       await this.albumProxyService.patch(albumId, dto);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 
@@ -120,7 +121,7 @@ export class AlbumPhotoController {
     try {
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Server error');
     }
   }
 }
