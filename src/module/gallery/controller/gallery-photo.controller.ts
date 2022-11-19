@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   Post,
   Req,
+  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -88,6 +89,18 @@ export class GalleryPhotoController {
     try {
       const photoId = req.params.photoId;
       return await this.photoProxyService.findOneForDownloadUrl(photoId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server Error');
+    }
+  }
+
+  @UseGuards(UserAuthGuard)
+  @Delete(':photoId')
+  async remove(@Req() req: UserAuthRequest) {
+    try {
+      const photoId = req.params.photoId;
+      this.photoProxyService.remove(photoId);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Server Error');

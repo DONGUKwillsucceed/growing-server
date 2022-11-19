@@ -4,11 +4,14 @@ import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
+import { AlbumeProxyService } from './service/album-proxy.service';
 import { CreatePhotoService } from './service/create-photo.service';
+import { GetAlbumService } from './service/get-album.service';
 import { GetPhotoService } from './service/get-photo.service';
 import { GetUrlService } from './service/get-url.service';
 import { PhotoProxyService } from './service/photo-proxy.service';
 import { PhotoS3Service } from './service/photo-s3.service';
+import { RemovePhotoService } from './service/remove-photo.service';
 
 @Module({
   controllers: [GalleryPhotoController, AlbumPhotoController],
@@ -20,6 +23,9 @@ import { PhotoS3Service } from './service/photo-s3.service';
     S3Service,
     GetUrlService,
     CreatePhotoService,
+    RemovePhotoService,
+    AlbumeProxyService,
+    GetAlbumService,
   ],
 })
 export class GalleryModule {
