@@ -24,9 +24,16 @@ export class GetPhotoService {
       .then((photos) => this.mapFromRelationForPhotoLine(photos));
   }
 
+  async findManyWithAlbumId(albumId: string) {
+    return await this.getManyWithAlbumId(albumId)
+      .then((photos) => photos.map((photo) => photo.Photos))
+      .then((photos) => this.getManyForImageUrl(photos))
+      .then((photos) => this.mapFromRelationForPhotoLine(photos));
+  }
+
   async findOne(photoId: string) {
     return await this.getUnique(photoId)
-      .then((photo) => this.getOneForImageUrl2(photo))
+      .then((photo) => this.getOneForImageUrl(photo))
       .then((photo) => this.mapFromRelationForPhoto(photo));
   }
 
@@ -37,6 +44,13 @@ export class GetPhotoService {
         isDeleted: 0,
         OR: [{ where: Where.Both }, { where: Where.Gallery }],
       },
+    });
+  }
+
+  async getManyWithAlbumId(albumId: string) {
+    return await this.prismaService.albums_Photos.findMany({
+      where: { albumId },
+      include: { Photos: true },
     });
   }
 
@@ -58,12 +72,7 @@ export class GetPhotoService {
     );
   }
 
-  async getOneForImageUrl(photo: Photos) {
-    const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
-    return { imageUrl, ...photo };
-  }
-
-  async getOneForImageUrl2(photo: PhotoUserInterface) {
+  async getOneForImageUrl(photo: PhotoUserInterface) {
     const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
     return { imageUrl, ...photo };
   }

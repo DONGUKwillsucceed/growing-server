@@ -10,10 +10,14 @@ import {
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { AlbumeProxyService } from '../service/album-proxy.service';
+import { PhotoProxyService } from '../service/photo-proxy.service';
 @Controller('couples/:coupleId/gallerys/albums')
 @ApiTags('Album에 대한 Rest API')
 export class AlbumPhotoController {
-  constructor(private readonly albumProxyService: AlbumeProxyService) {}
+  constructor(
+    private readonly albumProxyService: AlbumeProxyService,
+    private readonly photoProxyService: PhotoProxyService,
+  ) {}
   @Get()
   @ApiParam({ name: 'coupleId', required: true })
   @ApiOperation({
@@ -34,6 +38,8 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'albumId', required: true })
   async findManyForPhoto(@Req() req: UserAuthRequest) {
     try {
+      const albumId = req.params.albumId;
+      return await this.photoProxyService.findManyWithAlbumId(albumId);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException();

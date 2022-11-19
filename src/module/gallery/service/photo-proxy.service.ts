@@ -18,6 +18,10 @@ export class PhotoProxyService {
     return await this.getPhotoService.findMany(coupleId);
   }
 
+  async findManyWithAlbumId(albumId: string) {
+    return await this.getPhotoService.findManyWithAlbumId(albumId);
+  }
+
   async findOne(photoId: string) {
     return await this.getPhotoService.findOne(photoId);
   }
