@@ -10,6 +10,7 @@ import { CreatePhotoService } from './service/create-photo.service';
 import { GetAlbumService } from './service/get-album.service';
 import { GetPhotoService } from './service/get-photo.service';
 import { GetUrlService } from './service/get-url.service';
+import { PatchAlbumService } from './service/patch-album.service';
 import { PhotoProxyService } from './service/photo-proxy.service';
 import { PhotoS3Service } from './service/photo-s3.service';
 import { RemovePhotoService } from './service/remove-photo.service';
@@ -28,6 +29,7 @@ import { RemovePhotoService } from './service/remove-photo.service';
     AlbumeProxyService,
     GetAlbumService,
     CreateAlbumService,
+    PatchAlbumService,
   ],
 })
 export class GalleryModule {

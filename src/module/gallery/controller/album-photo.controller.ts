@@ -14,7 +14,9 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { AddPhotoDto } from '../dto/AddPhoto.dto';
 import { CreateAlbumDto } from '../dto/CreateAlbum.dto';
+import { PatchAlbumDto } from '../dto/PatchAlbum.dto';
 import { AlbumeProxyService } from '../service/album-proxy.service';
 import { PhotoProxyService } from '../service/photo-proxy.service';
 @Controller('couples/:coupleId/gallerys/albums')
@@ -78,6 +80,12 @@ export class AlbumPhotoController {
   @UseGuards(UserAuthGuard)
   async createForPhoto(@Req() req: UserAuthRequest) {
     try {
+      const coupleId = req.params.coupleId;
+      const dto = plainToInstance(AddPhotoDto, req.body);
+      const errors = await validate(dto);
+      if (errors.length > 0) {
+        throw new BadRequestException(errors[0].toString());
+      }
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException();
@@ -88,8 +96,15 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
   @UseGuards(UserAuthGuard)
-  async patchForTitle(@Req() req: UserAuthRequest) {
+  async patch(@Req() req: UserAuthRequest) {
     try {
+      const albumId = req.params.albumId;
+      const dto = plainToInstance(PatchAlbumDto, req.body);
+      const errors = await validate(dto);
+      if (errors.length > 0) {
+        throw new BadRequestException(errors[0].toString());
+      }
+      await this.albumProxyService.patch(albumId, dto);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException();
