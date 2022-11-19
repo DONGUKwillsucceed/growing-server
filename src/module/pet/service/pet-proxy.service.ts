@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FeedPetService } from './feed-pet.service';
 import { GetPetService } from './get-pet.service';
+import { PatchPetService } from './patch-pet.service';
 import { TouchPetService } from './touch-pet.service';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class PetProxyService {
     private readonly getPetService: GetPetService,
     private readonly feedPetService: FeedPetService,
     private readonly touchPetService: TouchPetService,
+    private readonly patchPetService: PatchPetService,
   ) {}
   async findPetDto(petId: string) {
     return await this.getPetService.findPetDto(petId);
@@ -20,5 +22,9 @@ export class PetProxyService {
 
   async touchAndFindReactionDto(petId: string) {
     return await this.touchPetService.actionAndFindReactionDto(petId);
+  }
+
+  async patch(petId: string, name: string) {
+    return await this.patchPetService.patch(petId, name);
   }
 }
