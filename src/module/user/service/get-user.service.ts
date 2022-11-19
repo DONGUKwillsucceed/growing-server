@@ -17,6 +17,15 @@ export class GetUserService {
       .then((user) => this.mapFromRelation(user));
   }
 
+  async verifyPassword(userId: string, password: string) {
+    let result = false;
+    const user = await this.userDBService.getUnique(userId);
+    if (user.password === password) {
+      result = true;
+    }
+    return { result };
+  }
+
   mapFromRelation(user: UserCoupleImageUrlInterface) {
     const {
       id,

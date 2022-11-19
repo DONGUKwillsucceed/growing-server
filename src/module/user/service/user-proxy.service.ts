@@ -34,4 +34,12 @@ export class UserProxyService {
     const user = await this.userCodeService.verify(code);
     return { partnerId: user.id };
   }
+
+  async createPassword(userId: string, password: string) {
+    return this.updateUserService.updatePassword(userId, password);
+  }
+
+  async verifyPassword(userId: string, password: string) {
+    return this.getUserService.verifyPassword(userId, password);
+  }
 }

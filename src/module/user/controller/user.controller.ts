@@ -16,6 +16,7 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { PasswordDto } from '../dto/CreatePassword.dto';
 import { PatchProfileImageDto } from '../dto/PatchProfileImage.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { VerifyCodeDto } from '../dto/VerifyCode.dto';
@@ -76,5 +77,30 @@ export class UserController {
     }
 
     return this.userProxyService.verifyCodeAndGetPartnerId(dto.code);
+  }
+
+  @Post(':userId/passwords/create')
+  @UseGuards(UserAuthGuard)
+  async lock(@Req() req: UserAuthRequest) {
+    const userId = req.user.id;
+    const dto = plainToInstance(PasswordDto, req.body);
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors[0].toString());
+    }
+    await this.userProxyService.createPassword(userId, dto.password);
+  }
+
+  @Post(':userId/passwords/verify')
+  @UseGuards(UserAuthGuard)
+  async verifyPassword(@Req() req: UserAuthRequest) {
+    const userId = req.user.id;
+    const dto = plainToInstance(PasswordDto, req.body);
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors[0].toString());
+    }
+
+    return await this.userProxyService.verifyPassword(userId, dto.password);
   }
 }
