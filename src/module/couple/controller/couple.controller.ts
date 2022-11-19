@@ -4,10 +4,11 @@ import {
   Controller,
   Get,
   NotFoundException,
-  Param,
+  Patch,
   Post,
   Req,
   UseGuards,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
@@ -15,6 +16,7 @@ import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreateCoupleAndPetDto } from '../dto/CreateCoupleAndPet.dto';
+import { PatchCoupleDto } from '../dto/PatchCouple.dto';
 import { CoupleProxyService } from '../service/couple-proxy.service';
 
 @ApiTags('couples에 대한 Rest API')
@@ -44,5 +46,21 @@ export class CoupleController {
     }
 
     return await this.coupleProxyService.initCouple(req.user.id, dto);
+  }
+
+  @Patch(':coupleId')
+  async patch(@Req() req: UserAuthRequest) {
+    try {
+      const coupleId = req.params.coupleId;
+      const dto = plainToInstance(PatchCoupleDto, req.body);
+      const errors = await validate(dto);
+      if (errors.length > 0) {
+        throw new BadRequestException(errors[0].toString());
+      }
+      await this.coupleProxyService.patch(coupleId, dto.anniversaryDay);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server Error');
+    }
   }
 }
