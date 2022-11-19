@@ -117,11 +117,24 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'albumId', required: true })
   @ApiParam({ name: 'photoId', required: true })
   @UseGuards(UserAuthGuard)
-  async remove(@Req() req: UserAuthRequest) {
+  async removePhoto(@Req() req: UserAuthRequest) {
     try {
       const albumId = req.params.albumId;
       const photoId = req.params.photoId;
       await this.albumProxyService.removePhoto(albumId, photoId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
+  }
+
+  @Delete(':albumId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'albumId', required: true })
+  async remove(@Req() req: UserAuthRequest) {
+    try {
+      const albumId = req.params.albumId;
+      await this.albumProxyService.remove(albumId);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Server error');

@@ -14,6 +14,7 @@ import { GetUrlService } from './service/get-url.service';
 import { PatchAlbumService } from './service/patch-album.service';
 import { PhotoProxyService } from './service/photo-proxy.service';
 import { PhotoS3Service } from './service/photo-s3.service';
+import { RemoveAlbumService } from './service/remove-album.service';
 import { RemovePhotoService } from './service/remove-photo.service';
 
 @Module({
@@ -32,6 +33,7 @@ import { RemovePhotoService } from './service/remove-photo.service';
     CreateAlbumService,
     PatchAlbumService,
     AddPhotoService,
+    RemoveAlbumService,
   ],
 })
 export class GalleryModule {
