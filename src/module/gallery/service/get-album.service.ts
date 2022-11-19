@@ -22,7 +22,7 @@ export class GetAlbumService {
 
   async getMany(coupleId: string) {
     return await this.prismaService.albums.findMany({
-      where: { coupleId },
+      where: { coupleId, isDeleted: 0 },
       include: {
         Albums_Photos: {
           include: {

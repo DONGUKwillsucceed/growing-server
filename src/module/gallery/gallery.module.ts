@@ -9,6 +9,7 @@ import { AddPhotoService } from './service/add-photo.service';
 import { AlbumeProxyService } from './service/album-proxy.service';
 import { CommentProxyService } from './service/comment-proxy.service';
 import { CreateAlbumService } from './service/create-album.service';
+import { CreateCommentService } from './service/create-comment.service';
 import { CreatePhotoService } from './service/create-photo.service';
 import { GetAlbumService } from './service/get-album.service';
 import { GetCommentService } from './service/get-comment.service';
@@ -18,6 +19,7 @@ import { PatchAlbumService } from './service/patch-album.service';
 import { PhotoProxyService } from './service/photo-proxy.service';
 import { PhotoS3Service } from './service/photo-s3.service';
 import { RemoveAlbumService } from './service/remove-album.service';
+import { RemoveCommentService } from './service/remove-comment.service';
 import { RemovePhotoService } from './service/remove-photo.service';
 
 @Module({
@@ -43,6 +45,8 @@ import { RemovePhotoService } from './service/remove-photo.service';
     RemoveAlbumService,
     CommentProxyService,
     GetCommentService,
+    CreateCommentService,
+    RemoveCommentService,
   ],
 })
 export class GalleryModule {

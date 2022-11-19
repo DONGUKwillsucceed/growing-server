@@ -14,7 +14,7 @@ export class GetCommentService {
 
   async getMany(photoId: string) {
     return await this.prismaService.photoComments.findMany({
-      where: { photoId },
+      where: { photoId, isDeleted: 0 },
       include: {
         Users: true,
       },
