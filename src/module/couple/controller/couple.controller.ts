@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Req,
+  Delete,
   UseGuards,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -58,6 +59,18 @@ export class CoupleController {
         throw new BadRequestException(errors[0].toString());
       }
       await this.coupleProxyService.patch(coupleId, dto.anniversaryDay);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server Error');
+    }
+  }
+
+  @Delete(':coupleId')
+  @UseGuards(UserAuthGuard)
+  async remove(@Req() req: UserAuthRequest) {
+    try {
+      const coupleId = req.params.coupleId;
+      await this.coupleProxyService.remove(coupleId);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Server Error');

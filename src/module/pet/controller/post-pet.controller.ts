@@ -27,7 +27,6 @@ export class PostPetController {
   @Get(':petId')
   async findOne(@Req() req: UserAuthRequest) {
     try {
-      const coupleId = req.params.coupleId;
       const petId = req.params.petId;
       return await this.postPetService.findOne(petId);
     } catch (err) {

@@ -9,6 +9,7 @@ import { InitCoupleService } from './service/init-couple.service';
 import { PatchCoupleService } from './service/patch-couple.service';
 import { PetCareDBService } from './service/pet-care-db.service';
 import { PetDBService } from './service/pet-db.service';
+import { RemoveCoupleService } from './service/remove-couple.service';
 import { UserDBService } from './service/user-db.service';
 
 @Module({
@@ -23,6 +24,7 @@ import { UserDBService } from './service/user-db.service';
     GetCoupleService,
     UserDBService,
     PatchCoupleService,
+    RemoveCoupleService,
   ],
 })
 export class CoupleModule {
