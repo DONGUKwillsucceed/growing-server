@@ -1,5 +1,5 @@
 export enum Where {
   Chatting = 'chatting',
-  Gallery = 'Gallery',
+  Gallery = 'gallery',
   Both = 'both',
 }

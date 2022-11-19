@@ -5,6 +5,7 @@ import { S3Service } from 'src/service/S3.service';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
 import { AlbumeProxyService } from './service/album-proxy.service';
+import { CreateAlbumService } from './service/create-album.service';
 import { CreatePhotoService } from './service/create-photo.service';
 import { GetAlbumService } from './service/get-album.service';
 import { GetPhotoService } from './service/get-photo.service';
@@ -26,6 +27,7 @@ import { RemovePhotoService } from './service/remove-photo.service';
     RemovePhotoService,
     AlbumeProxyService,
     GetAlbumService,
+    CreateAlbumService,
   ],
 })
 export class GalleryModule {
