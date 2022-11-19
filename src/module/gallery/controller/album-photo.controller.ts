@@ -119,6 +119,9 @@ export class AlbumPhotoController {
   @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {
     try {
+      const albumId = req.params.albumId;
+      const photoId = req.params.photoId;
+      await this.albumProxyService.removePhoto(albumId, photoId);
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Server error');

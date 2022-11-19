@@ -12,4 +12,13 @@ export class RemovePhotoService {
       },
     });
   }
+
+  async removeFromAlbum(albumId: string, photoId: string) {
+    await this.prismaService.albums_Photos.deleteMany({
+      where: {
+        albumId,
+        photoId,
+      },
+    });
+  }
 }

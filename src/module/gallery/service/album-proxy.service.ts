@@ -6,6 +6,7 @@ import { AddPhotoService } from './add-photo.service';
 import { CreateAlbumService } from './create-album.service';
 import { GetAlbumService } from './get-album.service';
 import { PatchAlbumService } from './patch-album.service';
+import { RemovePhotoService } from './remove-photo.service';
 @Injectable()
 export class AlbumeProxyService {
   constructor(
@@ -13,6 +14,7 @@ export class AlbumeProxyService {
     private readonly createAlbumService: CreateAlbumService,
     private readonly patchAlbumService: PatchAlbumService,
     private readonly addPhotoService: AddPhotoService,
+    private readonly removePhotoService: RemovePhotoService,
   ) {}
 
   async findMany(coupleId: string) {
@@ -29,5 +31,9 @@ export class AlbumeProxyService {
 
   async addPhoto(albumId: string, dto: AddPhotoDto) {
     await this.addPhotoService.add(albumId, dto);
+  }
+
+  async removePhoto(albumId: string, photoId: string) {
+    await this.removePhotoService.removeFromAlbum(albumId, photoId);
   }
 }
