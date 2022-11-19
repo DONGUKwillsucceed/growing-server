@@ -4,11 +4,14 @@ import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
+import { PhotoCommentController } from './controller/photo-comment.controller';
 import { AddPhotoService } from './service/add-photo.service';
 import { AlbumeProxyService } from './service/album-proxy.service';
+import { CommentProxyService } from './service/comment-proxy.service';
 import { CreateAlbumService } from './service/create-album.service';
 import { CreatePhotoService } from './service/create-photo.service';
 import { GetAlbumService } from './service/get-album.service';
+import { GetCommentService } from './service/get-comment.service';
 import { GetPhotoService } from './service/get-photo.service';
 import { GetUrlService } from './service/get-url.service';
 import { PatchAlbumService } from './service/patch-album.service';
@@ -18,7 +21,11 @@ import { RemoveAlbumService } from './service/remove-album.service';
 import { RemovePhotoService } from './service/remove-photo.service';
 
 @Module({
-  controllers: [GalleryPhotoController, AlbumPhotoController],
+  controllers: [
+    GalleryPhotoController,
+    AlbumPhotoController,
+    PhotoCommentController,
+  ],
   providers: [
     PhotoProxyService,
     GetPhotoService,
@@ -34,12 +41,18 @@ import { RemovePhotoService } from './service/remove-photo.service';
     PatchAlbumService,
     AddPhotoService,
     RemoveAlbumService,
+    CommentProxyService,
+    GetCommentService,
   ],
 })
 export class GalleryModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserAuthMiddleware)
-      .forRoutes(GalleryPhotoController, AlbumPhotoController);
+      .forRoutes(
+        GalleryPhotoController,
+        AlbumPhotoController,
+        PhotoCommentController,
+      );
   }
 }
