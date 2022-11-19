@@ -26,6 +26,10 @@ export class UserProxyService {
     return this.updateUserService.update(userId, dto);
   }
 
+  async updateProfileImage(userId: string, imageId: string) {
+    return this.updateUserService.updateProfile(userId, imageId);
+  }
+
   async verifyCodeAndGetPartnerId(code: string) {
     const user = await this.userCodeService.verify(code);
     return { partnerId: user.id };

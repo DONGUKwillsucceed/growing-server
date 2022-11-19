@@ -9,12 +9,14 @@ import {
   Post,
   Req,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { PatchProfileImageDto } from '../dto/PatchProfileImage.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { VerifyCodeDto } from '../dto/VerifyCode.dto';
 import { UserProxyService } from '../service/user-proxy.service';
@@ -51,6 +53,18 @@ export class UserController {
     }
 
     await this.userProxyService.update(userId, dto);
+  }
+
+  @Put(':userId/profile-photos')
+  @UseGuards(UserAuthGuard)
+  async putProfileImage(@Req() req: UserAuthRequest) {
+    const userId = req.user.id;
+    const dto = plainToInstance(PatchProfileImageDto, req.body);
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors[0].toString());
+    }
+    await this.userProxyService.updateProfileImage(userId, dto.imageId);
   }
 
   @Post('codes/verify')
