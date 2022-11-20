@@ -8,7 +8,7 @@ import {
   InternalServerErrorException,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -22,21 +22,34 @@ import { PetProxyService } from '../service/pet-proxy.service';
 export class PetController {
   constructor(private readonly petProxyService: PetProxyService) {}
   @Get(':petId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'petId', required: true })
+  @ApiBearerAuth('jwt-token')
   async findUnique(@Req() req: UserAuthRequest) {
     return await this.petProxyService.findPetDto(req.params.petId);
   }
 
   @Post(':petId/feed')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'petId', required: true })
+  @ApiBearerAuth('jwt-token')
   async feed(@Req() req: UserAuthRequest) {
     return await this.petProxyService.feedAndFindReactionDto(req.params.petId);
   }
 
   @Post(':petId/touch')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'petId', required: true })
+  @ApiBearerAuth('jwt-token')
   async touch(@Req() req: UserAuthRequest) {
     return await this.petProxyService.touchAndFindReactionDto(req.params.petId);
   }
 
   @Patch(':petId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'petId', required: true })
+  @ApiBody({ type: PatchPetDto })
+  @ApiBearerAuth('jwt-token')
   async patch(@Req() req: UserAuthRequest) {
     try {
       const petId = req.params.petId;

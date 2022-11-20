@@ -5,10 +5,12 @@ import {
   Req,
   InternalServerErrorException,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
 import { UploadUrlRequestDto } from '../dto/UploadUrlRequest.dto';
@@ -21,6 +23,9 @@ export class PhotoChattingController {
     private readonly photoChattingProxyService: PhotoChattingProxyService,
   ) {}
   @Get('')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
     try {
       const coupleId = req.params.coupleId;
@@ -32,6 +37,10 @@ export class PhotoChattingController {
   }
 
   @Post(':photoId/put-gallery')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'photoId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async putGallery(@Req() req: UserAuthRequest) {
     try {
       const photoId = req.params.photoId;
@@ -43,6 +52,10 @@ export class PhotoChattingController {
   }
 
   @Post(':photoId/get-download-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'photoId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async findDownloadUrl(@Req() req: UserAuthRequest) {
     try {
       const photoId = req.params.photoId;
@@ -56,6 +69,10 @@ export class PhotoChattingController {
   }
 
   @Post('get-upload-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: UploadUrlRequestDto })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async findUploadUrl(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
     const dto = plainToInstance(UploadUrlRequestDto, req.body);
@@ -75,6 +92,10 @@ export class PhotoChattingController {
   }
 
   @Post('create')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: CreatePhotoRequestDto })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async create(@Req() req: UserAuthRequest) {
     const dto = plainToInstance(CreatePhotoRequestDto, req.body);
     const errors = await validate(dto);

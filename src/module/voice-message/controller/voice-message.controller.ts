@@ -5,7 +5,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -21,6 +21,9 @@ export class VoiceMessageController {
 
   @UseGuards(UserAuthGuard)
   @Post('get-upload-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @ApiBody({ type: GetUploadUrlRequestDto })
   async findOneForUploadUrl(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
     const dto = plainToInstance(GetUploadUrlRequestDto, req.body);
@@ -33,6 +36,9 @@ export class VoiceMessageController {
 
   @UseGuards(UserAuthGuard)
   @Post('create')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @ApiBody({ type: CreateVoiceMesageDto })
   async create(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
     const userId = req.user.id;
@@ -47,6 +53,9 @@ export class VoiceMessageController {
 
   @UseGuards(UserAuthGuard)
   @Post('get-download-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'voiceId', required: true })
+  @ApiBearerAuth('jwt-token')
   async findOneForDownloadUrl(@Req() req: UserAuthRequest) {
     const voiceId = req.params.voiceId;
     return await this.voiceMessageProxy.findOneForDownloadUrl(voiceId);

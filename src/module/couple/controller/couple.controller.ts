@@ -11,7 +11,7 @@ import {
   UseGuards,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -26,6 +26,8 @@ export class CoupleController {
   constructor(private readonly coupleProxyService: CoupleProxyService) {}
 
   @Get(':coupleId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findUnique(@Req() req: UserAuthRequest) {
     const couple = await this.coupleProxyService.findUnique(
@@ -39,6 +41,8 @@ export class CoupleController {
   }
 
   @Post('create')
+  @ApiBody({ type: CreateCoupleAndPetDto })
+  @ApiBearerAuth('jwt-token')
   async create(@Req() req: UserAuthRequest) {
     const dto = plainToInstance(CreateCoupleAndPetDto, req.body);
     const errors = await validate(dto);
@@ -50,6 +54,9 @@ export class CoupleController {
   }
 
   @Patch(':coupleId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: PatchCoupleDto })
+  @ApiBearerAuth('jwt-token')
   async patch(@Req() req: UserAuthRequest) {
     try {
       const coupleId = req.params.coupleId;
@@ -66,6 +73,8 @@ export class CoupleController {
   }
 
   @Delete(':coupleId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {
     try {

@@ -9,7 +9,13 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -29,6 +35,7 @@ export class AlbumPhotoController {
   @Get()
   @UseGuards(UserAuthGuard)
   @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @ApiOperation({
     description: 'album에 photo가 하나도 없을 시 imageUrl은 빈문자열 임',
   })
@@ -45,6 +52,7 @@ export class AlbumPhotoController {
   @Get(':albumId/photos')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findManyForPhoto(@Req() req: UserAuthRequest) {
     try {
@@ -59,6 +67,8 @@ export class AlbumPhotoController {
   @Post('create')
   @UseGuards(UserAuthGuard)
   @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: CreateAlbumDto })
+  @ApiBearerAuth('jwt-token')
   async create(@Req() req: UserAuthRequest) {
     try {
       const coupleId = req.params.coupleId;
@@ -77,6 +87,8 @@ export class AlbumPhotoController {
   @Post(':albumId/photos/create')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
+  @ApiBody({ type: AddPhotoDto })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async createForPhoto(@Req() req: UserAuthRequest) {
     try {
@@ -96,6 +108,8 @@ export class AlbumPhotoController {
   @Patch(':albumId/change-title')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
+  @ApiBody({ type: PatchAlbumDto })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async patch(@Req() req: UserAuthRequest) {
     try {
@@ -116,6 +130,7 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
   @ApiParam({ name: 'photoId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async removePhoto(@Req() req: UserAuthRequest) {
     try {
@@ -131,6 +146,8 @@ export class AlbumPhotoController {
   @Delete(':albumId')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
+  @ApiBearerAuth('jwt-token')
+  @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {
     try {
       const albumId = req.params.albumId;

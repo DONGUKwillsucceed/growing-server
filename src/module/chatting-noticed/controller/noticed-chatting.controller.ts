@@ -1,5 +1,5 @@
 import { Controller, Post, UseGuards, Req, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { NoticedChattingProxyService } from '../service/noticed-chatting-proxy.service';
@@ -12,6 +12,9 @@ export class NoticedChattingController {
   ) {}
 
   @Post(':chattingId/notify')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async notify(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
@@ -21,6 +24,8 @@ export class NoticedChattingController {
   }
 
   @Get('notices')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findOne(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
@@ -28,6 +33,9 @@ export class NoticedChattingController {
   }
 
   @Post('notices/:noticeId/fold')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'noticeId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async fold(@Req() req: UserAuthRequest) {
     const noticeId = req.params.noticeId;
@@ -39,6 +47,9 @@ export class NoticedChattingController {
   }
 
   @Post('notices/:noticeId/invisible')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'noticeId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async delete(@Req() req: UserAuthRequest) {
     const noticeId = req.params.noticeId;

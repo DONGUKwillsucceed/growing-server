@@ -11,7 +11,7 @@ import {
   UseGuards,
   Put,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -29,6 +29,7 @@ export class UserController {
 
   @Get(':userId')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
   async findOne(@Param('userId') userId: string) {
     const user = await this.userProxyService.findUnique(userId);
     if (!user) {
@@ -40,12 +41,15 @@ export class UserController {
 
   @Get(':userId/is-couple')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
   async isCouple(@Param('userId') userId: string) {
     return await this.userProxyService.isCouple(userId);
   }
 
   @Patch(':userId/update')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  @ApiBody({ type: UpdateUserDto })
   async patch(@Param('userId') userId: string, @Body() body: any) {
     const dto = plainToInstance(UpdateUserDto, body);
     const errors = await validate(dto);
@@ -58,6 +62,9 @@ export class UserController {
 
   @Put(':userId/profile-photos')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  @ApiParam({ name: 'userId', required: true })
+  @ApiBody({ type: PatchProfileImageDto })
   async putProfileImage(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
     const dto = plainToInstance(PatchProfileImageDto, req.body);
@@ -69,6 +76,7 @@ export class UserController {
   }
 
   @Post('codes/verify')
+  @ApiBody({ type: VerifyCodeDto })
   async verify(@Req() req: UserAuthRequest) {
     const dto = plainToInstance(VerifyCodeDto, req.body);
     const errors = await validate(dto);
@@ -81,6 +89,9 @@ export class UserController {
 
   @Post(':userId/passwords/create')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  @ApiParam({ name: 'userId', required: true })
+  @ApiBody({ type: PasswordDto })
   async lock(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
     const dto = plainToInstance(PasswordDto, req.body);
@@ -93,6 +104,9 @@ export class UserController {
 
   @Post(':userId/passwords/verify')
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  @ApiParam({ name: 'userId', required: true })
+  @ApiBody({ type: PasswordDto })
   async verifyPassword(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
     const dto = plainToInstance(PasswordDto, req.body);

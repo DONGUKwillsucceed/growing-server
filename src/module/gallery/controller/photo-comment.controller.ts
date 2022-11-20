@@ -8,7 +8,7 @@ import {
   InternalServerErrorException,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -37,6 +37,7 @@ export class PhotoCommentController {
   @Post('create')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'photoId', required: true })
+  @ApiBody({ type: CreateCommentDto })
   @UseGuards(UserAuthGuard)
   async create(@Req() req: UserAuthRequest) {
     try {

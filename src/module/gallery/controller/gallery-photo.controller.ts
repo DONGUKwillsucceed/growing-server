@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -22,6 +22,8 @@ import { PhotoProxyService } from '../service/photo-proxy.service';
 export class GalleryPhotoController {
   constructor(private readonly photoProxyService: PhotoProxyService) {}
   @Get()
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
     try {
@@ -34,6 +36,9 @@ export class GalleryPhotoController {
   }
 
   @Get(':photoId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'photoId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findOne(@Req() req: UserAuthRequest) {
     try {
@@ -46,6 +51,9 @@ export class GalleryPhotoController {
   }
 
   @Post('get-upload-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: UploadUrlRequestDto })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findOneForUploadUrl(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
@@ -67,6 +75,9 @@ export class GalleryPhotoController {
 
   @UseGuards(UserAuthGuard)
   @Post('create')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBody({ type: CreatePhotoRequestDto })
+  @ApiBearerAuth('jwt-token')
   async create(@Req() req: UserAuthRequest) {
     const dto = plainToInstance(CreatePhotoRequestDto, req.body);
     const errors = await validate(dto);
@@ -85,6 +96,9 @@ export class GalleryPhotoController {
 
   @UseGuards(UserAuthGuard)
   @Post(':photoId/get-download-url')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'photoId', required: true })
+  @ApiBearerAuth('jwt-token')
   async findOneForDownloadUrl(@Req() req: UserAuthRequest) {
     try {
       const photoId = req.params.photoId;
@@ -97,6 +111,8 @@ export class GalleryPhotoController {
 
   @UseGuards(UserAuthGuard)
   @Delete(':photoId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   async remove(@Req() req: UserAuthRequest) {
     try {
       const photoId = req.params.photoId;

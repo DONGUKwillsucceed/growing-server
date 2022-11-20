@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ArchivedChattingProxyService } from '../service/archived-chatting-proxy.service';
@@ -11,6 +11,9 @@ export class ArchivedChattingController {
     private readonly archivedChattingProxyService: ArchivedChattingProxyService,
   ) {}
   @Post('chattings/:chattingId/archive')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async archive(@Req() req: UserAuthRequest) {
     const chattingId = req.params.chattingId;
@@ -24,6 +27,8 @@ export class ArchivedChattingController {
   }
 
   @Get('archived-chattings')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
@@ -31,6 +36,9 @@ export class ArchivedChattingController {
   }
 
   @Delete('archived-chattings/:chattingId')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {
     const storedChattingId = req.params.chattingId;

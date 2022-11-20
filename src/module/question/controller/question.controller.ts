@@ -7,7 +7,13 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
@@ -20,6 +26,9 @@ import { QuestionProxyService } from '../service/question-proxy.service';
 export class QuestionController {
   constructor(private readonly questionProxyService: QuestionProxyService) {}
   @Get()
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiQuery({ name: 'to-do', required: false })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
     const toDo = req.query['to-do'] as string;
@@ -37,6 +46,10 @@ export class QuestionController {
   }
 
   @Post(':questionId/answer')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'questionId', required: true })
+  @ApiBody({ type: AnswerDto })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async answer(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;

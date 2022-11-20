@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ChattingProxyService } from '../service/chatting-proxy.service';
@@ -9,6 +9,10 @@ import { ChattingProxyService } from '../service/chatting-proxy.service';
 export class ChattingController {
   constructor(private readonly chattingProxyService: ChattingProxyService) {}
   @Get('')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiQuery({ name: 'base', required: true })
+  @ApiQuery({ name: 'offset', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
@@ -27,6 +31,9 @@ export class ChattingController {
   }
 
   @Get(':chattingId/photos')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findManyForPhoto(@Req() req: UserAuthRequest) {
     const chattingId = req.params.chattingId;
@@ -34,6 +41,9 @@ export class ChattingController {
   }
 
   @Delete(':chattingId/delete-ours')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async deleteOneForOurs(@Req() req: UserAuthRequest) {
     const chattingId = req.params.chattingId;
@@ -41,6 +51,9 @@ export class ChattingController {
   }
 
   @Delete(':chattingId/delete-mine')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'chattingId', required: true })
+  @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async deleteOneForMine(@Req() req: UserAuthRequest) {
     const chattingId = req.params.chattingId;
