@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
@@ -17,17 +25,25 @@ export class ChattingController {
   async findMany(@Req() req: UserAuthRequest) {
     const coupleId = req.params.coupleId;
     const userId = req.user.id;
-    let query1 = req.query.base as string;
-    let query2 = req.query.limit as string;
-    const base = parseInt(query1);
-    const limit = parseInt(query2);
-
-    return await this.chattingProxyService.findMany(
-      coupleId,
-      userId,
-      base,
-      limit,
-    );
+    const query1 = req.query.base as string;
+    const query2 = req.query.limit as string;
+    let base = parseInt(query1);
+    let limit = parseInt(query2);
+    if (isNaN(base) || isNaN(limit)) {
+      base = 0;
+      limit = 25;
+    }
+    try {
+      return await this.chattingProxyService.findMany(
+        coupleId,
+        userId,
+        base,
+        limit,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 
   @Get(':chattingId/photos')
@@ -36,8 +52,13 @@ export class ChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findManyForPhoto(@Req() req: UserAuthRequest) {
-    const chattingId = req.params.chattingId;
-    return await this.chattingProxyService.findManyForPhoto(chattingId);
+    try {
+      const chattingId = req.params.chattingId;
+      return await this.chattingProxyService.findManyForPhoto(chattingId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 
   @Delete(':chattingId/delete-ours')
@@ -46,8 +67,13 @@ export class ChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async deleteOneForOurs(@Req() req: UserAuthRequest) {
-    const chattingId = req.params.chattingId;
-    return await this.chattingProxyService.removeOneForOurs(chattingId);
+    try {
+      const chattingId = req.params.chattingId;
+      return await this.chattingProxyService.removeOneForOurs(chattingId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 
   @Delete(':chattingId/delete-mine')
@@ -56,8 +82,16 @@ export class ChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async deleteOneForMine(@Req() req: UserAuthRequest) {
-    const chattingId = req.params.chattingId;
-    const userId = req.user.id;
-    return await this.chattingProxyService.removeOneForMine(chattingId, userId);
+    try {
+      const chattingId = req.params.chattingId;
+      const userId = req.user.id;
+      return await this.chattingProxyService.removeOneForMine(
+        chattingId,
+        userId,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 }

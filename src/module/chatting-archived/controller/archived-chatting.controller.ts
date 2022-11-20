@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
@@ -16,14 +24,19 @@ export class ArchivedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async archive(@Req() req: UserAuthRequest) {
-    const chattingId = req.params.chattingId;
-    const coupleId = req.params.coupleId;
-    const userId = req.user.id;
-    await this.archivedChattingProxyService.archive(
-      coupleId,
-      userId,
-      chattingId,
-    );
+    try {
+      const chattingId = req.params.chattingId;
+      const coupleId = req.params.coupleId;
+      const userId = req.user.id;
+      await this.archivedChattingProxyService.archive(
+        coupleId,
+        userId,
+        chattingId,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Get('archived-chattings')
@@ -31,8 +44,13 @@ export class ArchivedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Req() req: UserAuthRequest) {
-    const coupleId = req.params.coupleId;
-    return await this.archivedChattingProxyService.findMany(coupleId);
+    try {
+      const coupleId = req.params.coupleId;
+      return await this.archivedChattingProxyService.findMany(coupleId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Delete('archived-chattings/:chattingId')
@@ -41,7 +59,12 @@ export class ArchivedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async remove(@Req() req: UserAuthRequest) {
-    const storedChattingId = req.params.chattingId;
-    await this.archivedChattingProxyService.unstore(storedChattingId);
+    try {
+      const storedChattingId = req.params.chattingId;
+      await this.archivedChattingProxyService.unstore(storedChattingId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 }

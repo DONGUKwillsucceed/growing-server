@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Post,
   UseGuards,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
@@ -31,7 +32,12 @@ export class VoiceMessageController {
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
     }
-    return await this.voiceMessageProxy.findOneForUploadUrl(coupleId, dto);
+    try {
+      return await this.voiceMessageProxy.findOneForUploadUrl(coupleId, dto);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 
   @UseGuards(UserAuthGuard)
@@ -48,7 +54,12 @@ export class VoiceMessageController {
       throw new BadRequestException(errors[0].toString());
     }
 
-    await this.voiceMessageProxy.create(coupleId, userId, dto);
+    try {
+      await this.voiceMessageProxy.create(coupleId, userId, dto);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 
   @UseGuards(UserAuthGuard)
@@ -57,7 +68,12 @@ export class VoiceMessageController {
   @ApiParam({ name: 'voiceId', required: true })
   @ApiBearerAuth('jwt-token')
   async findOneForDownloadUrl(@Req() req: UserAuthRequest) {
-    const voiceId = req.params.voiceId;
-    return await this.voiceMessageProxy.findOneForDownloadUrl(voiceId);
+    try {
+      const voiceId = req.params.voiceId;
+      return await this.voiceMessageProxy.findOneForDownloadUrl(voiceId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server err');
+    }
   }
 }

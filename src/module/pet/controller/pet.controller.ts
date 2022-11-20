@@ -26,7 +26,12 @@ export class PetController {
   @ApiParam({ name: 'petId', required: true })
   @ApiBearerAuth('jwt-token')
   async findUnique(@Req() req: UserAuthRequest) {
-    return await this.petProxyService.findPetDto(req.params.petId);
+    try {
+      return await this.petProxyService.findPetDto(req.params.petId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post(':petId/feed')
@@ -42,7 +47,14 @@ export class PetController {
   @ApiParam({ name: 'petId', required: true })
   @ApiBearerAuth('jwt-token')
   async touch(@Req() req: UserAuthRequest) {
-    return await this.petProxyService.touchAndFindReactionDto(req.params.petId);
+    try {
+      return await this.petProxyService.touchAndFindReactionDto(
+        req.params.petId,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Patch(':petId')

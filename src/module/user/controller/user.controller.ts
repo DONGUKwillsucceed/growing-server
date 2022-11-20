@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
   Put,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
@@ -43,7 +44,12 @@ export class UserController {
   @UseGuards(UserAuthGuard)
   @ApiBearerAuth('jwt-token')
   async isCouple(@Param('userId') userId: string) {
-    return await this.userProxyService.isCouple(userId);
+    try {
+      return await this.userProxyService.isCouple(userId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Patch(':userId/update')
@@ -57,7 +63,12 @@ export class UserController {
       throw new BadRequestException(errors[0].toString());
     }
 
-    await this.userProxyService.update(userId, dto);
+    try {
+      await this.userProxyService.update(userId, dto);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Put(':userId/profile-photos')
@@ -72,7 +83,13 @@ export class UserController {
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
     }
-    await this.userProxyService.updateProfileImage(userId, dto.imageId);
+
+    try {
+      await this.userProxyService.updateProfileImage(userId, dto.imageId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post('codes/verify')
@@ -84,7 +101,12 @@ export class UserController {
       throw new BadRequestException(errors[0].toString());
     }
 
-    return this.userProxyService.verifyCodeAndGetPartnerId(dto.code);
+    try {
+      return this.userProxyService.verifyCodeAndGetPartnerId(dto.code);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post(':userId/passwords/create')
@@ -99,7 +121,13 @@ export class UserController {
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
     }
-    await this.userProxyService.createPassword(userId, dto.password);
+
+    try {
+      await this.userProxyService.createPassword(userId, dto.password);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post(':userId/passwords/verify')
@@ -114,7 +142,11 @@ export class UserController {
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
     }
-
-    return await this.userProxyService.verifyPassword(userId, dto.password);
+    try {
+      return await this.userProxyService.verifyPassword(userId, dto.password);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 }

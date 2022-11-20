@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Req, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Req,
+  Get,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
@@ -17,10 +24,19 @@ export class NoticedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async notify(@Req() req: UserAuthRequest) {
-    const coupleId = req.params.coupleId;
-    const chattingId = req.params.chattingId;
-    const userId = req.user.id;
-    await this.noticedChattingProxyService.notify(coupleId, chattingId, userId);
+    try {
+      const coupleId = req.params.coupleId;
+      const chattingId = req.params.chattingId;
+      const userId = req.user.id;
+      await this.noticedChattingProxyService.notify(
+        coupleId,
+        chattingId,
+        userId,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Get('notices')
@@ -28,8 +44,13 @@ export class NoticedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findOne(@Req() req: UserAuthRequest) {
-    const userId = req.user.id;
-    return await this.noticedChattingProxyService.findOne(userId);
+    try {
+      const userId = req.user.id;
+      return await this.noticedChattingProxyService.findOne(userId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post('notices/:noticeId/fold')
@@ -38,12 +59,17 @@ export class NoticedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async fold(@Req() req: UserAuthRequest) {
-    const noticeId = req.params.noticeId;
-    const userId = req.user.id;
-    return await this.noticedChattingProxyService.foldOrUnFold(
-      userId,
-      noticeId,
-    );
+    try {
+      const noticeId = req.params.noticeId;
+      const userId = req.user.id;
+      return await this.noticedChattingProxyService.foldOrUnFold(
+        userId,
+        noticeId,
+      );
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Post('notices/:noticeId/invisible')
@@ -52,8 +78,13 @@ export class NoticedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async delete(@Req() req: UserAuthRequest) {
-    const noticeId = req.params.noticeId;
-    const userId = req.user.id;
-    await this.noticedChattingProxyService.delete(userId, noticeId);
+    try {
+      const noticeId = req.params.noticeId;
+      const userId = req.user.id;
+      await this.noticedChattingProxyService.delete(userId, noticeId);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 }

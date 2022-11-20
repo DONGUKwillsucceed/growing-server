@@ -49,8 +49,12 @@ export class CoupleController {
     if (errors.length > 0) {
       throw new BadRequestException(errors[0].toString());
     }
-
-    return await this.coupleProxyService.initCouple(req.user.id, dto);
+    try {
+      return await this.coupleProxyService.initCouple(req.user.id, dto);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Server error');
+    }
   }
 
   @Patch(':coupleId')
