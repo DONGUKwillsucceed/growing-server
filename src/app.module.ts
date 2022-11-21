@@ -16,6 +16,7 @@ import { VoiceMessageModule } from './module/voice-message/voice-message.module'
 import { QuestionModule } from './module/question/question.module';
 import { GalleryModule } from './module/gallery/gallery.module';
 import { S3Service } from './service/S3.service';
+import { PlanModule } from './module/plan/plan.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { S3Service } from './service/S3.service';
     PhotoChattingModule,
     VoiceMessageModule,
     QuestionModule,
+    PlanModule,
     GalleryModule,
   ],
   controllers: [AppController],

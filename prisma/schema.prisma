@@ -89,6 +89,7 @@ model Couples {
   Chattings       Chattings[]
   Pets            Pets[]
   Photos          Photos[]
+  Plan            Plan[]
   QuestionStorage QuestionStorage[]
   Users           Users[]
   VoiceStorage    VoiceStorage[]
@@ -332,11 +333,16 @@ model Plan {
   title       String   @db.VarChar(100)
   startAt     DateTime @db.DateTime(0)
   endAt       DateTime @db.DateTime(0)
-  description String   @db.VarChar(500)
-  latitude    Float    @default(0)
-  longitude   Float    @default(0)
+  description String?  @db.VarChar(500)
+  latitude    Float?
+  longitude   Float?
   alarm       String   @db.VarChar(45)
-  address     String   @db.VarChar(100)
+  address     String?  @db.VarChar(100)
   createdAt   DateTime @default(now()) @db.DateTime(0)
   modifiedAt  DateTime @default(now()) @db.DateTime(0)
+  coupleId    String   @db.VarChar(64)
+  isDeleted   Int      @default(0) @db.TinyInt
+  Couples     Couples  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Plan_Couple_FK")
+
+  @@index([coupleId], map: "Plan_Couple_FK_idx")
 }
