@@ -46,5 +46,5 @@ jobs:
       run: aws deploy create-deployment
         --application-name Growing-Server-Code-Deployment
         --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name githubaction-test-group
+        --deployment-group-name Growing-Server
         --s3-location bucket=growing-server-deployment,bundleType=tgz,key=archive/drcloud.tar.gz
