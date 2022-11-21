@@ -16,11 +16,12 @@ model Albums {
   subHead       String?         @db.VarChar(100)
   coupleId      String          @db.VarChar(64)
   userId        String          @db.VarChar(64)
-  Couples       Couples         @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_Couple_FK")
+  Couples       Couples         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_Couple_FK")
   Users         Users           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Albums_Users_FK")
   Albums_Photos Albums_Photos[]
 
   @@index([userId], map: "Albums_Users_FK_idx")
+  @@index([coupleId], map: "Albums_Couple_FK_idx")
 }
 
 model Albums_Photos {
@@ -83,7 +84,7 @@ model Couples {
   isDeleted       Int               @default(0) @db.TinyInt
   anniversaryDay  DateTime          @db.DateTime(0)
   lastVistADay    Int               @default(0)
-  Albums          Albums?
+  Albums          Albums[]
   ChattingStorage ChattingStorage[]
   Chattings       Chattings[]
   Pets            Pets[]
@@ -324,4 +325,18 @@ model Questions_Warehouse {
   level      Int
   createdAt  DateTime @default(now()) @db.DateTime(0)
   modifiedAt DateTime @default(now()) @db.DateTime(0)
+}
+
+model Plan {
+  id          String   @id @db.VarChar(64)
+  title       String   @db.VarChar(100)
+  startAt     DateTime @db.DateTime(0)
+  endAt       DateTime @db.DateTime(0)
+  description String   @db.VarChar(500)
+  latitude    Float    @default(0)
+  longitude   Float    @default(0)
+  alarm       String   @db.VarChar(45)
+  address     String   @db.VarChar(100)
+  createdAt   DateTime @default(now()) @db.DateTime(0)
+  modifiedAt  DateTime @default(now()) @db.DateTime(0)
 }
