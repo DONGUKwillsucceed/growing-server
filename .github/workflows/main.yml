@@ -24,6 +24,17 @@
     
           - name: Npm install
             run: npm install
+            
+          - name: env inject
+            env: 
+                DATABASE_URL: ${{secrets.DATABASE_URL}}
+                ACCESS_KEY_ID: ${{secrets.ACCESS_KEY_ID}}
+                SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
+                REGION: ${{secrets.REGION}}
+                SIGNATUREVERSION: ${{secrets.SIGNATUREVERSION}}
+                MY_SECRET_KEY: ${{secrets.MY_SECRET_KEY}}
+                ACCESS_TOKEN_EXPIRES: ${{secrets.ACCESS_TOKEN_EXPIRES}}
+                RERESH_TOKEN_EXPIRES: ${{secrets.RERESH_TOKEN_EXPIRES}}
     
           - name: Build
             run: npm run build
