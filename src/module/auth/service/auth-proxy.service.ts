@@ -10,10 +10,7 @@ export class AuthProxyService {
     private readonly jwtService: JWTService,
   ) {}
   async logIn(dto: KakaoCodeDto) {
-    return await this.kakaoAuthService
-      .getAccessToken(dto.code)
-      .then((token) => this.kakaoAuthService.getKakaoData(token))
-      .then((data) => this.kakaoAuthService.login(data));
+    return await this.kakaoAuthService.logIn(dto.code);
   }
 
   async getAccessTokenAndOption(userId: string) {

@@ -16,47 +16,64 @@ export class KakaoAuthService {
 	&client_id=${env.KAKAO_CLIENT_ID}
 	&redirect_url=${env.KAKAO_REDIRECT_URL}
 	&code=`;
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly createUserService: CreateUserService,
   ) {}
 
-  async login(kakoData: KakaoData) {
-    const user = await this.findOneForUserWithKakaoId(kakoData.id);
-
-    if (user) {
-      return {
-        userId: user.id,
-      };
-    }
-
-    const userCreated = await this.createUserService.createWithKakaoData(
-      kakoData,
-    );
-
-    return { userId: userCreated.id };
+  async logIn(code: string) {
+    return await this.getAccessToken(code)
+      .then((token) => this.getKakaoData(token))
+      .then(async (kakaoData) => {
+        let user = await this.getOneForUser(kakaoData.id);
+        if (!user) {
+          user = await this.createUserService.createWithKakaoData(kakaoData);
+        }
+        return user.id;
+      });
   }
 
-  async findOneForUserWithKakaoId(kakaoId: number) {
-    return await this.prismaService.users.findFirst({
-      where: {
-        kakaoId: kakaoId,
-      },
-    });
+  async getOneForUser(kakaoId: number) {
+    return await this.prismaService.users.findFirst({ where: { kakaoId } });
   }
 
   async getAccessToken(code: string) {
-    const res = await axios.post(`${this.get_token_url}${code}`);
-    return res.data;
+    const get_token_url = `${this.get_token_url}`
+      .replaceAll('\n', '')
+      .replaceAll(' ', '');
+    const res = await axios
+      .post(
+        `${get_token_url}${code}`,
+        {},
+        {
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+        },
+      )
+      .catch((err) => {
+        console.log(err.response);
+        throw new Error(err.reponse);
+      });
+    return res.data.access_token;
   }
 
   async getKakaoData(accessToken: string) {
-    const res = await axios.get<KakaoData>(this.get_user_url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const res = await axios
+      .post<KakaoData>(
+        this.get_user_url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+        },
+      )
+      .catch((err) => {
+        console.log(err.response);
+        throw new Error(err.reponse);
+      });
     return res.data;
   }
 }

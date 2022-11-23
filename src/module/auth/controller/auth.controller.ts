@@ -27,17 +27,17 @@ export class AuthController {
       throw new BadRequestException(errors[0].toString());
     }
 
-    const user = await this.authProxyService.logIn(dto);
+    const userId = await this.authProxyService.logIn(dto);
 
-    const { accessToken, accessOption } =
-      await this.authProxyService.getAccessTokenAndOption(user.userId);
+    const { accessToken } = await this.authProxyService.getAccessTokenAndOption(
+      userId,
+    );
     const { refreshToken, refreshOption } =
-      await this.authProxyService.getRefreshTokenAndOption(user.userId);
+      await this.authProxyService.getRefreshTokenAndOption(userId);
 
-    res.cookie(Cookie.Authentication, accessToken, accessOption);
     res.cookie(Cookie.Refresh, refreshToken, refreshOption);
 
-    res.json(user);
+    res.json({ userId, accessToken });
   }
 
   @Post('test')
