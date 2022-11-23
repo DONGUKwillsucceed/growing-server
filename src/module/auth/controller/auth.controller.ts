@@ -43,14 +43,14 @@ export class AuthController {
   @Post('test')
   async test(@Req() req: Request, @Res() res: Response) {
     const userId = req.body.userId;
-    const { accessToken, accessOption } =
-      await this.authProxyService.getAccessTokenAndOption(userId);
+    const { accessToken } = await this.authProxyService.getAccessTokenAndOption(
+      userId,
+    );
     const { refreshToken, refreshOption } =
       await this.authProxyService.getRefreshTokenAndOption(userId);
-    console.log(accessToken);
-    res.cookie(Cookie.Authentication, accessToken, accessOption);
+
     res.cookie(Cookie.Refresh, refreshToken, refreshOption);
 
-    res.json({ userId });
+    res.json({ userId, accessToken });
   }
 }
