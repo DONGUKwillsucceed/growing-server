@@ -1,50 +1,51 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
-
-# Controls when the workflow will run
-on:
-  # 지정한 branch에서 push/pull_request 에 해당하는 command가 수행되면 이 workflow가 동작 합니다. 
-  # 여기서는 간단히 main 브런치에서 push되면서 이 workflow가 실행 되도록 하겠습니다.
-  push:
-    branches: [ master ] 
- 
-  # 이부분은 위의 trigger가 없어도 수동으로 동작 할 수 있게끔 해주는 역할을 합니다.
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build" 
-  build:
-    runs-on: ubuntu-latest
+    name: Deploy to Production
     
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: checkout release
-      uses: actions/checkout@v3
-
-    # Runs a single command using the runners shell 
-    - name: Clean temp directory
-      run: |
-        rm -rf /home/ubuntu
-        cp -r $GITHUB_WORKSPACE . 
-      
-    - name: archive drcloud 
-      run: tar cvfz ./drcloud.tar.gz *
-       
-    - name: AWS configure credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.DEPLOYER_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.DEPLOYER_SECRET_KEY }}
-        aws-region: ap-northeast-2
-        
-    - name: upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./drcloud.tar.gz s3://growing-server-deployment/archive/
-      
-    - name: deploy with AWS codeDeploy
-      run: aws deploy create-deployment
-        --application-name Growing-Server-Code-Deployment
-        --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name Growing-Server
-        --s3-location bucket=growing-server-deployment,bundleType=tgz,key=archive/drcloud.tar.gz
+    on:
+      push:
+        branches:
+          - master
+    
+    jobs:
+      deploy:
+        name: Build, Deploy to S3 bucket
+        runs-on: [ubuntu-latest]
+    
+        strategy:
+          matrix:
+            node-version: [v18.12.1]
+    
+        steps:
+          - uses: actions/checkout@v2
+    
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+              node-version: ${{ matrix.node-version }}
+    
+          - name: Npm install
+            run: npm install
+            
+          - name: env inject
+            env: 
+                DATABASE_URL: ${{secrets.DATABASE_URL}}
+                ACCESS_KEY_ID: ${{secrets.ACCESS_KEY_ID}}
+                SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
+                REGION: ${{secrets.REGION}}
+                SIGNATUREVERSION: ${{secrets.SIGNATUREVERSION}}
+                MY_SECRET_KEY: ${{secrets.MY_SECRET_KEY}}
+                ACCESS_TOKEN_EXPIRES: ${{secrets.ACCESS_TOKEN_EXPIRES}}
+                RERESH_TOKEN_EXPIRES: ${{secrets.RERESH_TOKEN_EXPIRES}}
+    
+          - name: Build
+            run: npm run build
+    
+          - name: Transfer to S3 for serving static
+            uses: jakejarvis/s3-sync-action@master
+            with:
+              args: --acl public-read --follow-symlinks --delete
+            env:
+              AWS_S3_BUCKET: growing-server-deployment
+              AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY }}
+              AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_SECRET_KEY }}
+              AWS_REGION: ap-northeast-2
+              SOURCE_DIR: 'dist'
