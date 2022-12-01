@@ -10,6 +10,7 @@ import { ChattingS3Service } from './service/chatting-s3.service';
 import { DeleteChattingService } from './service/delete-chatting.service';
 import { GetChattingPhotoService } from './service/get-chatting-photo.service';
 import { GetChattingService } from './service/get-chatting.service';
+import { CreateChattingService } from './service/create-chatting.service';
 
 @Module({
   controllers: [ChattingController],
@@ -23,6 +24,7 @@ import { GetChattingService } from './service/get-chatting.service';
     DeleteChattingService,
     GetChattingPhotoService,
     ChattingGateway,
+    CreateChattingService,
   ],
 })
 export class ChattingModule {

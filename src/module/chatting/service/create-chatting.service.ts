@@ -9,8 +9,14 @@ export class CreateChattingService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(dto: CreateChattingDto) {
     return this.createForChatting(dto)
-      .then((chatting) => this.createForChatting(chatting))
-      .then((chatting) => this.createManyForVoice(chatting));
+      .then((chatting) => this.createManyForPhoto(chatting))
+      .then((chatting) => this.createManyForVoice(chatting))
+      .then((chatting) => {
+        if (chatting.emojiId) {
+          return this.linkEmoji(chatting);
+        }
+        return chatting;
+      });
   }
 
   async createManyForPhoto(chatting: CreateChattingInterface) {
@@ -65,5 +71,6 @@ export class CreateChattingService {
     await this.prismaService.chatting_Emoji.create({
       data: { chattingId: chatting.chattingId, emojiId: chatting.emojiId },
     });
+    return chatting;
   }
 }

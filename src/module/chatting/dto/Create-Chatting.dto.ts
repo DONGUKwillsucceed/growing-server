@@ -9,11 +9,9 @@ export class CreateChattingDto {
   @IsOptional()
   emojiId: string | null;
 
-  @IsString()
   @IsArray()
   imageS3Pathes: string[]; // 사진, 비디오
 
-  @IsString()
   @IsArray()
   voiceMsgS3Pathes: string[];
 

@@ -23,7 +23,7 @@ export class ChattingGateway {
     const dto = plainToInstance(CreateChattingDto, data);
     const errors = await validate(dto);
     if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
+      //throw new BadRequestException(errors[0].toString());
     }
     await this.chattingProxyService.create(dto);
     this.server.emit('ServerToClient', data);
