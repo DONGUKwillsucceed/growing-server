@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { AppModule } from './app.module';
 import { initSwagger } from './swagger';
 
@@ -12,6 +13,7 @@ async function bootstrap() {
     credentials: true,
   });
 
+  app.useWebSocketAdapter(new IoAdapter(app));
   initSwagger(app);
   await app.listen(3000);
 }

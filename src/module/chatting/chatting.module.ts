@@ -4,6 +4,7 @@ import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { ChattingController } from './controller/chatting.controller';
 import { ChattingDBService } from './service/chatting-db.service';
+import { ChattingGateway } from './controller/chatting.gateway';
 import { ChattingProxyService } from './service/chatting-proxy.service';
 import { ChattingS3Service } from './service/chatting-s3.service';
 import { DeleteChattingService } from './service/delete-chatting.service';
@@ -21,6 +22,7 @@ import { GetChattingService } from './service/get-chatting.service';
     S3Service,
     DeleteChattingService,
     GetChattingPhotoService,
+    ChattingGateway,
   ],
 })
 export class ChattingModule {
