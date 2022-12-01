@@ -24,7 +24,7 @@ export class ChattingGateway {
   server: Server;
   wsClients = [];
 
-  @SubscribeMessage('enterChatRoom')
+  @SubscribeMessage('Enter')
   async enterChatRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: EnterChattingRoomDto,
@@ -34,13 +34,15 @@ export class ChattingGateway {
     if (errors.length > 0) {
       throw new WsException(errors[0].toString());
     }
+    client.rooms.clear();
 
     client.data.userId = dto.userId;
-    client.join(data.coupleId);
-    client.to(data.coupleId).emit('getMessage', {
+    client.join(dto.coupleId);
+    this.server.to(dto.coupleId).emit('GetSocketInfo', {
       id: client.id,
+      room: dto.coupleId,
     });
-    this.server.emit('getMessage2', { id: client.id });
+    //this.server.emit('getMessage2', { id: client.id });
   }
 
   @SubscribeMessage('ClientToServer')
@@ -58,9 +60,7 @@ export class ChattingGateway {
       chattingId,
       client.data.userId,
     );
-    console.log(chatting);
 
-    client.to(dto.coupleId).emit('ServerToClient', chatting);
-    this.server.emit('ServerToClient2', chatting);
+    this.server.to(dto.coupleId).emit('ServerToClient', chatting);
   }
 }
