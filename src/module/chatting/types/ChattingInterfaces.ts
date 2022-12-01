@@ -43,3 +43,13 @@ export interface ChattingAndReplyInterfaceForMapping
   extends ChattingImgVoiceEmojiUrlsInterface {
   others: ChattingImgVoiceEmojiUrlsInterface[];
 }
+
+export interface CreateChattingInterface {
+  chattingId: string;
+  content: string | null;
+  emojiId: string | null;
+  imageS3Pathes: string[]; // 사진, 비디오
+  voiceMsgS3Pathes: string[];
+  userId: string;
+  coupleId: string;
+}

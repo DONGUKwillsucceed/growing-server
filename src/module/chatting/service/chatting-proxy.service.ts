@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CreateChattingDto } from '../dto/Create-Chatting.dto';
+import { CreateChattingService } from './create-chatting.service';
 import { DeleteChattingService } from './delete-chatting.service';
 import { GetChattingPhotoService } from './get-chatting-photo.service';
 import { GetChattingService } from './get-chatting.service';
@@ -9,6 +11,7 @@ export class ChattingProxyService {
     private readonly getChattingService: GetChattingService,
     private readonly deleteChattingService: DeleteChattingService,
     private readonly getChattingPhotoService: GetChattingPhotoService,
+    private readonly createChattingService: CreateChattingService,
   ) {}
   async findMany(
     coupleId: string,
@@ -16,7 +19,7 @@ export class ChattingProxyService {
     base: number,
     limit: number,
   ) {
-    return await this.getChattingService.findManyForChattingDto(
+    return this.getChattingService.findManyForChattingDto(
       coupleId,
       userId,
       base,
@@ -25,17 +28,18 @@ export class ChattingProxyService {
   }
 
   async findManyForPhoto(chattingId: string) {
-    return await this.getChattingPhotoService.findOneForPhotoDto(chattingId);
+    return this.getChattingPhotoService.findOneForPhotoDto(chattingId);
+  }
+
+  async create(dto: CreateChattingDto) {
+    return this.createChattingService.create(dto);
   }
 
   async removeOneForOurs(chattingId: string) {
-    return await this.deleteChattingService.removeOneForOurs(chattingId);
+    return this.deleteChattingService.removeOneForOurs(chattingId);
   }
 
   async removeOneForMine(chattingId: string, userId: string) {
-    return await this.deleteChattingService.removeOneForMine(
-      chattingId,
-      userId,
-    );
+    return this.deleteChattingService.removeOneForMine(chattingId, userId);
   }
 }
