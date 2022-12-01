@@ -27,6 +27,10 @@ export class ChattingProxyService {
     );
   }
 
+  async findOne(chattingId: string, userId: string) {
+    return this.getChattingService.findOneForChattingDto(chattingId, userId);
+  }
+
   async findManyForPhoto(chattingId: string) {
     return this.getChattingPhotoService.findOneForPhotoDto(chattingId);
   }

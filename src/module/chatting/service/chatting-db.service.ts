@@ -21,6 +21,29 @@ export class ChattingDBService {
     },
   };
 
+  async findOne(chattingId: string) {
+    return this.prismaService.chattings.findUnique({
+      where: {
+        id: chattingId,
+      },
+      include: {
+        Users: true,
+        Couples: true,
+        Chatting_Photo: {
+          include: {
+            Photos: true,
+          },
+        },
+        VoiceStorage: true,
+        Chatting_Emoji: {
+          include: {
+            Emojis: true,
+          },
+        },
+      },
+    });
+  }
+
   async findMany(coupleId: string, userId: string, skip: number, take: number) {
     return await this.prismaService.chattings.findMany({
       where: {

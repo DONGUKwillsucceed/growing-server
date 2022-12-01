@@ -16,6 +16,7 @@ export class GetChattingService {
     private readonly chattingDBService: ChattingDBService,
     private readonly chattingS3Service: ChattingS3Service,
   ) {}
+
   async findManyForChattingDto(
     coupleId: string,
     userId: string,
@@ -38,6 +39,21 @@ export class GetChattingService {
         ),
       )
       .then((chattings) => this.mapFromRelation(chattings, userId));
+  }
+
+  async findOneForChattingDto(chattingId: string, userId: string) {
+    return this.chattingDBService
+      .findOne(chattingId)
+      .then((chatting) => this.getImageUrl([chatting]))
+      .then((chatting) => this.getVoiceMsgUrl(chatting))
+      .then((chatting) => this.getEmogiUrl(chatting))
+      .then((chatting) => {
+        let isMine = false;
+        if (chatting[0].userId === userId) {
+          isMine = true;
+        }
+        return this.setChattingDto(chatting[0], isMine);
+      });
   }
 
   async getImageUrl(chattings: ChattingInterface[]) {
@@ -105,7 +121,7 @@ export class GetChattingService {
     const chattingDto: ChattingDto = {
       id: chatting.id,
       content: chatting.content,
-      emojiUrl: chatting.emojiUrls[0],
+      emojiUrl: chatting.emojiUrls[0] ? chatting.emojiUrls[0] : null,
       voiceMsgUrls: chatting.voiceMsgUrls,
       imageUrls: chatting.imageUrls,
       createdAt: chatting.createdAt,
