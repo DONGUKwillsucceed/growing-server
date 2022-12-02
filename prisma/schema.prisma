@@ -353,4 +353,5 @@ model Error_Log {
   message   String   @db.VarChar(100)
   stack     String   @db.VarChar(800)
   createdAt DateTime @default(now()) @db.DateTime(0)
+  name      String   @db.VarChar(100)
 }
