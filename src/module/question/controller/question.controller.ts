@@ -1,11 +1,14 @@
 import {
-  BadRequestException,
   Controller,
   Get,
-  InternalServerErrorException,
   Post,
   Req,
   UseGuards,
+  Param,
+  Body,
+  Query,
+  UseFilters,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -14,15 +17,16 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { AnswerDto } from '../dto/Answer.dto';
 import { QuestionProxyService } from '../service/question-proxy.service';
 
 @ApiTags('Question에 접근하는 Rest API')
 @Controller('couples/:coupleId/questions')
+@UseFilters(HttpExceptionFilter)
 export class QuestionController {
   constructor(private readonly questionProxyService: QuestionProxyService) {}
   @Get()
@@ -30,19 +34,16 @@ export class QuestionController {
   @ApiQuery({ name: 'to-do', required: false })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async findMany(@Req() req: UserAuthRequest) {
-    const toDo = req.query['to-do'] as string;
-    const coupleId = req.params.coupleId;
+  async findMany(
+    @Req() req: UserAuthRequest,
+    @Param('coupleId') coupleId: string,
+    @Query('to-do', ParseBoolPipe) toDo: boolean,
+  ) {
     const userId = req.user.id;
-    try {
-      if (toDo === 'true') {
-        return await this.questionProxyService.isRemain(coupleId, userId);
-      }
-      return await this.questionProxyService.findMany(coupleId, userId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
+    if (toDo === true) {
+      return await this.questionProxyService.isRemain(coupleId, userId);
     }
+    return await this.questionProxyService.findMany(coupleId, userId);
   }
 
   @Post(':questionId/answer')
@@ -51,20 +52,13 @@ export class QuestionController {
   @ApiBody({ type: AnswerDto })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async answer(@Req() req: UserAuthRequest) {
-    const coupleId = req.params.coupleId;
-    const questionId = req.params.questionId;
+  async answer(
+    @Req() req: UserAuthRequest,
+    @Param('coupleId') coupleId: string,
+    @Param('questionId') questionId: string,
+    @Body(ValidationPipe) dto: AnswerDto,
+  ) {
     const userId = req.user.id;
-    const dto = plainToInstance(AnswerDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-    try {
-      await this.questionProxyService.answer(dto, questionId, userId, coupleId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+    await this.questionProxyService.answer(dto, questionId, userId, coupleId);
   }
 }
