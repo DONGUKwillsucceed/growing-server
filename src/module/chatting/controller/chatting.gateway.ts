@@ -1,23 +1,22 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
+import { UseFilters } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { CreateChattingDto } from '../dto/Create-Chatting.dto';
 import { ChattingProxyService } from '../service/chatting-proxy.service';
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import { EnterChattingRoomDto } from '../dto/EnterChattingRoom.dto';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
 
 @Injectable()
 @WebSocketGateway(8080, { transports: ['websocket'] })
+@UseFilters(HttpExceptionFilter)
 export class ChattingGateway {
   constructor(private readonly chattingProxyService: ChattingProxyService) {}
   @WebSocketServer()
@@ -27,13 +26,8 @@ export class ChattingGateway {
   @SubscribeMessage('Enter')
   async enterChatRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: EnterChattingRoomDto,
+    @MessageBody(ValidationPipe) dto: EnterChattingRoomDto,
   ) {
-    const dto = plainToInstance(EnterChattingRoomDto, data);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new WsException(errors[0].toString());
-    }
     client.rooms.clear();
 
     client.data.userId = dto.userId;
@@ -48,13 +42,8 @@ export class ChattingGateway {
   @SubscribeMessage('ClientToServer')
   async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: CreateChattingDto,
+    @MessageBody(ValidationPipe) dto: CreateChattingDto,
   ) {
-    const dto = plainToInstance(CreateChattingDto, data);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new WsException(errors[0].toString());
-    }
     const { chattingId } = await this.chattingProxyService.create(dto);
     const chatting = await this.chattingProxyService.findOne(
       chattingId,
