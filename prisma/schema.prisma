@@ -346,3 +346,11 @@ model Plan {
 
   @@index([coupleId], map: "Plan_Couple_FK_idx")
 }
+
+model Error_Log {
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar(100)
+  message   String   @db.VarChar(100)
+  stack     String   @db.VarChar(800)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+}
