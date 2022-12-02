@@ -1,7 +1,9 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
+import { GALLERY_LABEL } from './const';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
 import { PhotoCommentController } from './controller/photo-comment.controller';
@@ -47,6 +49,10 @@ import { RemovePhotoService } from './service/remove-photo.service';
     GetCommentService,
     CreateCommentService,
     RemoveCommentService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: GALLERY_LABEL,
+    },
   ],
 })
 export class GalleryModule {

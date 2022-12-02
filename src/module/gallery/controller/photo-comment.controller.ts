@@ -5,17 +5,20 @@ import {
   Delete,
   Req,
   UseGuards,
-  InternalServerErrorException,
-  BadRequestException,
+  UseFilters,
+  Param,
+  Body,
 } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { CreateCommentDto } from '../dto/CreateComment.dto';
 import { CommentProxyService } from '../service/comment-proxy.service';
+
 @Controller('couples/:coupleId/gallerys/photos/:photoId/comments')
+@UseFilters(HttpExceptionFilter)
 @ApiTags('Comment에 대한 Rest API')
 export class PhotoCommentController {
   constructor(private readonly commentProxyService: CommentProxyService) {}
@@ -23,15 +26,12 @@ export class PhotoCommentController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'photoId', required: true })
   @UseGuards(UserAuthGuard)
-  async findMany(@Req() req: UserAuthRequest) {
-    try {
-      const photoId = req.params.photoId;
-      const userId = req.user.id;
-      return await this.commentProxyService.findMany(photoId, userId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async findMany(
+    @Req() req: UserAuthRequest,
+    @Param('photoId') photoId: string,
+  ) {
+    const userId = req.user.id;
+    return this.commentProxyService.findMany(photoId, userId);
   }
 
   @Post('create')
@@ -39,20 +39,13 @@ export class PhotoCommentController {
   @ApiParam({ name: 'photoId', required: true })
   @ApiBody({ type: CreateCommentDto })
   @UseGuards(UserAuthGuard)
-  async create(@Req() req: UserAuthRequest) {
-    try {
-      const photoId = req.params.photoId;
-      const userId = req.user.id;
-      const dto = plainToInstance(CreateCommentDto, req.body);
-      const errors = await validate(dto);
-      if (errors.length > 0) {
-        throw new BadRequestException('Bad request');
-      }
-      await this.commentProxyService.create(photoId, userId, dto.content);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async create(
+    @Req() req: UserAuthRequest,
+    @Param('photoId') photoId: string,
+    @Body(ValidationPipe) dto: CreateCommentDto,
+  ) {
+    const userId = req.user.id;
+    await this.commentProxyService.create(photoId, userId, dto.content);
   }
 
   @Delete(':commentId')
@@ -60,13 +53,7 @@ export class PhotoCommentController {
   @ApiParam({ name: 'photoId', required: true })
   @ApiParam({ name: 'commentId', required: true })
   @UseGuards(UserAuthGuard)
-  async remove(@Req() req: UserAuthRequest) {
-    try {
-      const commentId = req.params.commentId;
-      await this.commentProxyService.remove(commentId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async remove(@Param('commentId') commentId: string) {
+    await this.commentProxyService.remove(commentId);
   }
 }
