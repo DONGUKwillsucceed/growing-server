@@ -1,6 +1,6 @@
 import {
-  BadRequestException,
   Body,
+  Param,
   Controller,
   Get,
   NotFoundException,
@@ -9,19 +9,20 @@ import {
   Req,
   Delete,
   UseGuards,
-  InternalServerErrorException,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { CreateCoupleAndPetDto } from '../dto/CreateCoupleAndPet.dto';
 import { PatchCoupleDto } from '../dto/PatchCouple.dto';
 import { CoupleProxyService } from '../service/couple-proxy.service';
 
 @ApiTags('couples에 대한 Rest API')
 @Controller('couples')
+@UseFilters(HttpExceptionFilter)
 export class CoupleController {
   constructor(private readonly coupleProxyService: CoupleProxyService) {}
 
@@ -29,9 +30,12 @@ export class CoupleController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async findUnique(@Req() req: UserAuthRequest) {
+  async findUnique(
+    @Req() req: UserAuthRequest,
+    @Param('coupleId') coupleId: string,
+  ) {
     const couple = await this.coupleProxyService.findUnique(
-      req.params.coupleId,
+      coupleId,
       req.user.id,
     );
     if (!couple) {
@@ -43,50 +47,29 @@ export class CoupleController {
   @Post('create')
   @ApiBody({ type: CreateCoupleAndPetDto })
   @ApiBearerAuth('jwt-token')
-  async create(@Req() req: UserAuthRequest) {
-    const dto = plainToInstance(CreateCoupleAndPetDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-    try {
-      return await this.coupleProxyService.initCouple(req.user.id, dto);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async create(
+    @Req() req: UserAuthRequest,
+    @Body(ValidationPipe) dto: CreateCoupleAndPetDto,
+  ) {
+    return await this.coupleProxyService.initCouple(req.user.id, dto);
   }
 
   @Patch(':coupleId')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBody({ type: PatchCoupleDto })
   @ApiBearerAuth('jwt-token')
-  async patch(@Req() req: UserAuthRequest) {
-    try {
-      const coupleId = req.params.coupleId;
-      const dto = plainToInstance(PatchCoupleDto, req.body);
-      const errors = await validate(dto);
-      if (errors.length > 0) {
-        throw new BadRequestException(errors[0].toString());
-      }
-      await this.coupleProxyService.patch(coupleId, dto.anniversaryDay);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server Error');
-    }
+  async patch(
+    @Param('coupleId') coupleId: string,
+    @Body(ValidationPipe) dto: PatchCoupleDto,
+  ) {
+    await this.coupleProxyService.patch(coupleId, dto.anniversaryDay);
   }
 
   @Delete(':coupleId')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async remove(@Req() req: UserAuthRequest) {
-    try {
-      const coupleId = req.params.coupleId;
-      await this.coupleProxyService.remove(coupleId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server Error');
-    }
+  async remove(@Param('coupleId') coupleId: string) {
+    await this.coupleProxyService.remove(coupleId);
   }
 }

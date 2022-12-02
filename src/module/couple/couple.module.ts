@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
+import { COUPLE_LABEL } from './const';
 import { CoupleController } from './controller/couple.controller';
 import { CoupleDBService } from './service/couple-db.service';
 import { CoupleProxyService } from './service/couple-proxy.service';
@@ -25,6 +27,10 @@ import { UserDBService } from './service/user-db.service';
     UserDBService,
     PatchCoupleService,
     RemoveCoupleService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: COUPLE_LABEL,
+    },
   ],
 })
 export class CoupleModule {
