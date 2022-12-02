@@ -6,6 +6,8 @@ import { NoticedChattingProxyService } from './service/noticed-chatting-proxy.se
 import { PrismaService } from 'src/service/prisma.service';
 import { GetChattingService } from './service/get-chatting.service';
 import { RemoveChattingService } from './service/remove-chatting.service';
+import { INJECTION_TOKEN } from 'src/common/const';
+import { CHATTING_NOTICED_LABEL } from './const';
 
 @Module({
   controllers: [NoticedChattingController],
@@ -15,6 +17,10 @@ import { RemoveChattingService } from './service/remove-chatting.service';
     PrismaService,
     GetChattingService,
     RemoveChattingService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: CHATTING_NOTICED_LABEL,
+    },
   ],
 })
 export class NoticedChattingModule {
