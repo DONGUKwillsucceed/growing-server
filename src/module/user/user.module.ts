@@ -1,7 +1,9 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
+import { USER_LABEL } from './const';
 import { UserController } from './controller/user.controller';
 import { CreateUserService } from './service/create-user.service';
 import { GetUserService } from './service/get-user.service';
@@ -23,6 +25,10 @@ import { UserS3Service } from './service/user-s3.service';
     UserProxyService,
     GetUserService,
     UpdateUserService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: USER_LABEL,
+    },
   ],
   exports: [UserDBService, UserCodeService, CreateUserService],
 })

@@ -5,18 +5,18 @@ import {
   Get,
   Patch,
   Body,
-  BadRequestException,
   Post,
   Req,
   UseGuards,
   Put,
-  InternalServerErrorException,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
+import { USER_NOT_FOUND } from '../const';
 import { PasswordDto } from '../dto/CreatePassword.dto';
 import { PatchProfileImageDto } from '../dto/PatchProfileImage.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
@@ -25,6 +25,7 @@ import { UserProxyService } from '../service/user-proxy.service';
 
 @ApiTags('users에 대한 Rest API')
 @Controller('users')
+@UseFilters(HttpExceptionFilter)
 export class UserController {
   constructor(private readonly userProxyService: UserProxyService) {}
 
@@ -34,7 +35,7 @@ export class UserController {
   async findOne(@Param('userId') userId: string) {
     const user = await this.userProxyService.findUnique(userId);
     if (!user) {
-      throw new NotFoundException('User Not Found');
+      throw new NotFoundException(USER_NOT_FOUND);
     }
 
     return user;
@@ -44,31 +45,18 @@ export class UserController {
   @UseGuards(UserAuthGuard)
   @ApiBearerAuth('jwt-token')
   async isCouple(@Param('userId') userId: string) {
-    try {
-      return await this.userProxyService.isCouple(userId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+    return await this.userProxyService.isCouple(userId);
   }
 
   @Patch(':userId/update')
   @UseGuards(UserAuthGuard)
   @ApiBearerAuth('jwt-token')
   @ApiBody({ type: UpdateUserDto })
-  async patch(@Param('userId') userId: string, @Body() body: any) {
-    const dto = plainToInstance(UpdateUserDto, body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-
-    try {
-      await this.userProxyService.update(userId, dto);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async patch(
+    @Param('userId') userId: string,
+    @Body(ValidationPipe) dto: UpdateUserDto,
+  ) {
+    await this.userProxyService.update(userId, dto);
   }
 
   @Put(':userId/profile-photos')
@@ -76,37 +64,18 @@ export class UserController {
   @ApiBearerAuth('jwt-token')
   @ApiParam({ name: 'userId', required: true })
   @ApiBody({ type: PatchProfileImageDto })
-  async putProfileImage(@Req() req: UserAuthRequest) {
+  async putProfileImage(
+    @Req() req: UserAuthRequest,
+    @Body(ValidationPipe) dto: PatchProfileImageDto,
+  ) {
     const userId = req.user.id;
-    const dto = plainToInstance(PatchProfileImageDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-
-    try {
-      await this.userProxyService.updateProfileImage(userId, dto.imageId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+    await this.userProxyService.updateProfileImage(userId, dto.imageId);
   }
 
   @Post('codes/verify')
   @ApiBody({ type: VerifyCodeDto })
-  async verify(@Req() req: UserAuthRequest) {
-    const dto = plainToInstance(VerifyCodeDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-
-    try {
-      return this.userProxyService.verifyCodeAndGetPartnerId(dto.code);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async verify(@Body(ValidationPipe) dto: VerifyCodeDto) {
+    return this.userProxyService.verifyCodeAndGetPartnerId(dto.code);
   }
 
   @Post(':userId/passwords/create')
@@ -114,20 +83,12 @@ export class UserController {
   @ApiBearerAuth('jwt-token')
   @ApiParam({ name: 'userId', required: true })
   @ApiBody({ type: PasswordDto })
-  async lock(@Req() req: UserAuthRequest) {
+  async lock(
+    @Req() req: UserAuthRequest,
+    @Body(ValidationPipe) dto: PasswordDto,
+  ) {
     const userId = req.user.id;
-    const dto = plainToInstance(PasswordDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-
-    try {
-      await this.userProxyService.createPassword(userId, dto.password);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+    await this.userProxyService.createPassword(userId, dto.password);
   }
 
   @Post(':userId/passwords/verify')
@@ -135,18 +96,11 @@ export class UserController {
   @ApiBearerAuth('jwt-token')
   @ApiParam({ name: 'userId', required: true })
   @ApiBody({ type: PasswordDto })
-  async verifyPassword(@Req() req: UserAuthRequest) {
+  async verifyPassword(
+    @Req() req: UserAuthRequest,
+    @Body(ValidationPipe) dto: PasswordDto,
+  ) {
     const userId = req.user.id;
-    const dto = plainToInstance(PasswordDto, req.body);
-    const errors = await validate(dto);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors[0].toString());
-    }
-    try {
-      return await this.userProxyService.verifyPassword(userId, dto.password);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+    return await this.userProxyService.verifyPassword(userId, dto.password);
   }
 }
