@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
+import { CHATTING_ARCHIVED_LABEL } from './const';
 import { ArchivedChattingController } from './controller/archived-chatting.controller';
 import { ArchiveChattingService } from './service/archive-chatting.service';
 import { ArchivedChattingProxyService } from './service/archived-chatting-proxy.service';
@@ -15,6 +17,10 @@ import { UnStoreChattingService } from './service/unstore-chatting.service';
     PrismaService,
     UnStoreChattingService,
     GetArchivedChattingService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: CHATTING_ARCHIVED_LABEL,
+    },
   ],
 })
 export class ArchivedChattingModule {
