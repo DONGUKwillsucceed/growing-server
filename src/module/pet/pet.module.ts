@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
+import { PET_LABEL } from './const';
 import { PetController } from './controller/pet.controller';
 import { PostPetController } from './controller/post-pet.controller';
 import { FeedPetService } from './service/feed-pet.service';
@@ -26,6 +28,10 @@ import { TouchPetService } from './service/touch-pet.service';
     TouchPetService,
     PostPetService,
     PatchPetService,
+    {
+      provide: INJECTION_TOKEN,
+      useValue: PET_LABEL,
+    },
   ],
 })
 export class PetModule {
