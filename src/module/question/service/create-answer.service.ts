@@ -15,6 +15,10 @@ export class CreateAnswerService {
   ) {
     const data = this.createAnswer(content, questionId, userId, coupleId);
     await this.prismaService.questionStorage.create({ data });
+    await this.prismaService.pets.updateMany({
+      where: { coupleId, isDeleted: 0 },
+      data: { loveGauge: { increment: 2 } },
+    });
   }
 
   createAnswer(
