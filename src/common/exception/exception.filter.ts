@@ -20,7 +20,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     if (!(exception instanceof HttpException)) {
-      exception = new InternalServerErrorException('Unexpected Error');
       this.prismaService.error_Log.create({
         data: {
           label: this.label,
@@ -29,6 +28,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           name: exception.name,
         },
       });
+      exception = new InternalServerErrorException('Unexpected Error');
     }
 
     const response = (exception as HttpException).getResponse();
