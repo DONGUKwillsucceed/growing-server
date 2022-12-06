@@ -6,8 +6,8 @@ export class RemoveCoupleService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async remove(coupleId: string) {
-    this.removeCouple(coupleId);
-    this.makePeopleToSolo(coupleId);
+    await this.removeCouple(coupleId);
+    await this.makePeopleToSolo(coupleId);
   }
 
   async removeCouple(coupleId: string) {
