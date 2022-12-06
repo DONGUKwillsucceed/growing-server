@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Where } from 'src/module/chatting-photo/types/Where.enum';
+import { Gender } from 'src/module/user/types/Gender.enum';
 import { PrismaService } from 'src/service/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateChattingDto } from '../dto/Create-Chatting.dto';
@@ -63,7 +64,7 @@ export class CreateChattingService {
       },
       select: { id: true },
     });
-
+    await this.increaseLoveGaugeForPet(dto.coupleId, dto.userId);
     return { chattingId: id, ...dto };
   }
 
@@ -72,5 +73,45 @@ export class CreateChattingService {
       data: { chattingId: chatting.chattingId, emojiId: chatting.emojiId },
     });
     return chatting;
+  }
+
+  async increaseLoveGaugeForPet(coupleId: string, userId: string) {
+    const id = await this.getPetId(coupleId);
+    const gender = await this.getGender(userId);
+    if (!(await this.isSpeakLoveU(id, gender))) {
+      await this.prismaService.pets.update({
+        where: { id },
+        data: { loveGauge: { increment: 0.5 } },
+      });
+    }
+  }
+
+  async isSpeakLoveU(id: string, gender: string) {
+    const { isFemaleSpeakLoveU, isMaleSpeakLoveU } =
+      await this.prismaService.petCare.findUnique({
+        where: { id },
+        select: { isFemaleSpeakLoveU: true, isMaleSpeakLoveU: true },
+      });
+
+    if (gender === Gender.Female) {
+      return isFemaleSpeakLoveU;
+    }
+    return isMaleSpeakLoveU;
+  }
+
+  async getGender(userId: string) {
+    const { gender } = await this.prismaService.users.findUnique({
+      where: { id: userId },
+      select: { gender: true },
+    });
+    return gender;
+  }
+
+  async getPetId(coupleId: string) {
+    const { id } = await this.prismaService.pets.findFirst({
+      where: { coupleId, isDeleted: 0 },
+      select: { id: true },
+    });
+    return id;
   }
 }
