@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class CreateQuestionService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async create() {
     const ids = await this.getManyForCoupleIdWithBothAnswered();
     ids.forEach(async (id) => {
