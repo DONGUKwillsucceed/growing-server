@@ -7,6 +7,7 @@ import { PetController } from './controller/pet.controller';
 import { PostPetController } from './controller/post-pet.controller';
 import { FeedPetService } from './service/feed-pet.service';
 import { GetPetService } from './service/get-pet.service';
+import { LovePetService } from './service/love-pet.service';
 import { PatchPetService } from './service/patch-pet.service';
 import { PetCareDBService } from './service/pet-care-db.service';
 import { PetDBService } from './service/pet-db.service';
@@ -28,11 +29,13 @@ import { TouchPetService } from './service/touch-pet.service';
     TouchPetService,
     PostPetService,
     PatchPetService,
+    LovePetService,
     {
       provide: INJECTION_TOKEN,
       useValue: PET_LABEL,
     },
   ],
+  exports: [LovePetService],
 })
 export class PetModule {
   configure(consumer: MiddlewareConsumer) {
