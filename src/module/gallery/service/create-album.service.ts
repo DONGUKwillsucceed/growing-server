@@ -15,6 +15,7 @@ export class CreateAlbumService {
     for (const imageId of imageIds) {
       this.createAlbums_Photos(this.createDataForAlbums_Photos(id, imageId));
     }
+    await this.increaseLoveGaugeForPet(coupleId);
   }
 
   createDataForAlbum(coupleId: string, userId: string, dto: CreateAlbumDto) {
@@ -42,5 +43,12 @@ export class CreateAlbumService {
       photoId,
     };
     return data;
+  }
+
+  async increaseLoveGaugeForPet(coupleId: string) {
+    this.prismaService.pets.updateMany({
+      where: { coupleId, isDeleted: 0 },
+      data: { loveGauge: 2 },
+    });
   }
 }
