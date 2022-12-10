@@ -5,5 +5,5 @@ export class CreateCoupleAndPetDto {
   anniversaryDay: string;
 
   @IsString()
-  partnerId: string;
+  coupleId: string;
 }

@@ -14,13 +14,13 @@ import { INJECTION_TOKEN } from '../const';
 export class HttpExceptionFilter implements ExceptionFilter {
   @Inject(PrismaService) private readonly prismaService: PrismaService;
   @Inject(INJECTION_TOKEN) private readonly label: string;
-  catch(exception: Error, host: ArgumentsHost) {
+  async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
     if (!(exception instanceof HttpException)) {
-      this.prismaService.error_Log.create({
+      await this.prismaService.error_Log.create({
         data: {
           label: this.label,
           message: exception.message,
