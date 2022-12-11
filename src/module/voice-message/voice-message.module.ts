@@ -8,6 +8,7 @@ import { PrismaService } from 'src/service/prisma.service';
 import { CreateVoiceMessageService } from './service/create-voice-message.service';
 import { VOICE_MSG_LABEL } from './const';
 import { INJECTION_TOKEN } from 'src/common/const';
+import { GetVoiceMessageService } from './service/get-voice-message.service';
 
 @Module({
   controllers: [VoiceMessageController],
@@ -17,6 +18,7 @@ import { INJECTION_TOKEN } from 'src/common/const';
     CreateVoiceMessageService,
     S3Service,
     PrismaService,
+    GetVoiceMessageService,
     {
       provide: INJECTION_TOKEN,
       useValue: VOICE_MSG_LABEL,

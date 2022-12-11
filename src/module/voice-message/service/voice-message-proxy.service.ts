@@ -3,12 +3,14 @@ import { CreateVoiceMesageDto } from '../dto/CreateVoiceMessage.dto';
 import { GetUploadUrlRequestDto } from '../dto/GetUploadUrlRequest.dto';
 import { CreateVoiceMessageService } from './create-voice-message.service';
 import { GetUrlService } from './get-url.service';
+import { GetVoiceMessageService } from './get-voice-message.service';
 
 @Injectable()
 export class VoiceMessageProxyService {
   constructor(
     private readonly getUrlService: GetUrlService,
     private readonly createVoiceService: CreateVoiceMessageService,
+    private readonly getVoiceService: GetVoiceMessageService,
   ) {}
 
   async findOneForUploadUrl(coupleId: string, dto: GetUploadUrlRequestDto) {
@@ -21,5 +23,9 @@ export class VoiceMessageProxyService {
 
   async create(coupleId: string, userId: string, dto: CreateVoiceMesageDto) {
     this.createVoiceService.create(coupleId, userId, dto);
+  }
+
+  async findMany(coupleId: string) {
+    return this.getVoiceService.findMany(coupleId);
   }
 }

@@ -5,4 +5,6 @@ export class CreateVoiceMesageDto {
   s3Path: string;
   @IsString()
   chattingId: string;
+
+  time: string;
 }

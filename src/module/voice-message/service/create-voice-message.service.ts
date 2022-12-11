@@ -13,13 +13,16 @@ export class CreateVoiceMessageService {
   }
 
   createVoiceData(coupleId: string, userId: string, dto: CreateVoiceMesageDto) {
-    const { s3Path, chattingId } = dto;
+    const { s3Path, chattingId, time } = dto;
+    const sec = new Date().getSeconds();
     const data: Prisma.VoiceStorageUncheckedCreateInput = {
       id: uuidv4(),
       coupleId,
       userId,
       s3Path,
       chattingId,
+      time,
+      name: `음성 메시지 ${sec}`,
     };
     return data;
   }

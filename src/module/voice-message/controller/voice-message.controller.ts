@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   UseFilters,
+  Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
@@ -21,6 +22,12 @@ import { VoiceMessageProxyService } from '../service/voice-message-proxy.service
 @Controller('couples/:coupleId/chattings/voice-messages')
 export class VoiceMessageController {
   constructor(private readonly voiceMessageProxy: VoiceMessageProxyService) {}
+
+  @UseGuards(UserAuthGuard)
+  @Get()
+  async findMany(@Param('coupleId') coupleId: string) {
+    return this.voiceMessageProxy.findMany(coupleId);
+  }
 
   @UseGuards(UserAuthGuard)
   @Post('get-upload-url')
