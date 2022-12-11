@@ -28,12 +28,14 @@ export class GetChattingService {
       .then((chattings) => this.getImageUrl(chattings))
       .then((chattings) => this.getVoiceMsgUrl(chattings))
       .then((chattings) => this.getEmogiUrl(chattings))
+      .then((chattings) => this.getProfileUrl(chattings))
       .then((chattings) =>
         Promise.all(
           chattings.map(async (chatting) => {
             const others = await this.getImageUrl(chatting.other_Chattings)
               .then((oc) => this.getVoiceMsgUrl(oc))
-              .then((oc) => this.getEmogiUrl(oc));
+              .then((oc) => this.getEmogiUrl(oc))
+              .then((oc) => this.getProfileUrl(oc));
             return { others, ...chatting };
           }),
         ),
@@ -47,6 +49,7 @@ export class GetChattingService {
       .then((chatting) => this.getImageUrl([chatting]))
       .then((chatting) => this.getVoiceMsgUrl(chatting))
       .then((chatting) => this.getEmogiUrl(chatting))
+      .then((chatting) => this.getProfileUrl(chatting))
       .then((chatting) => {
         let isMine = false;
         if (chatting[0].userId === userId) {
@@ -86,6 +89,16 @@ export class GetChattingService {
         return { emojiUrls, ...chatting };
       }),
     );
+  }
+
+  async getProfileUrl(chattings: ChattingImgVoiceEmojiUrlsInterface[]) {
+    for (const chatting of chattings) {
+      chatting.Users.profileImageS3Path =
+        await this.chattingS3Service.getSingedUrl(
+          chatting.Users.profileImageS3Path,
+        );
+    }
+    return chattings;
   }
 
   mapFromRelation(
