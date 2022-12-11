@@ -5,9 +5,11 @@ import {
   Patch,
   Req,
   Delete,
-  InternalServerErrorException,
+  Param,
   BadRequestException,
   UseGuards,
+  UseFilters,
+  Body,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,14 +20,18 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { body } from 'express-validator';
+import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { AddPhotoDto } from '../dto/AddPhoto.dto';
 import { CreateAlbumDto } from '../dto/CreateAlbum.dto';
 import { PatchAlbumDto } from '../dto/PatchAlbum.dto';
 import { AlbumeProxyService } from '../service/album-proxy.service';
 import { PhotoProxyService } from '../service/photo-proxy.service';
 @Controller('couples/:coupleId/gallerys/albums')
+@UseFilters(HttpExceptionFilter)
 @ApiTags('Album에 대한 Rest API')
 export class AlbumPhotoController {
   constructor(
@@ -39,14 +45,8 @@ export class AlbumPhotoController {
   @ApiOperation({
     description: 'album에 photo가 하나도 없을 시 imageUrl은 빈문자열 임',
   })
-  async findMany(@Req() req: UserAuthRequest) {
-    try {
-      const coupleId = req.params.coupleId;
-      return await this.albumProxyService.findMany(coupleId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async findMany(@Param('coupleId') coupleId: string) {
+    return await this.albumProxyService.findMany(coupleId);
   }
 
   @Get(':albumId/photos')
@@ -54,14 +54,8 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'albumId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async findManyForPhoto(@Req() req: UserAuthRequest) {
-    try {
-      const albumId = req.params.albumId;
-      return await this.photoProxyService.findManyWithAlbumId(albumId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async findManyForPhoto(@Param('albumId') albumId: string) {
+    return await this.photoProxyService.findManyWithAlbumId(albumId);
   }
 
   @Post('create')
@@ -69,19 +63,11 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBody({ type: CreateAlbumDto })
   @ApiBearerAuth('jwt-token')
-  async create(@Req() req: UserAuthRequest) {
-    try {
-      const coupleId = req.params.coupleId;
-      const dto = plainToInstance(CreateAlbumDto, req.body);
-      const errors = await validate(dto);
-      if (errors.length > 0) {
-        throw new BadRequestException(errors[0].toString());
-      }
-      await this.albumProxyService.create(coupleId, req.user.id, dto);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async create(
+    @Req() req: UserAuthRequest,
+    @Body(ValidationPipe) dto: CreateAlbumDto,
+  ) {
+    await this.albumProxyService.create(req.params.coupleId, req.user.id, dto);
   }
 
   @Post(':albumId/photos/create')
@@ -90,19 +76,11 @@ export class AlbumPhotoController {
   @ApiBody({ type: AddPhotoDto })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async createForPhoto(@Req() req: UserAuthRequest) {
-    try {
-      const albumId = req.params.albumId;
-      const dto = plainToInstance(AddPhotoDto, req.body);
-      const errors = await validate(dto);
-      if (errors.length > 0) {
-        throw new BadRequestException(errors[0].toString());
-      }
-      await this.albumProxyService.addPhoto(albumId, dto);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async createForPhoto(
+    @Param('albumId') albumId: string,
+    @Body(ValidationPipe) dto: CreateAlbumDto,
+  ) {
+    await this.albumProxyService.addPhoto(albumId, dto);
   }
 
   @Patch(':albumId/change-title')
@@ -111,19 +89,11 @@ export class AlbumPhotoController {
   @ApiBody({ type: PatchAlbumDto })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async patch(@Req() req: UserAuthRequest) {
-    try {
-      const albumId = req.params.albumId;
-      const dto = plainToInstance(PatchAlbumDto, req.body);
-      const errors = await validate(dto);
-      if (errors.length > 0) {
-        throw new BadRequestException(errors[0].toString());
-      }
-      await this.albumProxyService.patch(albumId, dto);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async patch(
+    @Param('albumId') albumId: string,
+    @Body(ValidationPipe) dto: CreateAlbumDto,
+  ) {
+    await this.albumProxyService.patch(albumId, dto);
   }
 
   @Delete(':albumId/photos/:photoId')
@@ -132,15 +102,11 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'photoId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async removePhoto(@Req() req: UserAuthRequest) {
-    try {
-      const albumId = req.params.albumId;
-      const photoId = req.params.photoId;
-      await this.albumProxyService.removePhoto(albumId, photoId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async removePhoto(
+    @Param('albumId') albumId: string,
+    @Param('photoId') photoId: string,
+  ) {
+    await this.albumProxyService.removePhoto(albumId, photoId);
   }
 
   @Delete(':albumId')
@@ -148,13 +114,7 @@ export class AlbumPhotoController {
   @ApiParam({ name: 'albumId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async remove(@Req() req: UserAuthRequest) {
-    try {
-      const albumId = req.params.albumId;
-      await this.albumProxyService.remove(albumId);
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Server error');
-    }
+  async remove(@Param('albumId') albumId: string) {
+    await this.albumProxyService.remove(albumId);
   }
 }
