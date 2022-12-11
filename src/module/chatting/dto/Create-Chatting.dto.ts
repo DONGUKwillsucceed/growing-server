@@ -10,10 +10,10 @@ export class CreateChattingDto {
   emojiId: string | null;
 
   @IsArray()
-  imageS3Pathes: string[]; // 사진, 비디오
+  imageIds: string[]; // 사진, 비디오
 
   @IsArray()
-  voiceMsgS3Pathes: string[];
+  voiceMsgIds: string[];
 
   @IsString()
   userId: string;

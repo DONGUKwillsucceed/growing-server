@@ -48,8 +48,8 @@ export interface CreateChattingInterface {
   chattingId: string;
   content: string | null;
   emojiId: string | null;
-  imageS3Pathes: string[]; // 사진, 비디오
-  voiceMsgS3Pathes: string[];
+  imageIds: string[]; // 사진, 비디오
+  voiceMsgIds: string[];
   userId: string;
   coupleId: string;
 }

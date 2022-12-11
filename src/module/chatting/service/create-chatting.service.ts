@@ -21,21 +21,8 @@ export class CreateChattingService {
   }
 
   async createManyForPhoto(chatting: CreateChattingInterface) {
-    const { imageS3Pathes, userId, coupleId, chattingId } = chatting;
-    for (const s3Path of imageS3Pathes) {
-      const { id } = await this.prismaService.photos.create({
-        data: {
-          id: uuidv4(),
-          userId,
-          coupleId,
-          s3Path,
-          where: Where.Chatting,
-        },
-        select: {
-          id: true,
-        },
-      });
-
+    const { imageIds, chattingId } = chatting;
+    for (const id of imageIds) {
       await this.prismaService.chatting_Photo.create({
         data: { chattingId, photoId: id },
       });
@@ -44,11 +31,12 @@ export class CreateChattingService {
   }
 
   async createManyForVoice(chatting: CreateChattingInterface) {
-    const { voiceMsgS3Pathes, userId, coupleId, chattingId } = chatting;
+    const { voiceMsgIds, chattingId } = chatting;
 
-    for (const s3Path of voiceMsgS3Pathes) {
-      await this.prismaService.voiceStorage.create({
-        data: { id: uuidv4(), s3Path, userId, coupleId, chattingId },
+    for (const id of voiceMsgIds) {
+      await this.prismaService.voiceStorage.update({
+        where: { id },
+        data: { chattingId },
       });
     }
     return chatting;
