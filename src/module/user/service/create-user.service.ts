@@ -23,6 +23,7 @@ export class CreateUserService {
       id: uuidv4(),
       kakaoId: kakaoData.id,
       verificationCode: code,
+      profileImageS3Path: 'default',
     };
     return user;
   }

@@ -3,9 +3,6 @@ import { env } from 'process';
 import { PrismaService } from 'src/service/prisma.service';
 import { KakaoData } from '../types/KakaoData';
 import { Injectable } from '@nestjs/common';
-import { UserDBService } from 'src/module/user/service/user-db.service';
-import { Prisma } from '@prisma/client';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateUserService } from 'src/module/user/service/create-user.service';
 
 @Injectable()
