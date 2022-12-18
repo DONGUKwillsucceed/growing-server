@@ -10,7 +10,7 @@ config();
 
 const DEFAULT_ADMIN = {
   email: 'admin@growing.com',
-  password: 'gorwing306',
+  password: 'growing306',
 };
 
 const authenticate = async (email: string, password: string) => {
