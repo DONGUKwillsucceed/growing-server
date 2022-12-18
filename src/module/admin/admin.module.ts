@@ -74,6 +74,21 @@ AdminJS.registerAdapter({
                   navigation: growingNav,
                 },
               },
+              {
+                resource: {
+                  model: dmmf.modelMap.Error_Log,
+                  client: prisma,
+                },
+                options: {
+                  sort: {
+                    sortBy: 'createdAt',
+                    direction: 'desc',
+                  },
+                  filterProperties: ['label', 'name', 'createdAt'],
+                  editProperties: [],
+                  navigation: growingNav,
+                },
+              },
             ],
           },
           auth: {
