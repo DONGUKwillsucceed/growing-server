@@ -96,12 +96,12 @@ AdminJS.registerAdapter({
           auth: {
             authenticate,
             cookieName: 'adminjs',
-            cookiePassword: 'secret',
+            cookiePassword: env.COOKIE_SECRET,
           },
           sessionOptions: {
             resave: true,
             saveUninitialized: true,
-            secret: 'secret',
+            secret: env.SESSION_SECRET,
           },
         };
       },
