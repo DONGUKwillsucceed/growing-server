@@ -9,8 +9,8 @@ import { config } from 'dotenv';
 config();
 
 const DEFAULT_ADMIN = {
-  email: 'admin@growing.com',
-  password: 'growing306',
+  email: env.EMAIL,
+  password: env.PASSWORD,
 };
 
 const authenticate = async (email: string, password: string) => {

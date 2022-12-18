@@ -18,6 +18,7 @@ import { GalleryModule } from './module/gallery/gallery.module';
 import { S3Service } from './service/S3.service';
 import { PlanModule } from './module/plan/plan.module';
 import { AdminJSModule } from './module/admin/admin.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -36,6 +37,10 @@ import { AdminJSModule } from './module/admin/admin.module';
     PlanModule,
     GalleryModule,
     AdminJSModule,
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService, S3Service],
