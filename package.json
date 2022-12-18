@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@adminjs/express": "^5.0.1",
     "@adminjs/nestjs": "^5.0.1",
     "@adminjs/prisma": "^3.0.1",
     "@aws-sdk/client-s3": "^3.194.0",

@@ -17,6 +17,7 @@ import { QuestionModule } from './module/question/question.module';
 import { GalleryModule } from './module/gallery/gallery.module';
 import { S3Service } from './service/S3.service';
 import { PlanModule } from './module/plan/plan.module';
+import { AdminJSModule } from './module/admin/admin.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PlanModule } from './module/plan/plan.module';
     QuestionModule,
     PlanModule,
     GalleryModule,
+    AdminJSModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtService, S3Service],

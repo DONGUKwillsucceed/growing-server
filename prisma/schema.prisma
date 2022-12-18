@@ -198,13 +198,13 @@ model Users {
   modifiedAt                     DateTime                         @default(now()) @db.DateTime(0)
   isDeleted                      Int                              @default(0) @db.TinyInt
   nickName                       String                           @default("나") @db.VarChar(100)
-  profileImageS3Path             String?                          @db.VarChar(500)
   gender                         String?                          @db.VarChar(45)
   birthDay                       DateTime?                        @db.DateTime(0)
   coupleId                       String?                          @db.VarChar(64)
   password                       String?                          @db.VarChar(45)
   verificationCode               String                           @db.VarChar(45)
   kakaoId                        Int
+  profileImageS3Path             String?                          @db.VarChar(500)
   Couples                        Couples?                         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
   Albums                         Albums[]
   ChattingStorage                ChattingStorage[]
@@ -323,7 +323,7 @@ model NoticedChatting {
 }
 
 model Questions_Warehouse {
-  id         Int      @id
+  id         Int      @id @default(autoincrement())
   content    String   @db.VarChar(800)
   level      Int
   createdAt  DateTime @default(now()) @db.DateTime(0)
