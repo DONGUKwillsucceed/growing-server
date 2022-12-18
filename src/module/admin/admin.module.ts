@@ -5,6 +5,8 @@ import * as AdminJSPrisma from '@adminjs/prisma';
 import AdminJS from 'adminjs';
 import { PrismaService } from 'src/service/prisma.service';
 import { DMMFClass } from '@prisma/client/runtime';
+import { config } from 'dotenv';
+config();
 
 const DEFAULT_ADMIN = {
   email: env.EMAIL,
@@ -99,7 +101,7 @@ AdminJS.registerAdapter({
           sessionOptions: {
             resave: true,
             saveUninitialized: true,
-            secret: env.SESSION_SECRET,
+            secret: env.SESSION_SECRE,
           },
         };
       },
