@@ -5,7 +5,6 @@ import {
   Post,
   Req,
   UseGuards,
-  InternalServerErrorException,
   UseFilters,
   Param,
 } from '@nestjs/common';

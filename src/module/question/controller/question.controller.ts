@@ -22,13 +22,17 @@ import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { AnswerDto } from '../dto/Answer.dto';
+import { QuestionMapper } from '../mapper/question.mapper';
 import { QuestionProxyService } from '../service/question-proxy.service';
 
 @ApiTags('Question에 접근하는 Rest API')
 @Controller('couples/:coupleId/questions')
 @UseFilters(HttpExceptionFilter)
 export class QuestionController {
-  constructor(private readonly questionProxyService: QuestionProxyService) {}
+  constructor(
+    private readonly questionProxyService: QuestionProxyService,
+    private readonly questionMapper: QuestionMapper,
+  ) {}
   @Get()
   @ApiParam({ name: 'coupleId', required: true })
   @ApiQuery({ name: 'to-do', required: false })
@@ -41,9 +45,13 @@ export class QuestionController {
   ) {
     const userId = req.user.id;
     if (toDo === true) {
-      return await this.questionProxyService.isRemain(coupleId, userId);
+      return this.questionProxyService.isRemain(coupleId, userId);
     }
-    return await this.questionProxyService.findMany(coupleId, userId);
+    return this.questionProxyService
+      .findMany(coupleId)
+      .then((questions) =>
+        this.questionMapper.mapFromRelationForMany(questions, userId),
+      );
   }
 
   @Post(':questionId/answer')
@@ -59,6 +67,10 @@ export class QuestionController {
     @Body(ValidationPipe) dto: AnswerDto,
   ) {
     const userId = req.user.id;
-    await this.questionProxyService.answer(dto, questionId, userId, coupleId);
+    await this.questionProxyService
+      .answer(dto, questionId, userId, coupleId)
+      .then((question) =>
+        this.questionMapper.mapFromRelationForOne(question, userId),
+      );
   }
 }

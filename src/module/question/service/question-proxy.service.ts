@@ -10,12 +10,12 @@ export class QuestionProxyService {
     private readonly createAnswerService: CreateAnswerService,
   ) {}
 
-  async findMany(coupleId: string, userId: string) {
-    return await this.getQuestionService.findMany(coupleId, userId);
+  async findMany(coupleId: string) {
+    return this.getQuestionService.findMany(coupleId);
   }
 
   async isRemain(coupleId: string, userId: string) {
-    return await this.getQuestionService.isRemain(coupleId, userId);
+    return this.getQuestionService.isRemain(coupleId, userId);
   }
 
   async answer(
@@ -24,7 +24,7 @@ export class QuestionProxyService {
     userId: string,
     coupleId: string,
   ) {
-    await this.createAnswerService.create(
+    return this.createAnswerService.create(
       dto.content,
       questionId,
       userId,

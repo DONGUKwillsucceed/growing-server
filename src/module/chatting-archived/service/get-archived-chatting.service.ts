@@ -1,6 +1,4 @@
 import { PrismaService } from 'src/service/prisma.service';
-import { ArchivedChattingDto } from '../dto/ArchivedChatting.dto';
-import { ArchivedChattingInterface } from '../types/ArchivedChatting.type';
 import { Injectable } from '@nestjs/common';
 @Injectable()
 export class GetArchivedChattingService {

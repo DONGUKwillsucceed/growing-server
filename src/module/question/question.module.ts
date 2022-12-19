@@ -5,6 +5,7 @@ import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { QUESTION_LABEL } from './const';
 import { QuestionController } from './controller/question.controller';
+import { QuestionMapper } from './mapper/question.mapper';
 import { CreateAnswerService } from './service/create-answer.service';
 import { CreateQuestionService } from './service/create-question.service';
 import { GetQuestionService } from './service/get-question.service';
@@ -18,6 +19,7 @@ import { QuestionProxyService } from './service/question-proxy.service';
     PrismaService,
     CreateAnswerService,
     CreateQuestionService,
+    QuestionMapper,
     {
       provide: INJECTION_TOKEN,
       useValue: QUESTION_LABEL,
