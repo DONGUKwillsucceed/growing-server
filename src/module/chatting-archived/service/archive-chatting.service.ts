@@ -8,17 +8,24 @@ export class ArchiveChattingService {
 
   async archive(coupleId: string, userId: string, chattingId: string) {
     const data = this.createChattingStorageData(coupleId, userId, chattingId);
-    await this.create(data);
     await this.getPetID(coupleId).then(async (petId) => {
       if (!(await this.isUsedStorage(petId))) {
         await this.increasePetLoveGauge(petId);
       }
     });
+    return this.create(data);
   }
 
   async create(data: Prisma.ChattingStorageUncheckedCreateInput) {
-    await this.prismaService.chattingStorage.create({
+    return this.prismaService.chattingStorage.create({
       data,
+      include: {
+        Chattings: {
+          include: {
+            Users: true,
+          },
+        },
+      },
     });
   }
 

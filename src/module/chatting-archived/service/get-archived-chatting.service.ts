@@ -7,13 +7,11 @@ export class GetArchivedChattingService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findMany(coupleId: string) {
-    return await this.getMany(coupleId).then((chatting) =>
-      this.mapFromRelation(chatting),
-    );
+    return this.getMany(coupleId);
   }
 
   async getMany(coupleId: string) {
-    return await this.prismaService.chattingStorage.findMany({
+    return this.prismaService.chattingStorage.findMany({
       where: { coupleId, isDeleted: 0 },
       include: {
         Chattings: {
@@ -22,19 +20,6 @@ export class GetArchivedChattingService {
           },
         },
       },
-    });
-  }
-
-  mapFromRelation(chattingStorage: ArchivedChattingInterface[]) {
-    return chattingStorage.map((cs) => {
-      const dto: ArchivedChattingDto = {
-        chattingId: cs.id,
-        content: cs.Chattings.content,
-        writerName: cs.Chattings.Users.nickName,
-        writedAt: cs.Chattings.createdAt,
-        archivedAt: cs.createdAt,
-      };
-      return dto;
     });
   }
 }

@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { ChattingArchivedMapper } from '../mapper/chatting-archived.mapper';
 import { ArchivedChattingProxyService } from '../service/archived-chatting-proxy.service';
 
 @ApiTags('Chatting-archived에 접근하는 Rest API')
@@ -21,6 +22,7 @@ import { ArchivedChattingProxyService } from '../service/archived-chatting-proxy
 export class ArchivedChattingController {
   constructor(
     private readonly archivedChattingProxyService: ArchivedChattingProxyService,
+    private readonly chattingArchivedMapper: ChattingArchivedMapper,
   ) {}
   @Post('chattings/:chattingId/archive')
   @ApiParam({ name: 'coupleId', required: true })
@@ -33,11 +35,11 @@ export class ArchivedChattingController {
     @Param('chattingId') chattingId: string,
   ) {
     const userId = req.user.id;
-    await this.archivedChattingProxyService.archive(
-      coupleId,
-      userId,
-      chattingId,
-    );
+    return this.archivedChattingProxyService
+      .archive(coupleId, userId, chattingId)
+      .then((chatting) =>
+        this.chattingArchivedMapper.mapFromRelationForOne(chatting),
+      );
   }
 
   @Get('archived-chattings')
@@ -45,7 +47,11 @@ export class ArchivedChattingController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Param('coupleId') coupleId: string) {
-    return await this.archivedChattingProxyService.findMany(coupleId);
+    return this.archivedChattingProxyService
+      .findMany(coupleId)
+      .then((chattings) =>
+        this.chattingArchivedMapper.mapFromRelationForMany(chattings),
+      );
   }
 
   @Delete('archived-chattings/:chattingId')

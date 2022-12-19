@@ -12,7 +12,7 @@ export class ArchivedChattingProxyService {
   ) {}
 
   async archive(coupleId: string, userId: string, chattingId: string) {
-    await this.archiveChattingService.archive(coupleId, userId, chattingId);
+    return this.archiveChattingService.archive(coupleId, userId, chattingId);
   }
 
   async unstore(chattingId: string) {
@@ -20,6 +20,6 @@ export class ArchivedChattingProxyService {
   }
 
   async findMany(coupleId: string) {
-    return await this.getArchivedChattingService.findMany(coupleId);
+    return this.getArchivedChattingService.findMany(coupleId);
   }
 }
