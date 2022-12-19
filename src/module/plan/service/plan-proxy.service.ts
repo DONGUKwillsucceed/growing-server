@@ -13,15 +13,15 @@ export class PlanProxyService {
     private readonly removePlanService: RemovePlanService,
   ) {}
   async findMany(coupleId: string, now: Date) {
-    return await this.getPlanService.findMany(coupleId, now);
+    return this.getPlanService.findMany(coupleId, now);
   }
 
   async create(coupleId: string, dto: CreatePlanDto) {
-    await this.createPatchPlanService.create(coupleId, dto);
+    return this.createPatchPlanService.create(coupleId, dto);
   }
 
   async patch(planId: string, dto: PatchPlanDto) {
-    await this.createPatchPlanService.patch(planId, dto);
+    return this.createPatchPlanService.patch(planId, dto);
   }
 
   async remove(planId: string) {

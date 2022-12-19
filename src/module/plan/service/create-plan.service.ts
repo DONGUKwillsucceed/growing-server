@@ -22,7 +22,7 @@ export class CreatePatchPlanService {
       coupleId,
     };
 
-    await this.prismaService.plan.create({ data });
+    return this.prismaService.plan.create({ data });
   }
 
   async patch(planId: string, dto: PatchPlanDto) {
@@ -37,6 +37,6 @@ export class CreatePatchPlanService {
       address: dto.location.address,
     };
 
-    await this.prismaService.plan.update({ where: { id: planId }, data });
+    return this.prismaService.plan.update({ where: { id: planId }, data });
   }
 }

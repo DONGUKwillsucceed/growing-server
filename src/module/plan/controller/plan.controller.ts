@@ -18,6 +18,7 @@ import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { BAD_REQUEST } from '../const';
 import { CreatePlanDto } from '../dto/CreatePlan.dto';
 import { PatchPlanDto } from '../dto/PatchPlan.dto';
+import { PlanMapper } from '../mapper/plan.mapper';
 import { PlanProxyService } from '../service/plan-proxy.service';
 
 @Controller('couples/:coupleId/plans')
@@ -25,7 +26,10 @@ import { PlanProxyService } from '../service/plan-proxy.service';
 @UseFilters(HttpExceptionFilter)
 @ApiTags('Plan에 대한 Rest API')
 export class PlanController {
-  constructor(private readonly planProxyService: PlanProxyService) {}
+  constructor(
+    private readonly planProxyService: PlanProxyService,
+    private readonly PlanMapper: PlanMapper,
+  ) {}
 
   @Get()
   @ApiQuery({ name: 'year', required: true })
@@ -44,7 +48,9 @@ export class PlanController {
     if (day) {
       now = `${now}-${day}`;
     }
-    return await this.planProxyService.findMany(coupleId, new Date(now));
+    return this.planProxyService
+      .findMany(coupleId, new Date(now))
+      .then((plans) => this.PlanMapper.mapFromRelationForMany(plans));
   }
 
   @Post('create')
@@ -53,7 +59,9 @@ export class PlanController {
     @Param('coupleId') coupleId: string,
     @Body(ValidationPipe) dto: CreatePlanDto,
   ) {
-    await this.planProxyService.create(coupleId, dto);
+    return this.planProxyService
+      .create(coupleId, dto)
+      .then((plan) => this.PlanMapper.mapFromRelationForOne(plan));
   }
 
   @Patch(':planId')
@@ -63,7 +71,9 @@ export class PlanController {
     @Param('planId') planId: string,
     @Body(ValidationPipe) dto: PatchPlanDto,
   ) {
-    await this.planProxyService.patch(planId, dto);
+    return this.planProxyService
+      .patch(planId, dto)
+      .then((plan) => this.PlanMapper.mapFromRelationForOne(plan));
   }
 
   @Delete(':planId')
