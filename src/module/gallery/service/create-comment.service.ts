@@ -8,7 +8,10 @@ export class CreateCommentService {
 
   async create(photoId: string, userId: string, content: string) {
     const data = this.createDate(photoId, userId, content);
-    await this.prismaService.photoComments.create({ data });
+    return this.prismaService.photoComments.create({
+      data,
+      include: { Users: true },
+    });
   }
 
   createDate(photoId: string, userId: string, content: string) {

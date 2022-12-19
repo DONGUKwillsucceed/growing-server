@@ -15,13 +15,17 @@ import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { CreateCommentDto } from '../dto/CreateComment.dto';
+import { PhotoCommentMapper } from '../mapper/photo-comment.mapper';
 import { CommentProxyService } from '../service/comment-proxy.service';
 
 @Controller('couples/:coupleId/gallerys/photos/:photoId/comments')
 @UseFilters(HttpExceptionFilter)
 @ApiTags('Comment에 대한 Rest API')
 export class PhotoCommentController {
-  constructor(private readonly commentProxyService: CommentProxyService) {}
+  constructor(
+    private readonly commentProxyService: CommentProxyService,
+    private readonly photoCommentMapper: PhotoCommentMapper,
+  ) {}
   @Get()
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'photoId', required: true })
@@ -31,7 +35,11 @@ export class PhotoCommentController {
     @Param('photoId') photoId: string,
   ) {
     const userId = req.user.id;
-    return this.commentProxyService.findMany(photoId, userId);
+    return this.commentProxyService
+      .findMany(photoId, userId)
+      .then((comments) =>
+        this.photoCommentMapper.mapFromRelationForMany(comments, userId),
+      );
   }
 
   @Post('create')
@@ -45,7 +53,11 @@ export class PhotoCommentController {
     @Body(ValidationPipe) dto: CreateCommentDto,
   ) {
     const userId = req.user.id;
-    await this.commentProxyService.create(photoId, userId, dto.content);
+    return this.commentProxyService
+      .create(photoId, userId, dto.content)
+      .then((comment) =>
+        this.photoCommentMapper.mapFromRelationForOne(comment, userId),
+      );
   }
 
   @Delete(':commentId')

@@ -7,9 +7,7 @@ export class GetCommentService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findMany(photoId: string, userId: string) {
-    return await this.getMany(photoId).then((comments) =>
-      this.mapFromRelation(comments, userId),
-    );
+    return await this.getMany(photoId);
   }
 
   async getMany(photoId: string) {
@@ -18,19 +16,6 @@ export class GetCommentService {
       include: {
         Users: true,
       },
-    });
-  }
-
-  mapFromRelation(comments: CommentUserInterface[], userId: string) {
-    return comments.map((comment) => {
-      const dto: PhotoCommentDto = {
-        id: comment.id,
-        content: comment.content,
-        createdAt: comment.createdAt,
-        isMine: comment.userId === userId,
-        name: comment.Users.nickName,
-      };
-      return dto;
     });
   }
 }

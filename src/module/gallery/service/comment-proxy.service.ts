@@ -10,11 +10,11 @@ export class CommentProxyService {
     private readonly removeCommentService: RemoveCommentService,
   ) {}
   async findMany(photoId: string, userId: string) {
-    return await this.getCommentService.findMany(photoId, userId);
+    return this.getCommentService.findMany(photoId, userId);
   }
 
   async create(photoId: string, userId: string, comment: string) {
-    await this.createCommentService.create(photoId, userId, comment);
+    return this.createCommentService.create(photoId, userId, comment);
   }
 
   async remove(commentId: string) {
