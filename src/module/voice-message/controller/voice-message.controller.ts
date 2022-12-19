@@ -15,18 +15,26 @@ import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { CreateVoiceMesageDto } from '../dto/CreateVoiceMessage.dto';
 import { GetUploadUrlRequestDto } from '../dto/GetUploadUrlRequest.dto';
+import { VoiceMessageMapper } from '../mapper/voice-message.mapper';
 import { VoiceMessageProxyService } from '../service/voice-message-proxy.service';
 
 @ApiTags('Voice-messages에 접근하는 Rest API')
 @UseFilters(HttpExceptionFilter)
 @Controller('couples/:coupleId/chattings/voice-messages')
 export class VoiceMessageController {
-  constructor(private readonly voiceMessageProxy: VoiceMessageProxyService) {}
+  constructor(
+    private readonly voiceMessageProxy: VoiceMessageProxyService,
+    private readonly voiceMessageMapper: VoiceMessageMapper,
+  ) {}
 
   @UseGuards(UserAuthGuard)
   @Get()
   async findMany(@Param('coupleId') coupleId: string) {
-    return this.voiceMessageProxy.findMany(coupleId);
+    return this.voiceMessageProxy
+      .findMany(coupleId)
+      .then((messages) =>
+        this.voiceMessageMapper.mapFromRelationForMany(messages),
+      );
   }
 
   @UseGuards(UserAuthGuard)
@@ -38,7 +46,7 @@ export class VoiceMessageController {
     @Param('coupleId') coupleId: string,
     @Body(ValidationPipe) dto: GetUploadUrlRequestDto,
   ) {
-    return await this.voiceMessageProxy.findOneForUploadUrl(coupleId, dto);
+    return this.voiceMessageProxy.findOneForUploadUrl(coupleId, dto);
   }
 
   @UseGuards(UserAuthGuard)
@@ -52,7 +60,11 @@ export class VoiceMessageController {
     @Body(ValidationPipe) dto: CreateVoiceMesageDto,
   ) {
     const userId = req.user.id;
-    await this.voiceMessageProxy.create(coupleId, userId, dto);
+    return this.voiceMessageProxy
+      .create(coupleId, userId, dto)
+      .then((message) =>
+        this.voiceMessageMapper.mapFromRelationForOne(message),
+      );
   }
 
   @UseGuards(UserAuthGuard)

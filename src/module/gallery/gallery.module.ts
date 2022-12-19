@@ -7,6 +7,7 @@ import { GALLERY_LABEL } from './const';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
 import { PhotoCommentController } from './controller/photo-comment.controller';
+import { PhotoCommentMapper } from './mapper/photo-comment.mapper';
 import { AddPhotoService } from './service/add-photo.service';
 import { AlbumeProxyService } from './service/album-proxy.service';
 import { CommentProxyService } from './service/comment-proxy.service';
@@ -49,6 +50,7 @@ import { RemovePhotoService } from './service/remove-photo.service';
     GetCommentService,
     CreateCommentService,
     RemoveCommentService,
+    PhotoCommentMapper,
     {
       provide: INJECTION_TOKEN,
       useValue: GALLERY_LABEL,

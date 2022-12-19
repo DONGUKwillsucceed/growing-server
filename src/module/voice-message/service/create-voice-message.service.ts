@@ -9,7 +9,7 @@ export class CreateVoiceMessageService {
 
   async create(coupleId: string, userId: string, dto: CreateVoiceMesageDto) {
     const data = this.createVoiceData(coupleId, userId, dto);
-    await this.prismaService.voiceStorage.create({ data });
+    return this.prismaService.voiceStorage.create({ data });
   }
 
   createVoiceData(coupleId: string, userId: string, dto: CreateVoiceMesageDto) {

@@ -14,15 +14,15 @@ export class VoiceMessageProxyService {
   ) {}
 
   async findOneForUploadUrl(coupleId: string, dto: GetUploadUrlRequestDto) {
-    return await this.getUrlService.getOneForUploadUrl(coupleId, dto.name);
+    return this.getUrlService.getOneForUploadUrl(coupleId, dto.name);
   }
 
   async findOneForDownloadUrl(voiceId: string) {
-    return await this.getUrlService.getOneForDownloadUrl(voiceId);
+    return this.getUrlService.getOneForDownloadUrl(voiceId);
   }
 
   async create(coupleId: string, userId: string, dto: CreateVoiceMesageDto) {
-    this.createVoiceService.create(coupleId, userId, dto);
+    return this.createVoiceService.create(coupleId, userId, dto);
   }
 
   async findMany(coupleId: string) {
