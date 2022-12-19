@@ -25,6 +25,8 @@ import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { AddPhotoDto } from '../dto/AddPhoto.dto';
 import { CreateAlbumDto } from '../dto/CreateAlbum.dto';
 import { PatchAlbumDto } from '../dto/PatchAlbum.dto';
+import { AlbumMapper } from '../mapper/album.mapper';
+import { PhotoLineMapper } from '../mapper/photo-line.mapper';
 import { AlbumeProxyService } from '../service/album-proxy.service';
 import { PhotoProxyService } from '../service/photo-proxy.service';
 @Controller('couples/:coupleId/gallerys/albums')
@@ -34,6 +36,8 @@ export class AlbumPhotoController {
   constructor(
     private readonly albumProxyService: AlbumeProxyService,
     private readonly photoProxyService: PhotoProxyService,
+    private readonly albumMapper: AlbumMapper,
+    private readonly photoLineMapper: PhotoLineMapper,
   ) {}
   @Get()
   @UseGuards(UserAuthGuard)
@@ -43,7 +47,9 @@ export class AlbumPhotoController {
     description: 'album에 photo가 하나도 없을 시 imageUrl은 빈문자열 임',
   })
   async findMany(@Param('coupleId') coupleId: string) {
-    return await this.albumProxyService.findMany(coupleId);
+    return this.albumProxyService
+      .findMany(coupleId)
+      .then((albums) => this.albumMapper.mapFromRelationForMany(albums));
   }
 
   @Get(':albumId/photos')
@@ -52,7 +58,9 @@ export class AlbumPhotoController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findManyForPhoto(@Param('albumId') albumId: string) {
-    return await this.photoProxyService.findManyWithAlbumId(albumId);
+    return this.photoProxyService
+      .findManyWithAlbumId(albumId)
+      .then((photos) => this.photoLineMapper.mapFromRelation(photos));
   }
 
   @Post('create')

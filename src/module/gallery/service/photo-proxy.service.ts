@@ -15,27 +15,27 @@ export class PhotoProxyService {
   ) {}
 
   async findMany(coupleId: string) {
-    return await this.getPhotoService.findMany(coupleId);
+    return this.getPhotoService.findMany(coupleId);
   }
 
   async findManyWithAlbumId(albumId: string) {
-    return await this.getPhotoService.findManyWithAlbumId(albumId);
+    return this.getPhotoService.findManyWithAlbumId(albumId);
   }
 
   async findOne(photoId: string) {
-    return await this.getPhotoService.findOne(photoId);
+    return this.getPhotoService.findOne(photoId);
   }
 
   async findOneForUploadUrl(coupleId: string, name: string) {
-    return await this.getUrlService.getOneForUploadUrl(coupleId, name);
+    return this.getUrlService.getOneForUploadUrl(coupleId, name);
   }
 
   async findOneForDownloadUrl(photoId: string) {
-    return await this.getUrlService.getOneForDownloadUrl(photoId);
+    return this.getUrlService.getOneForDownloadUrl(photoId);
   }
 
   async create(dto: CreatePhotoRequestDto, coupleId: string, userId: string) {
-    return await this.createPhotoService.create(dto, coupleId, userId);
+    return this.createPhotoService.create(dto, coupleId, userId);
   }
 
   async remove(photoId: string) {

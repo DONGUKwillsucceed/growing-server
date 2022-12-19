@@ -15,13 +15,11 @@ export class GetAlbumService {
   ) {}
 
   async findMany(coupleId: string) {
-    return await this.getMany(coupleId)
-      .then((albums) => this.getImageUrl(albums))
-      .then((albums) => this.mapFromRelation(albums));
+    return this.getMany(coupleId).then((albums) => this.getImageUrl(albums));
   }
 
   async getMany(coupleId: string) {
-    return await this.prismaService.albums.findMany({
+    return this.prismaService.albums.findMany({
       where: { coupleId, isDeleted: 0 },
       include: {
         Albums_Photos: {
@@ -31,6 +29,7 @@ export class GetAlbumService {
           take: 1,
         },
       },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -47,18 +46,5 @@ export class GetAlbumService {
         return { imageUrl, ...album };
       }),
     );
-  }
-
-  mapFromRelation(albums: AlbumPhotoImageUrlInterface[]) {
-    return albums.map((album) => {
-      const dto: AlbumDto = {
-        id: album.id,
-        imageUrl: album.imageUrl,
-        createdAt: album.createdAt,
-        title: album.title,
-        subTitle: album.subHead,
-      };
-      return dto;
-    });
   }
 }

@@ -16,19 +16,27 @@ import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
 import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
 import { UploadUrlRequestDto } from '../dto/UploadUrlRequest.dto';
+import { PhotoLineMapper } from '../mapper/photo-line.mapper';
+import { PhotoMapper } from '../mapper/photo.mapper';
 import { PhotoProxyService } from '../service/photo-proxy.service';
 
 @ApiTags('Gallery에 대한 Rest API')
 @Controller('couples/:coupleId/gallerys/photos')
 @UseFilters(HttpExceptionFilter)
 export class GalleryPhotoController {
-  constructor(private readonly photoProxyService: PhotoProxyService) {}
+  constructor(
+    private readonly photoProxyService: PhotoProxyService,
+    private readonly photoMapper: PhotoMapper,
+    private readonly photoLineMapper: PhotoLineMapper,
+  ) {}
   @Get()
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(@Param('coupleId') coupleId: string) {
-    return await this.photoProxyService.findMany(coupleId);
+    return this.photoProxyService
+      .findMany(coupleId)
+      .then((photo) => this.photoLineMapper.mapFromRelation(photo));
   }
 
   @Get(':photoId')
@@ -37,7 +45,9 @@ export class GalleryPhotoController {
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findOne(@Param('photoId') photoId: string) {
-    return await this.photoProxyService.findOne(photoId);
+    return this.photoProxyService
+      .findOne(photoId)
+      .then((photo) => this.photoMapper.mapFromRelation(photo));
   }
 
   @Post('get-upload-url')
@@ -49,7 +59,7 @@ export class GalleryPhotoController {
     @Param('coupleId') coupleId: string,
     @Body(ValidationPipe) dto: UploadUrlRequestDto,
   ) {
-    return await this.photoProxyService.findOneForUploadUrl(coupleId, dto.name);
+    return this.photoProxyService.findOneForUploadUrl(coupleId, dto.name);
   }
 
   @UseGuards(UserAuthGuard)
@@ -63,7 +73,7 @@ export class GalleryPhotoController {
     @Body(ValidationPipe) dto: CreatePhotoRequestDto,
   ) {
     const userId = req.user.id;
-    return await this.photoProxyService.create(dto, coupleId, userId);
+    return this.photoProxyService.create(dto, coupleId, userId);
   }
 
   @UseGuards(UserAuthGuard)
@@ -72,7 +82,7 @@ export class GalleryPhotoController {
   @ApiParam({ name: 'photoId', required: true })
   @ApiBearerAuth('jwt-token')
   async findOneForDownloadUrl(@Param('photoId') photoId: string) {
-    return await this.photoProxyService.findOneForDownloadUrl(photoId);
+    return this.photoProxyService.findOneForDownloadUrl(photoId);
   }
 
   @UseGuards(UserAuthGuard)
@@ -80,6 +90,6 @@ export class GalleryPhotoController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBearerAuth('jwt-token')
   async remove(@Param('photoId') photoId: string) {
-    this.photoProxyService.remove(photoId);
+    await this.photoProxyService.remove(photoId);
   }
 }
