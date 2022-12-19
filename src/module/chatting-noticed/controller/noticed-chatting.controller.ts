@@ -11,6 +11,7 @@ import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
+import { NoticedChattingMapper } from '../mapper/noticed-chatting.mapper';
 import { NoticedChattingProxyService } from '../service/noticed-chatting-proxy.service';
 
 @ApiTags('Chatting-noticed에 접근하는 Rest API')
@@ -19,6 +20,7 @@ import { NoticedChattingProxyService } from '../service/noticed-chatting-proxy.s
 export class NoticedChattingController {
   constructor(
     private readonly noticedChattingProxyService: NoticedChattingProxyService,
+    private readonly noticedChattingMapper: NoticedChattingMapper,
   ) {}
 
   @Post(':chattingId/notify')
@@ -41,7 +43,9 @@ export class NoticedChattingController {
   @UseGuards(UserAuthGuard)
   async findOne(@Req() req: UserAuthRequest) {
     const userId = req.user.id;
-    return await this.noticedChattingProxyService.findOne(userId);
+    return await this.noticedChattingProxyService
+      .findOne(userId)
+      .then((notice) => this.noticedChattingMapper.mapFromRelation(notice));
   }
 
   @Post('notices/:noticeId/fold')

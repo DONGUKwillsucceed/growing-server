@@ -8,6 +8,7 @@ import { GetChattingService } from './service/get-chatting.service';
 import { RemoveChattingService } from './service/remove-chatting.service';
 import { INJECTION_TOKEN } from 'src/common/const';
 import { CHATTING_NOTICED_LABEL } from './const';
+import { NoticedChattingMapper } from './mapper/noticed-chatting.mapper';
 
 @Module({
   controllers: [NoticedChattingController],
@@ -17,6 +18,7 @@ import { CHATTING_NOTICED_LABEL } from './const';
     PrismaService,
     GetChattingService,
     RemoveChattingService,
+    NoticedChattingMapper,
     {
       provide: INJECTION_TOKEN,
       useValue: CHATTING_NOTICED_LABEL,

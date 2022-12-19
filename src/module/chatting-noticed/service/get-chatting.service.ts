@@ -1,6 +1,4 @@
 import { PrismaService } from 'src/service/prisma.service';
-import { NoticedChattingDto } from '../dto/NoticedChatting.dto';
-import { NoticedChattingInterface } from '../types/NoticeInterfaces';
 import { Injectable } from '@nestjs/common';
 @Injectable()
 export class GetChattingService {
@@ -14,12 +12,7 @@ export class GetChattingService {
   };
   constructor(private readonly prismaService: PrismaService) {}
   async findOne(userId: string) {
-    return await this.getOne(userId).then((notice) => {
-      if (!notice) {
-        return null;
-      }
-      return this.mapFromRelation(notice);
-    });
+    return await this.getOne(userId);
   }
 
   async getOne(userId: string) {
@@ -30,16 +23,5 @@ export class GetChattingService {
       },
       include: this.includeQuery,
     });
-  }
-
-  mapFromRelation(notice: NoticedChattingInterface) {
-    const noticedChatting = notice.NoticedChatting;
-    const dto: NoticedChattingDto = {
-      id: noticedChatting.id,
-      content: noticedChatting.Chattings.content,
-      announcer: noticedChatting.Users.nickName,
-      isFolden: !!notice.isFolden,
-    };
-    return dto;
   }
 }
