@@ -43,8 +43,11 @@ export class ChattingController {
   }
 
   @Get('emojis')
+  @UseGuards(UserAuthGuard)
   async findManyForEmojiPackage(@Req() req: UserAuthRequest) {
-    return this.chattingProxyService.findManyForEmojiPackage(req.user.id);
+    console.log(req.user.id);
+    const userId = req.user.id;
+    return this.chattingProxyService.findManyForEmojiPackage(userId);
   }
 
   @Get('emojis/:emojiId')

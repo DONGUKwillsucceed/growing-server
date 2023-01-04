@@ -30,6 +30,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       });
       exception = new InternalServerErrorException('Unexpected Error');
     }
+    console.log(exception);
 
     const response = (exception as HttpException).getResponse();
 

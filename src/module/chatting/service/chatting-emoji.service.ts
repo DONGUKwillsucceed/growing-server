@@ -1,5 +1,7 @@
 import { PrismaService } from 'src/service/prisma.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ChattingEmojiService {
   constructor(private readonly prismaService: PrismaService) {}
 
