@@ -1,5 +1,5 @@
 import { Emojis } from '@prisma/client';
-import { EmojiLineDto } from '../dto/EmojiLine.dto';
+import { EmojiLineDto } from '../../chatting/dto/EmojiLine.dto';
 
 export class EmojiLineMapper {
   mapFromRelationForMany(emojis: Emojis[]) {

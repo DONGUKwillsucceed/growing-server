@@ -19,6 +19,7 @@ import { S3Service } from './service/S3.service';
 import { PlanModule } from './module/plan/plan.module';
 import { AdminJSModule } from './module/admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
+import { EmojiModule } from './module/emoji/emoji.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ConfigModule } from '@nestjs/config';
     PlanModule,
     GalleryModule,
     AdminJSModule,
+    EmojiModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

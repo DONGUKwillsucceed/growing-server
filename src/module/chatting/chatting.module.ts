@@ -13,9 +13,8 @@ import { GetChattingService } from './service/get-chatting.service';
 import { CreateChattingService } from './service/create-chatting.service';
 import { INJECTION_TOKEN } from 'src/common/const';
 import { CHATTING_LABEL } from './const';
-import { ChattingEmojiService } from './service/chatting-emoji.service';
-import { EmojiLineMapper } from './mapper/emoji-line.mapper';
-import { EmojiPackageLineMapper } from './mapper/emoji-package-line.mapper';
+import { EmojiLineMapper } from '../emoji/mapper/emoji-line.mapper';
+import { EmojiPackageLineMapper } from '../emoji/mapper/emoji-package-line.mapper';
 
 @Module({
   controllers: [ChattingController],
@@ -30,9 +29,6 @@ import { EmojiPackageLineMapper } from './mapper/emoji-package-line.mapper';
     GetChattingPhotoService,
     ChattingGateway,
     CreateChattingService,
-    ChattingEmojiService,
-    EmojiLineMapper,
-    EmojiPackageLineMapper,
     {
       provide: INJECTION_TOKEN,
       useValue: CHATTING_LABEL,
