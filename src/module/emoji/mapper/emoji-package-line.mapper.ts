@@ -1,4 +1,4 @@
-import { EmojiPackageLineDto } from '../../chatting/dto/EmojiPackageLine.dto';
+import { EmojiPackageLineDto } from '../dto/EmojiPackageLine.dto';
 import { EmojiOrderPackage } from '../../chatting/types/ChattingInterfaces';
 
 export class EmojiPackageLineMapper {
