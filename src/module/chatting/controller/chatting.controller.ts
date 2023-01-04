@@ -42,6 +42,16 @@ export class ChattingController {
     );
   }
 
+  @Get('emojis')
+  async findManyForEmojiPackage(@Req() req: UserAuthRequest) {
+    return this.chattingProxyService.findManyForEmojiPackage(req.user.id);
+  }
+
+  @Get('emojis/:emojiId')
+  async findManyForEmoji(@Param('emojiId') emojiId: string) {
+    return this.chattingProxyService.findManyForEmoji(emojiId);
+  }
+
   @Get(':chattingId/photos')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'chattingId', required: true })

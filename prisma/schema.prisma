@@ -209,6 +209,8 @@ model Users {
   Albums                         Albums[]
   ChattingStorage                ChattingStorage[]
   Chattings                      Chattings[]
+  Emoji_Order                    Emoji_Order[]
+  Emoji_Package                  Emoji_Package[]
   NoticedChatting                NoticedChatting[]
   PhotoComments                  PhotoComments[]
   Photos                         Photos[]
@@ -251,18 +253,23 @@ model Chatting_Photo {
 }
 
 model Emoji_Package {
-  id         String   @id @db.VarChar(64)
-  name       String   @db.VarChar(100)
-  isDeleted  Int      @default(0) @db.TinyInt
-  createdAt  DateTime @default(now()) @db.DateTime(0)
-  modifiedAt DateTime @default(now()) @db.DateTime(0)
-  Emojis     Emojis[]
+  id          String        @id @db.VarChar(64)
+  name        String        @db.VarChar(100)
+  isDeleted   Int           @default(0) @db.TinyInt
+  createdAt   DateTime      @default(now()) @db.DateTime(0)
+  modifiedAt  DateTime      @default(now()) @db.DateTime(0)
+  authorId    String        @default("10509d8b-7aac-44c3-bc4d-8dcde71f0929") @db.VarChar(64)
+  Users       Users         @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "EP_User_FK")
+  Emoji_Order Emoji_Order[]
+  Emojis      Emojis[]
+
+  @@index([authorId], map: "EP_User_FK_idx")
 }
 
 model Emojis {
   id             String           @id @db.VarChar(64)
   name           String?          @db.VarChar(100)
-  s3Path         String           @db.VarChar(45)
+  imageUrl       String           @db.VarChar(500)
   packageId      String           @db.VarChar(64)
   isDeleted      Int              @default(0) @db.TinyInt
   createdAt      DateTime         @default(now()) @db.DateTime(0)
@@ -356,4 +363,18 @@ model Error_Log {
   stack     String   @db.VarChar(800)
   createdAt DateTime @default(now()) @db.DateTime(0)
   name      String   @db.VarChar(100)
+}
+
+model Emoji_Order {
+  id            String        @id @db.VarChar(64)
+  emojiPackId   String        @db.VarChar(64)
+  buyerId       String        @db.VarChar(64)
+  createdAt     DateTime      @default(now()) @db.DateTime(0)
+  modifiedAt    DateTime      @default(now()) @db.DateTime(0)
+  price         Int           @default(0)
+  Emoji_Package Emoji_Package @relation(fields: [emojiPackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "EO_Emoji_FK")
+  Users         Users         @relation(fields: [buyerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "EO_User_FK")
+
+  @@index([emojiPackId], map: "EO_Emoji_FK_idx")
+  @@index([buyerId], map: "EO_User_FK_idx")
 }

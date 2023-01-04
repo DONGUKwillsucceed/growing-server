@@ -84,8 +84,9 @@ export class GetChattingService {
   async getEmogiUrl(chattings: ChattingImgVoiceUrlsInterface[]) {
     return await Promise.all(
       chattings.map(async (chatting) => {
-        const s3Paths = chatting.Chatting_Emoji.map((ce) => ce.Emojis.s3Path);
-        const emojiUrls = await this.chattingS3Service.getSignedUrls(s3Paths);
+        const emojiUrls = chatting.Chatting_Emoji.map(
+          (ce) => ce.Emojis.imageUrl,
+        );
         return { emojiUrls, ...chatting };
       }),
     );

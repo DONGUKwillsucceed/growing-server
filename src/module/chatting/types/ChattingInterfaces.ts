@@ -4,6 +4,8 @@ import {
   Chatting_Photo,
   Couples,
   Emojis,
+  Emoji_Order,
+  Emoji_Package,
   Photos,
   Users,
   VoiceStorage,
@@ -27,6 +29,10 @@ export type ChattingInterface = ChattingIncludeQueryType & {
 
 export interface ChattingImgUrlsInterface extends ChattingInterface {
   imageUrls: string[];
+}
+
+export interface EmojiOrderPackage extends Emoji_Order {
+  Emoji_Package: Emoji_Package;
 }
 
 export interface ChattingImgVoiceUrlsInterface
