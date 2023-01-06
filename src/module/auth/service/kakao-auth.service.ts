@@ -31,7 +31,9 @@ export class KakaoAuthService {
   }
 
   async getOneForUser(kakaoId: number) {
-    return await this.prismaService.users.findFirst({ where: { kakaoId } });
+    return await this.prismaService.users.findFirst({
+      where: { kakaoId: kakaoId.toString() },
+    });
   }
 
   async getAccessToken(code: string) {

@@ -203,7 +203,7 @@ model Users {
   coupleId                       String?                          @db.VarChar(64)
   password                       String?                          @db.VarChar(45)
   verificationCode               String                           @db.VarChar(45)
-  kakaoId                        Int
+  kakaoId                        String                           @db.VarChar(100)
   profileImageS3Path             String?                          @db.VarChar(500)
   Couples                        Couples?                         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
   Albums                         Albums[]

@@ -16,7 +16,7 @@ export class JWTService {
     return result;
   }
 
-  async getCookieWithAccessToken(userId: string) {
+  async getAccessTokenAndCookieOption(userId: string) {
     const payload: CreateJWTDto = {
       uid: userId,
       type: ClaimType.Client,
@@ -36,7 +36,7 @@ export class JWTService {
     };
   }
 
-  async getCookieWithRefreshToken(userId: string) {
+  async getRefreshTokenAndCookieOption(userId: string) {
     const payload: CreateJWTDto = {
       uid: userId,
       type: ClaimType.Client,
@@ -51,7 +51,7 @@ export class JWTService {
         path: '/',
         maxAge: Number(env.RERESH_TOKEN_EXPIRES) * 1000,
         sameSite: 'none' as const,
-        secure: true,
+        //secure: true,
       },
     };
   }

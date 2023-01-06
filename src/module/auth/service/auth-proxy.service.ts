@@ -13,11 +13,11 @@ export class AuthProxyService {
     return await this.kakaoAuthService.logIn(dto.code);
   }
 
-  async getAccessTokenAndOption(userId: string) {
-    return await this.jwtService.getCookieWithAccessToken(userId);
+  async getAccessToken(userId: string) {
+    return await this.jwtService.getAccessTokenAndCookieOption(userId);
   }
 
   async getRefreshTokenAndOption(userId: string) {
-    return await this.jwtService.getCookieWithRefreshToken(userId);
+    return await this.jwtService.getRefreshTokenAndCookieOption(userId);
   }
 }

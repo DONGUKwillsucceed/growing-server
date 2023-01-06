@@ -21,7 +21,7 @@ export class CreateUserService {
   private createUserData(kakaoData: KakaoData, code: string) {
     const user: Prisma.UsersUncheckedCreateInput = {
       id: uuidv4(),
-      kakaoId: kakaoData.id,
+      kakaoId: kakaoData.id.toString(),
       verificationCode: code,
       profileImageS3Path: 's3://growing-user-gallery/default/Ellipse 2.png',
     };

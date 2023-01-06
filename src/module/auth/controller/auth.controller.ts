@@ -18,9 +18,7 @@ export class AuthController {
   @ApiBearerAuth('jwt-token')
   async logIn(@Body(ValidationPipe) dto: KakaoCodeDto, @Res() res: Response) {
     const userId = await this.authProxyService.logIn(dto);
-    const { accessToken } = await this.authProxyService.getAccessTokenAndOption(
-      userId,
-    );
+    const { accessToken } = await this.authProxyService.getAccessToken(userId);
     const { refreshToken, refreshOption } =
       await this.authProxyService.getRefreshTokenAndOption(userId);
 
@@ -31,9 +29,7 @@ export class AuthController {
   @Post('test')
   async test(@Body(ValidationPipe) dto: RefreshTokenDto, @Res() res: Response) {
     const userId = dto.userId;
-    const { accessToken } = await this.authProxyService.getAccessTokenAndOption(
-      userId,
-    );
+    const { accessToken } = await this.authProxyService.getAccessToken(userId);
     const { refreshToken, refreshOption } =
       await this.authProxyService.getRefreshTokenAndOption(userId);
 
