@@ -17,7 +17,7 @@ export class AuthProxyService {
     return await this.jwtService.getAccessTokenAndCookieOption(userId);
   }
 
-  async getRefreshTokenAndOption(userId: string) {
+  async getRefreshToken(userId: string) {
     return await this.jwtService.getRefreshTokenAndCookieOption(userId);
   }
 }

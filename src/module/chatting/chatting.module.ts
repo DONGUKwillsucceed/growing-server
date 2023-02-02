@@ -13,8 +13,6 @@ import { GetChattingService } from './service/get-chatting.service';
 import { CreateChattingService } from './service/create-chatting.service';
 import { INJECTION_TOKEN } from 'src/common/const';
 import { CHATTING_LABEL } from './const';
-import { EmojiLineMapper } from '../emoji/mapper/emoji-line.mapper';
-import { EmojiPackageLineMapper } from '../emoji/mapper/emoji-package-line.mapper';
 
 @Module({
   controllers: [ChattingController],
