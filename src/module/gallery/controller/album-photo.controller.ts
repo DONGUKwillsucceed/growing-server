@@ -96,7 +96,7 @@ export class AlbumPhotoController {
   @UseGuards(UserAuthGuard)
   async patch(
     @Param('albumId') albumId: string,
-    @Body(ValidationPipe) dto: CreateAlbumDto,
+    @Body(ValidationPipe) dto: PatchAlbumDto,
   ) {
     await this.albumProxyService.patch(albumId, dto);
   }
