@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/service/prisma.service';
 import { PhotoS3Service } from './photo-s3.service';
-import { AlbumDto } from '../dto/Album.dto';
-import {
-  AlbumPhotoImageUrlInterface,
-  AlbumPhotoInterface,
-} from '../types/AlbumInterface';
+import { AlbumPhotoInterface } from '../types/AlbumInterface';
 
 @Injectable()
 export class GetAlbumService {

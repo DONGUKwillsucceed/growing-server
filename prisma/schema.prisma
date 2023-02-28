@@ -123,6 +123,7 @@ model Pets {
   endedAt        DateTime? @db.DateTime(0)
   isDeleted      Int       @default(0) @db.TinyInt
   name           String    @db.VarChar(100)
+  isNameChanged  Int       @default(0) @db.TinyInt
   description    String?   @db.VarChar(500)
   level          Int       @default(1)
   hungryGauge    Int       @default(0)
