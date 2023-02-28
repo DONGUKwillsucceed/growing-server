@@ -23,6 +23,7 @@ export class GetAlbumService {
       where: { coupleId, isDeleted: 0 },
       include: {
         Albums_Photos: {
+          where: { Photos: { isDeleted: 0 } },
           include: {
             Photos: true,
           },
