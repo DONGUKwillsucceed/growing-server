@@ -94,10 +94,9 @@ export class GetChattingService {
 
   async getProfileUrl(chattings: ChattingImgVoiceEmojiUrlsInterface[]) {
     for (const chatting of chattings) {
-      chatting.Users.profileImageS3Path =
-        await this.chattingS3Service.getSingedUrl(
-          chatting.Users.profileImageS3Path,
-        );
+      chatting.Users.profileId = await this.chattingS3Service.getSingedUrl(
+        chatting.Users.Photos_PhotosToUsers_profileId.s3Path,
+      );
     }
     return chattings;
   }
@@ -143,7 +142,7 @@ export class GetChattingService {
       Writer: {
         id: chatting.userId,
         name: chatting.Users.nickName,
-        imageUrl: chatting.Users.profileImageS3Path,
+        imageUrl: chatting.Users.profileId,
       },
     };
     return chattingDto;

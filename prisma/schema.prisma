@@ -156,19 +156,20 @@ model PhotoComments {
 }
 
 model Photos {
-  id             String           @id @db.VarChar(64)
-  createdAt      DateTime         @default(now()) @db.DateTime(0)
-  modifiedAt     DateTime         @default(now()) @db.DateTime(0)
-  isDeleted      Int              @default(0) @db.TinyInt
-  where          String           @db.VarChar(45)
-  s3Path         String           @db.VarChar(500)
-  coupleId       String           @db.VarChar(64)
-  userId         String           @db.VarChar(64)
-  Couples        Couples          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
-  Users          Users            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
-  Albums_Photos  Albums_Photos[]
-  Chatting_Photo Chatting_Photo[]
-  PhotoComments  PhotoComments[]
+  id                            String           @id @db.VarChar(64)
+  createdAt                     DateTime         @default(now()) @db.DateTime(0)
+  modifiedAt                    DateTime         @default(now()) @db.DateTime(0)
+  isDeleted                     Int              @default(0) @db.TinyInt
+  where                         String           @db.VarChar(45)
+  s3Path                        String           @db.VarChar(500)
+  coupleId                      String           @db.VarChar(64)
+  userId                        String           @db.VarChar(64)
+  Couples                       Couples          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
+  Users                         Users            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
+  Albums_Photos                 Albums_Photos[]
+  Chatting_Photo                Chatting_Photo[]
+  PhotoComments                 PhotoComments[]
+  Users_PhotosToUsers_profileId Users[]          @relation("PhotosToUsers_profileId")
 
   @@index([coupleId], map: "Photos_Couples_FK_idx")
   @@index([userId], map: "Photos_Users_FK_idx")
@@ -204,8 +205,9 @@ model Users {
   password                       String?                          @db.VarChar(45)
   verificationCode               String                           @db.VarChar(45)
   kakaoId                        String                           @db.VarChar(100)
-  profileImageS3Path             String?                          @db.VarChar(500)
+  profileId                      String?                          @db.VarChar(64)
   Couples                        Couples?                         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
+  Photos_PhotosToUsers_profileId Photos?                          @relation("PhotosToUsers_profileId", fields: [profileId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Photos_id_fk")
   Albums                         Albums[]
   ChattingStorage                ChattingStorage[]
   Chattings                      Chattings[]
@@ -220,6 +222,7 @@ model Users {
   VoiceStorage                   VoiceStorage[]
 
   @@index([coupleId], map: "Users_Couples_FK_idx")
+  @@index([profileId], map: "Users_Photos_id_fk")
 }
 
 model VoiceStorage {

@@ -17,6 +17,7 @@ export class UserDBService {
             Users: true,
           },
         },
+        Photos_PhotosToUsers_profileId: true,
       },
     });
   }

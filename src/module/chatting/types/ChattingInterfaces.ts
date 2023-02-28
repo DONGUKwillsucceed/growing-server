@@ -12,7 +12,7 @@ import {
 } from '@prisma/client';
 
 export type ChattingIncludeQueryType = Chattings & {
-  Users: Users;
+  Users: Users & { Photos_PhotosToUsers_profileId: Photos };
   Couples: Couples;
   Chatting_Photo: (Chatting_Photo & {
     Photos: Photos;

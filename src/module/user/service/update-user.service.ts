@@ -18,7 +18,7 @@ export class UpdateUserService {
   async updateProfile(userId: string, imageId: string) {
     await this.prismaService.users.update({
       where: { id: userId },
-      data: { profileImageS3Path: imageId, modifiedAt: new Date() },
+      data: { profileId: imageId, modifiedAt: new Date() },
     });
   }
 

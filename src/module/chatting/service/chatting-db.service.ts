@@ -27,7 +27,7 @@ export class ChattingDBService {
         id: chattingId,
       },
       include: {
-        Users: true,
+        Users: { include: { Photos_PhotosToUsers_profileId: true } },
         Couples: true,
         Chatting_Photo: {
           include: {
@@ -58,7 +58,9 @@ export class ChattingDBService {
       skip,
       take,
       include: {
-        Users: true,
+        Users: {
+          include: { Photos_PhotosToUsers_profileId: true },
+        },
         Couples: true,
         Chatting_Photo: {
           include: {
@@ -73,7 +75,7 @@ export class ChattingDBService {
         },
         other_Chattings: {
           include: {
-            Users: true,
+            Users: { include: { Photos_PhotosToUsers_profileId: true } },
             Couples: true,
             Chatting_Photo: {
               include: {

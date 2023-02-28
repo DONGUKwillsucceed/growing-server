@@ -1,6 +1,5 @@
 import { S3Service } from 'src/service/S3.service';
 import { Injectable } from '@nestjs/common';
-import { ChattingInterface } from '../types/ChattingInterfaces';
 
 @Injectable()
 export class ChattingS3Service {

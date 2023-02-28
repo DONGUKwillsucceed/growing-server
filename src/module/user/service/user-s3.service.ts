@@ -8,9 +8,9 @@ export class UserS3Service {
 
   async getImageUrl(user: UserCoupleInterface) {
     let imageUrl: string | null = null;
-    if (user.profileImageS3Path) {
+    if (user.Photos_PhotosToUsers_profileId) {
       imageUrl = await this.s3Service.getObjectUrl(
-        new URL(user.profileImageS3Path),
+        new URL(user.Photos_PhotosToUsers_profileId.s3Path),
       );
     }
 
