@@ -29,7 +29,8 @@ export class TouchPetService implements GrowPetInterface {
       pet = await this.petDBService.findUnique(petId);
     }
     const reactionUrl = await this.getReactionImageUrl(pet.petImageId);
-    const petInterface = { ...pet, reactionUrl };
+    const petCare = await this.petCareDBService.getUnique(petId);
+    const petInterface = { ...pet, reactionUrl, petCare };
 
     return this.mapFromRelation(petInterface);
   }
@@ -51,8 +52,10 @@ export class TouchPetService implements GrowPetInterface {
     const petReactionDto: PetReactionDto = {
       petImageUrl: pet.reactionUrl,
       hungryGauge: pet.hungryGauge,
+      talkingBox: null,
       loveGauge: pet.loveGauge,
       attentionGauge: pet.attentionGauge,
+      petCare: pet.petCare,
     };
     return petReactionDto;
   }

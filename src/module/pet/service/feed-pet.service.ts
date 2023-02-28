@@ -23,8 +23,9 @@ export class FeedPetService implements GrowPetInterface {
       pet = await this.increasePetGauge(petId);
     }
     const reactionUrl = await this.getReactionImageUrl(pet.petImageId);
+    const petCare = await this.petCareDBService.getUnique(petId);
 
-    const petInterface = { ...pet, reactionUrl };
+    const petInterface = { ...pet, reactionUrl, petCare };
 
     return this.mapFromRelation(petInterface);
   }
@@ -64,8 +65,10 @@ export class FeedPetService implements GrowPetInterface {
     const petReactionDto: PetReactionDto = {
       petImageUrl: pet.reactionUrl,
       hungryGauge: pet.hungryGauge,
+      talkingBox: null,
       loveGauge: pet.loveGauge,
       attentionGauge: pet.attentionGauge,
+      petCare: pet.petCare,
     };
     return petReactionDto;
   }
@@ -80,6 +83,8 @@ export class FeedPetService implements GrowPetInterface {
     return await this.petDBService.update(petId, data);
   }
   async decreasePetGauge(petId: string) {
+    const pet = await this.petDBService.findUnique(petId);
+    if (pet.hungryGauge <= 0) return pet;
     const data = this.createPetDataForDecrease();
     return await this.petDBService.update(petId, data);
   }
