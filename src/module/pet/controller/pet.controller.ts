@@ -49,8 +49,11 @@ export class PetController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'petId', required: true })
   @ApiBearerAuth('jwt-token')
-  async graduate(@Param('petId') petId: string) {
-    return this.petProxyService.graduate(petId);
+  async graduate(
+    @Param('coupleId') coupleId: string,
+    @Param('petId') petId: string,
+  ) {
+    return this.petProxyService.graduate(coupleId, petId);
   }
 
   @Patch(':petId')

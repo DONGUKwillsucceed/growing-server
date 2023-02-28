@@ -6,6 +6,7 @@ import { PrismaService } from 'src/service/prisma.service';
 import { PET_LABEL } from './const';
 import { PetController } from './controller/pet.controller';
 import { PostPetController } from './controller/post-pet.controller';
+import { CreatePetService } from './service/create-pet.service';
 import { EmptyPetCareService } from './service/empty-pet-care.service';
 import { FeedPetService } from './service/feed-pet.service';
 import { GetPetService } from './service/get-pet.service';
@@ -32,6 +33,7 @@ import { TouchPetService } from './service/touch-pet.service';
     PostPetService,
     PatchPetService,
     LovePetService,
+    CreatePetService,
     EmptyPetCareService,
     {
       provide: INJECTION_TOKEN,

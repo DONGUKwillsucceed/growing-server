@@ -22,4 +22,8 @@ export class PetCareDBService {
       },
     });
   }
+
+  async create(data: Prisma.PetCareUncheckedCreateInput) {
+    return await this.prismaService.petCare.create({ data });
+  }
 }
