@@ -83,7 +83,7 @@ export class AlbumPhotoController {
   @UseGuards(UserAuthGuard)
   async createForPhoto(
     @Param('albumId') albumId: string,
-    @Body(ValidationPipe) dto: CreateAlbumDto,
+    @Body(ValidationPipe) dto: AddPhotoDto,
   ) {
     await this.albumProxyService.addPhoto(albumId, dto);
   }
