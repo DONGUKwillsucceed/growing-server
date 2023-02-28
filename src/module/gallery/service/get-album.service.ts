@@ -35,7 +35,9 @@ export class GetAlbumService {
       albums.map(async (album) => {
         let imageUrl = '';
         if (album.Albums_Photos.length > 0) {
-          const photo = album.Albums_Photos[0].Photos;
+          const photo = album.Albums_Photos.filter(
+            (ap) => !ap.Photos.isDeleted,
+          )[0].Photos;
           const { s3Path } = photo;
           imageUrl = await this.photoS3Service.getSingedUrl(s3Path);
         }
