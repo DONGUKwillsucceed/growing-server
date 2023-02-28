@@ -11,4 +11,14 @@ export class PatchPetService {
       data: { name },
     });
   }
+
+  async graduate(petId: string) {
+    await this.prisamService.pets.update({
+      where: { id: petId },
+      data: {
+        isDeleted: 1,
+        endedAt: new Date(),
+      },
+    });
+  }
 }

@@ -27,4 +27,8 @@ export class PetProxyService {
   async patch(petId: string, name: string) {
     return await this.patchPetService.patch(petId, name);
   }
+
+  async graduate(petId: string) {
+    return this.patchPetService.graduate(petId);
+  }
 }

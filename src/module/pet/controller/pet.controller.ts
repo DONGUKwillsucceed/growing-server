@@ -45,6 +45,14 @@ export class PetController {
     return await this.petProxyService.touchAndFindReactionDto(petId);
   }
 
+  @Post(':petId/graduate')
+  @ApiParam({ name: 'coupleId', required: true })
+  @ApiParam({ name: 'petId', required: true })
+  @ApiBearerAuth('jwt-token')
+  async graduate(@Param('petId') petId: string) {
+    return this.petProxyService.graduate(petId);
+  }
+
   @Patch(':petId')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'petId', required: true })
