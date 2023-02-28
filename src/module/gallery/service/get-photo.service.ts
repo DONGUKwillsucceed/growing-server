@@ -2,13 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Photos } from '@prisma/client';
 import { Where } from 'src/module/chatting-photo/types/Where.enum';
 import { PrismaService } from 'src/service/prisma.service';
-import { PhotoDto } from '../dto/Photo.dto';
-import { PhotoLineDto } from '../dto/PhotoLine.dto';
-import {
-  PhotoImageUrlInterface,
-  PhotoUserImageUrlInterface,
-  PhotoUserInterface,
-} from '../types/PhotoInterfaces';
+import { PhotoUserInterface } from '../types/PhotoInterfaces';
 import { PhotoS3Service } from './photo-s3.service';
 
 @Injectable()
@@ -48,7 +42,7 @@ export class GetPhotoService {
 
   async getManyWithAlbumId(albumId: string) {
     return this.prismaService.albums_Photos.findMany({
-      where: { albumId },
+      where: { albumId, Photos: { isDeleted: 0 } },
       include: { Photos: true },
     });
   }

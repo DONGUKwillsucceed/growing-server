@@ -37,7 +37,7 @@ export class InitCoupleService {
   private createPetData(coupleId: string, careId: string) {
     const data: Prisma.PetsUncheckedCreateInput = {
       id: careId,
-      name: '',
+      name: null,
       careId,
       coupleId,
       petImageId: '1',
