@@ -15,7 +15,7 @@ import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
 
 @Injectable()
-@WebSocketGateway(8080, { transports: ['websocket'] })
+@WebSocketGateway(8080, { transports: ['websocket'], cors: true })
 @UseFilters(HttpExceptionFilter)
 export class ChattingGateway {
   constructor(private readonly chattingProxyService: ChattingProxyService) {}
