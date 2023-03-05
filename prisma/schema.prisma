@@ -126,9 +126,9 @@ model Pets {
   isNameChanged  Int       @default(0) @db.TinyInt
   description    String?   @db.VarChar(500)
   level          Int       @default(1)
-  hungryGauge    Int       @default(0)
-  attentionGauge Int       @default(0)
-  loveGauge      Int       @default(0)
+  hungryGauge    Float     @default(0)
+  attentionGauge Float     @default(0)
+  loveGauge      Float     @default(0)
   careId         String    @db.VarChar(64)
   coupleId       String    @db.VarChar(64)
   petImageId     String    @db.VarChar(64)

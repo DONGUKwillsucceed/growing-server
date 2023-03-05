@@ -66,7 +66,7 @@ export class CreateChattingService {
   async increaseLoveGaugeForPet(coupleId: string, userId: string) {
     const id = await this.getPetId(coupleId);
     const gender = await this.getGender(userId);
-    if (!(await this.isSpeakLoveU(id, gender))) {
+    if (await this.isSpeakLoveU(id, gender)) {
       await this.prismaService.pets.update({
         where: { id },
         data: { loveGauge: { increment: 0.5 } },
@@ -82,8 +82,17 @@ export class CreateChattingService {
       });
 
     if (gender === Gender.Female) {
+      await this.prismaService.petCare.update({
+        where: { id },
+        data: { isFemaleSpeakLoveU: 1 },
+      });
       return isFemaleSpeakLoveU;
     }
+
+    await this.prismaService.petCare.update({
+      where: { id },
+      data: { isMaleSpeakLoveU: 1 },
+    });
     return isMaleSpeakLoveU;
   }
 
