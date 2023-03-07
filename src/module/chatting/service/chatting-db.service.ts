@@ -57,6 +57,9 @@ export class ChattingDBService {
       },
       skip,
       take,
+      orderBy: {
+        createdAt: 'desc'
+      },
       include: {
         Users: {
           include: { Photos_PhotosToUsers_profileId: true },
