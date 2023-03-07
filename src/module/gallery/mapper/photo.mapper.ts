@@ -8,6 +8,7 @@ export class PhotoMapper {
       urls: photo.imageUrl,
       createdAt: photo.createdAt,
       name: photo.Users.nickName,
+      type: photo.type,
     };
     return dto;
   }

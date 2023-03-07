@@ -74,6 +74,7 @@ export class GetPhotoChattingService {
         i: photo.id,
         u: photo.imageUrls,
         c: photo.coupleId,
+        t: photo.photos[0].type,
       };
       return dto;
     });

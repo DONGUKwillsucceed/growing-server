@@ -8,6 +8,7 @@ export class PhotoLineMapper {
         i: photo.id,
         u: photo.imageUrl,
         c: photo.coupleId,
+        t: photo.type,
       };
       return dto;
     });

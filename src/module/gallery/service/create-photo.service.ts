@@ -26,6 +26,7 @@ export class CreatePhotoService {
     const data: Prisma.PhotosUncheckedCreateInput = {
       s3Path: dto.s3Path,
       where: Where.Gallery,
+      type: dto.type,
       coupleId,
       userId,
       id: uuidv4(),

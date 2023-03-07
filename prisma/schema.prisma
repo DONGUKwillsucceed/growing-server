@@ -162,6 +162,7 @@ model Photos {
   modifiedAt                    DateTime         @default(now()) @db.DateTime(0)
   isDeleted                     Int              @default(0) @db.TinyInt
   where                         String           @db.VarChar(45)
+  type                          String           @default("photo") @db.VarChar(45)
   s3Path                        String           @db.VarChar(500)
   coupleId                      String           @db.VarChar(64)
   userId                        String           @db.VarChar(64)
