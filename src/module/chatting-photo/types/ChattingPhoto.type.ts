@@ -1,15 +1,14 @@
-import { Chattings, Chatting_Photo, Photos } from '@prisma/client';
+import {
+  Chattings,
+  Chatting_Photo,
+  Photos,
+  VideoStorage,
+} from '@prisma/client';
 
-export type ChattingPhotoType = Chattings & {
-  Chatting_Photo: (Chatting_Photo & {
-    Photos: Photos;
-  })[];
+export type ChattingPhotoType = Photos & {
+  VideoStorage: VideoStorage;
 };
 
-export type ChattingPhotoPhotoType = ChattingPhotoType & {
-  photos: Photos[];
-};
-
-export type PhotoImageType = ChattingPhotoPhotoType & {
-  imageUrls: string[];
+export type PhotoImageType = ChattingPhotoType & {
+  imageUrl: string;
 };

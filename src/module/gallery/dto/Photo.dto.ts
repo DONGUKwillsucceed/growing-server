@@ -1,9 +1,8 @@
-import { Type } from '../types/Type';
-
 export interface PhotoDto {
   id: string; // photo id
   urls: string;
+  videoUrl: string | null;
   createdAt: Date;
   name: string;
-  type: string;
+  time: number | null;
 }

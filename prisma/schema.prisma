@@ -92,6 +92,7 @@ model Couples {
   Plan            Plan[]
   QuestionStorage QuestionStorage[]
   Users           Users[]
+  VideoStorage    VideoStorage[]
   VoiceStorage    VoiceStorage[]
 }
 
@@ -162,12 +163,13 @@ model Photos {
   modifiedAt                    DateTime         @default(now()) @db.DateTime(0)
   isDeleted                     Int              @default(0) @db.TinyInt
   where                         String           @db.VarChar(45)
-  type                          String           @default("photo") @db.VarChar(45)
   s3Path                        String           @db.VarChar(500)
   coupleId                      String           @db.VarChar(64)
   userId                        String           @db.VarChar(64)
+  videoId                       String?          @db.VarChar(64)
   Couples                       Couples          @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Couples_FK")
   Users                         Users            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_Users_FK")
+  VideoStorage                  VideoStorage?    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Photos_VideoStorage_id_fk")
   Albums_Photos                 Albums_Photos[]
   Chatting_Photo                Chatting_Photo[]
   PhotoComments                 PhotoComments[]
@@ -175,6 +177,7 @@ model Photos {
 
   @@index([coupleId], map: "Photos_Couples_FK_idx")
   @@index([userId], map: "Photos_Users_FK_idx")
+  @@index([videoId], map: "Photos_VideoStorage_id_fk")
 }
 
 model QuestionStorage {
@@ -221,6 +224,7 @@ model Users {
   QuestionStorage                QuestionStorage[]
   User_Chatting_IsDeleted        User_Chatting_IsDeleted[]
   User_NoticedChatting_IsDeleted User_NoticedChatting_IsDeleted[]
+  VideoStorage                   VideoStorage[]
   VoiceStorage                   VoiceStorage[]
 
   @@index([coupleId], map: "Users_Couples_FK_idx")
@@ -382,4 +386,19 @@ model Emoji_Order {
 
   @@index([emojiPackId], map: "EO_Emoji_FK_idx")
   @@index([buyerId], map: "EO_User_FK_idx")
+}
+
+model VideoStorage {
+  id        String   @id @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  s3Path    String   @db.VarChar(500)
+  time      Float
+  coupleId  String   @db.VarChar(64)
+  userId    String   @db.VarChar(64)
+  Couples   Couples  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "VideoStorage_Couples_id_fk")
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "VideoStorage_Users_id_fk")
+  Photos    Photos[]
+
+  @@index([coupleId], map: "VideoStorage_Couples_id_fk")
+  @@index([userId], map: "VideoStorage_Users_id_fk")
 }
