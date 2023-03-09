@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Photos } from '@prisma/client';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
 import { PhotoLineDto } from '../dto/PhotoLine.dto';
@@ -44,7 +43,7 @@ export class GetPhotoChattingService {
       include: {
         Chatting_Photo: {
           include: {
-            Photos: true,
+            Photos: { include: { VideoStorage: true } },
           },
         },
       },
@@ -70,11 +69,15 @@ export class GetPhotoChattingService {
 
   mapFromRelation(photos: PhotoImageType[]) {
     return photos.map((photo) => {
+      let t: number | null = null;
+
+      if (photo.photos[0].VideoStorage) t = photo.photos[0].VideoStorage.time;
+
       const dto: PhotoLineDto = {
         i: photo.id,
         u: photo.imageUrls,
         c: photo.coupleId,
-        t: photo.photos[0].type,
+        t,
       };
       return dto;
     });

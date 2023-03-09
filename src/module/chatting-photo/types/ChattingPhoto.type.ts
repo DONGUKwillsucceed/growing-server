@@ -5,10 +5,20 @@ import {
   VideoStorage,
 } from '@prisma/client';
 
-export type ChattingPhotoType = Photos & {
-  VideoStorage: VideoStorage;
+export type ChattingPhotoType = Chattings & {
+  Chatting_Photo: (Chatting_Photo & {
+    Photos: Photos & {
+      VideoStorage: VideoStorage;
+    };
+  })[];
 };
 
-export type PhotoImageType = ChattingPhotoType & {
-  imageUrl: string;
+export type ChattingPhotoPhotoType = ChattingPhotoType & {
+  photos: (Photos & {
+    VideoStorage: VideoStorage;
+  })[];
+};
+
+export type PhotoImageType = ChattingPhotoPhotoType & {
+  imageUrls: string[];
 };
