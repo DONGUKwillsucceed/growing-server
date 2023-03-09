@@ -8,7 +8,7 @@ export class PhotoLineMapper {
         i: photo.id,
         u: photo.imageUrl,
         c: photo.coupleId,
-        t: photo.type,
+        t: photo.VideoStorage ? photo.VideoStorage.time : null,
       };
       return dto;
     });

@@ -1,14 +1,15 @@
 import { PhotoDto } from '../dto/Photo.dto';
-import { PhotoUserImageUrlInterface } from '../types/PhotoInterfaces';
+import { PhotoUserVideoImageUrlInterface } from '../types/PhotoInterfaces';
 
 export class PhotoMapper {
-  mapFromRelation(photo: PhotoUserImageUrlInterface) {
+  mapFromRelation(photo: PhotoUserVideoImageUrlInterface) {
     const dto: PhotoDto = {
       id: photo.id,
       urls: photo.imageUrl,
+      videoUrl: photo.videoUrl,
       createdAt: photo.createdAt,
       name: photo.Users.nickName,
-      type: photo.type,
+      time: photo.VideoStorage ? photo.VideoStorage.time : null,
     };
     return dto;
   }

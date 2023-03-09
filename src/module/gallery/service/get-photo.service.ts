@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Photos } from '@prisma/client';
 import { Where } from 'src/module/chatting-photo/types/Where.enum';
 import { PrismaService } from 'src/service/prisma.service';
-import { PhotoUserInterface } from '../types/PhotoInterfaces';
+import {
+  PhotoUserImageUrlInterface,
+  PhotoUserInterface,
+  PhotoVideoInterface,
+} from '../types/PhotoInterfaces';
 import { PhotoS3Service } from './photo-s3.service';
 
 @Injectable()
@@ -24,9 +27,9 @@ export class GetPhotoService {
   }
 
   async findOne(photoId: string) {
-    return this.getUnique(photoId).then((photo) =>
-      this.getOneForImageUrl(photo),
-    );
+    return this.getUnique(photoId)
+      .then((photo) => this.getOneForImageUrl(photo))
+      .then((photo) => this.getOneForVideoUrl(photo));
   }
 
   async getMany(coupleId: string) {
@@ -36,6 +39,7 @@ export class GetPhotoService {
         isDeleted: 0,
         OR: [{ where: Where.Both }, { where: Where.Gallery }],
       },
+      include: { VideoStorage: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -43,7 +47,7 @@ export class GetPhotoService {
   async getManyWithAlbumId(albumId: string) {
     return this.prismaService.albums_Photos.findMany({
       where: { albumId, Photos: { isDeleted: 0 } },
-      include: { Photos: true },
+      include: { Photos: { include: { VideoStorage: true } } },
     });
   }
 
@@ -52,11 +56,12 @@ export class GetPhotoService {
       where: { id: photoId },
       include: {
         Users: true,
+        VideoStorage: true,
       },
     });
   }
 
-  async getManyForImageUrl(photos: Photos[]) {
+  async getManyForImageUrl(photos: PhotoVideoInterface[]) {
     return await Promise.all(
       photos.map(async (photo) => {
         const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
@@ -68,5 +73,15 @@ export class GetPhotoService {
   async getOneForImageUrl(photo: PhotoUserInterface) {
     const imageUrl = await this.photoS3Service.getSingedUrl(photo.s3Path);
     return { imageUrl, ...photo };
+  }
+
+  async getOneForVideoUrl(photo: PhotoUserImageUrlInterface) {
+    let videoUrl: string | null = null;
+    if (photo.VideoStorage)
+      videoUrl = await this.photoS3Service.getSingedUrl(
+        photo.VideoStorage.s3Path,
+      );
+
+    return { videoUrl, ...photo };
   }
 }
