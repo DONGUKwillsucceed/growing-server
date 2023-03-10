@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Photos, Prisma } from '@prisma/client';
+import { ExtractThumbnailService } from 'src/module/ffmpeg/service/extract-thumbnail.service';
 import { PrismaService } from 'src/service/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePhotoRequestDto } from '../dto/CreatePhotoRequest.dto';
@@ -8,13 +9,19 @@ import { Where } from '../types/Where.enum';
 
 @Injectable()
 export class CreatePhotoService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly extractThumbnailService: ExtractThumbnailService,
+  ) {}
 
   async create(dto: CreatePhotoRequestDto, coupleId: string, userId: string) {
     let thumbnailPath: string; //
 
-    if (dto.time) {
-    }
+    if (dto.time)
+      thumbnailPath = await this.extractThumbnailService.extract(
+        coupleId,
+        dto.s3Path,
+      );
 
     let data = this.createPhotoData(thumbnailPath, coupleId, userId);
     let photo = await this.prismaService.photos.create({ data });

@@ -3,6 +3,8 @@ import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
+import { FFMPEGModule } from '../ffmpeg/ffmpeg.module';
+import { ExtractThumbnailService } from '../ffmpeg/service/extract-thumbnail.service';
 import { CHATTING_PHOTO_LABEL } from './const';
 import { PhotoChattingController } from './controller/photo-chatting.controller';
 import { CreatePhotoService } from './service/create-photo.service';
@@ -21,11 +23,13 @@ import { PutGalleryService } from './service/put-gallery.service';
     CreatePhotoService,
     S3Service,
     GetPhotoChattingService,
+    ExtractThumbnailService,
     {
       provide: INJECTION_TOKEN,
       useValue: CHATTING_PHOTO_LABEL,
     },
   ],
+  imports: [FFMPEGModule],
 })
 export class PhotoChattingModule {
   configure(consumer: MiddlewareConsumer) {

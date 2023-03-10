@@ -3,6 +3,8 @@ import { INJECTION_TOKEN } from 'src/common/const';
 import { UserAuthMiddleware } from 'src/common/middleware/user-auth.middleware';
 import { PrismaService } from 'src/service/prisma.service';
 import { S3Service } from 'src/service/S3.service';
+import { FFMPEGModule } from '../ffmpeg/ffmpeg.module';
+import { ExtractThumbnailService } from '../ffmpeg/service/extract-thumbnail.service';
 import { GALLERY_LABEL } from './const';
 import { AlbumPhotoController } from './controller/album-photo.controller';
 import { GalleryPhotoController } from './controller/gallery-photo.controller';
@@ -57,11 +59,13 @@ import { RemovePhotoService } from './service/remove-photo.service';
     AlbumMapper,
     PhotoMapper,
     PhotoLineMapper,
+    ExtractThumbnailService,
     {
       provide: INJECTION_TOKEN,
       useValue: GALLERY_LABEL,
     },
   ],
+  imports: [FFMPEGModule],
 })
 export class GalleryModule {
   configure(consumer: MiddlewareConsumer) {
