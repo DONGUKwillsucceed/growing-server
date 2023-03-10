@@ -25,8 +25,13 @@ export class GetUrlService {
   async findOneForS3Path(photoId: string) {
     const photo = await this.prismaService.photos.findUnique({
       where: { id: photoId },
+      include: { VideoStorage: true },
     });
-    return photo.s3Path;
+    let s3Path = photo.s3Path;
+
+    if (photo.videoId) s3Path = photo.VideoStorage.s3Path;
+
+    return s3Path;
   }
 
   createForS3Path(coupleId: string, name: string) {
