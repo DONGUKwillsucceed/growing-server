@@ -134,6 +134,7 @@ export class S3Service {
       // Add the required 'Body' parameter
       Body: readStream,
     };
+    console.log(uploadParam);
     try {
       const data = await this.s3Client.send(new PutObjectCommand(uploadParam));
       console.log('[S3Service]uploadFile finish', data);

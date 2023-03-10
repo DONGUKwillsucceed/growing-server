@@ -15,15 +15,12 @@ export class CreatePhotoService {
   ) {}
 
   async create(dto: CreatePhotoRequestDto, coupleId: string, userId: string) {
-    let thumbnailPath: string; //
+    let s3Path = dto.s3Path; //
 
     if (dto.time)
-      thumbnailPath = await this.extractThumbnailService.extract(
-        coupleId,
-        dto.s3Path,
-      );
+      s3Path = await this.extractThumbnailService.extract(coupleId, dto.s3Path);
 
-    let data = this.createPhotoData(thumbnailPath, coupleId, userId);
+    let data = this.createPhotoData(s3Path, coupleId, userId);
     let photo = await this.prismaService.photos.create({ data });
 
     if (dto.time) {

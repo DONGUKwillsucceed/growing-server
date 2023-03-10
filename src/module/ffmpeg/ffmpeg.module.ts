@@ -3,6 +3,7 @@ import { INJECTION_TOKEN } from 'src/common/const';
 import { S3Service } from 'src/service/S3.service';
 import { FFMPEG_LABEL } from './const';
 import { ExtractThumbnailService } from './service/extract-thumbnail.service';
+
 @Module({
   providers: [
     ExtractThumbnailService,
