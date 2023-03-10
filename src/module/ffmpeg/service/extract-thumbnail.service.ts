@@ -30,28 +30,6 @@ export class ExtractThumbnailService {
       console.log('[Thumbnail uploaded]');
     });
 
-    // ffmpeg(videoPath)
-    //   .on('filenames', async (filenames) => {
-    //     console.log('Will generate ' + filenames.join(', '));
-    //     filePath = `${coupleId}/photos/${filenames[0]}`;
-    //   })
-    //   .on('end', async () => {
-    //     console.log('Screenshots taken');
-    //     s3PathUpload += filePath;
-    //     await this.uploadThumbnail(s3PathUpload, tmpdir() + filePath);
-    //   })
-    //   .on('error', async (err) => {
-    //     console.log(err);
-    //   })
-    //   .screenshots({
-    //     // Will take screens at 20%, 40%, 60% and 80% of the video
-    //     count: 1,
-    //     folder: `${tmpdir()}/${coupleId}/photos`,
-    //     size: '320x200',
-    //     // %b input basename ( filename w/o extension )
-    //     filename: 'thumbnail-%b.png',
-    //   });
-
     return s3PathUpload;
   }
 
@@ -72,7 +50,7 @@ export class ExtractThumbnailService {
           res.headers['content-type'].split('/')[1]
         }`;
 
-        videoPath = `${tmpdir()}\\${fileName}`;
+        videoPath = `${tmpdir()}/${fileName}`;
         //2. 결과값을 writestream으로 저장
         const writer = createWriteStream(videoPath);
         res.data.pipe(writer);
