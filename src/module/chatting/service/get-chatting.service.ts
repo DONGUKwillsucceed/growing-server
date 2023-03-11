@@ -6,6 +6,7 @@ import {
   ChattingImgVoiceEmojiUrlsInterface,
   ChattingImgVoiceUrlsInterface,
   ChattingInterface,
+  ChattingVideoUrlInterface,
 } from '../types/ChattingInterfaces';
 import { ChattingDBService } from './chatting-db.service';
 import { ChattingS3Service } from './chatting-s3.service';
@@ -26,6 +27,7 @@ export class GetChattingService {
     return await this.chattingDBService
       .findMany(coupleId, userId, base, limit)
       .then((chattings) => this.getImageUrl(chattings))
+      .then((chatting) => this.getVideoUrl(chatting))
       .then((chattings) => this.getVoiceMsgUrl(chattings))
       .then((chattings) => this.getEmogiUrl(chattings))
       .then((chattings) => this.getProfileUrl(chattings))
@@ -33,6 +35,7 @@ export class GetChattingService {
         Promise.all(
           chattings.map(async (chatting) => {
             const others = await this.getImageUrl(chatting.other_Chattings)
+              .then((oc) => this.getVideoUrl(oc))
               .then((oc) => this.getVoiceMsgUrl(oc))
               .then((oc) => this.getEmogiUrl(oc))
               .then((oc) => this.getProfileUrl(oc));
@@ -47,6 +50,7 @@ export class GetChattingService {
     return this.chattingDBService
       .findOne(chattingId)
       .then((chatting) => this.getImageUrl([chatting]))
+      .then((chatting) => this.getVideoUrl(chatting))
       .then((chatting) => this.getVoiceMsgUrl(chatting))
       .then((chatting) => this.getEmogiUrl(chatting))
       .then((chatting) => this.getProfileUrl(chatting))
@@ -62,20 +66,47 @@ export class GetChattingService {
   async getImageUrl(chattings: ChattingInterface[]) {
     return await Promise.all(
       chattings.map(async (chatting) => {
-        const s3Paths = chatting.Chatting_Photo.map((cp) => cp.Photos.s3Path);
+        const s3Paths = chatting.Chatting_Photo.map((cp) => {
+          if (!cp.Photos.VideoStorage) return cp.Photos.s3Path;
+        });
         const imageUrls = await this.chattingS3Service.getSignedUrls(s3Paths);
         return { imageUrls, ...chatting };
       }),
     );
   }
 
-  async getVoiceMsgUrl(chattings: ChattingImgUrlsInterface[]) {
+  async getVideoUrl(chattings: ChattingImgUrlsInterface[]) {
     return await Promise.all(
       chattings.map(async (chatting) => {
-        const s3Paths = chatting.VoiceStorage.map((voice) => voice.s3Path);
-        const voiceMsgUrls = await this.chattingS3Service.getSignedUrls(
-          s3Paths,
+        const videoUrls = await Promise.all(
+          chatting.Chatting_Photo.map(async (cp) => {
+            if (cp.Photos.VideoStorage) {
+              const { s3Path, time } = cp.Photos.VideoStorage;
+              const thumbnailUrl = await this.chattingS3Service.getSingedUrl(
+                cp.Photos.s3Path,
+              );
+              const videoUrl = await this.chattingS3Service.getSingedUrl(
+                s3Path,
+              );
+              return { thumbnailUrl, videoUrl, time };
+            }
+          }),
         );
+        return { videoUrls, ...chatting };
+      }),
+    );
+  }
+
+  async getVoiceMsgUrl(chattings: ChattingVideoUrlInterface[]) {
+    return await Promise.all(
+      chattings.map(async (chatting) => {
+        const voiceMsgUrls = await Promise.all(
+          chatting.VoiceStorage.map(async (voice) => {
+            const url = await this.chattingS3Service.getSingedUrl(voice.s3Path);
+            return { url, time: voice.time };
+          }),
+        );
+
         return { voiceMsgUrls, ...chatting };
       }),
     );
@@ -135,6 +166,7 @@ export class GetChattingService {
       id: chatting.id,
       content: chatting.content,
       emojiUrl: chatting.emojiUrls[0] ? chatting.emojiUrls[0] : null,
+      videoUrls: chatting.videoUrls,
       voiceMsgUrls: chatting.voiceMsgUrls,
       imageUrls: chatting.imageUrls,
       createdAt: chatting.createdAt,

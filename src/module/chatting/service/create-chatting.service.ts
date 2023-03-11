@@ -52,6 +52,11 @@ export class CreateChattingService {
       },
       select: { id: true },
     });
+
+    await this.prismaService.user_Chatting_IsDeleted.create({
+      data: { userId: dto.userId, chattingId: id },
+    });
+
     await this.increaseLoveGaugeForPet(dto.coupleId, dto.userId);
     return { chattingId: id, ...dto };
   }

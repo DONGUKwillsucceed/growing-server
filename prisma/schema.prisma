@@ -239,7 +239,7 @@ model VoiceStorage {
   coupleId   String    @db.VarChar(64)
   userId     String    @db.VarChar(64)
   chattingId String    @db.VarChar(64)
-  time       String    @db.VarChar(45)
+  time       Int
   name       String    @db.VarChar(100)
   Chattings  Chattings @relation(fields: [chattingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Chatting_FK")
   Couples    Couples   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Voice_Couples_FK")

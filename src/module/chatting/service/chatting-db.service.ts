@@ -31,7 +31,7 @@ export class ChattingDBService {
         Couples: true,
         Chatting_Photo: {
           include: {
-            Photos: true,
+            Photos: { include: { VideoStorage: true } },
           },
         },
         VoiceStorage: true,
@@ -58,7 +58,7 @@ export class ChattingDBService {
       skip,
       take,
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       include: {
         Users: {
@@ -67,7 +67,7 @@ export class ChattingDBService {
         Couples: true,
         Chatting_Photo: {
           include: {
-            Photos: true,
+            Photos: { include: { VideoStorage: true } },
           },
         },
         VoiceStorage: true,
@@ -82,7 +82,7 @@ export class ChattingDBService {
             Couples: true,
             Chatting_Photo: {
               include: {
-                Photos: true,
+                Photos: { include: { VideoStorage: true } },
               },
             },
             VoiceStorage: true,

@@ -6,5 +6,5 @@ export class CreateVoiceMesageDto {
   @IsString()
   chattingId: string;
 
-  time: string;
+  time: number;
 }

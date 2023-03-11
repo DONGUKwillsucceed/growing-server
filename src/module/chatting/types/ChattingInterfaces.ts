@@ -8,6 +8,7 @@ import {
   Emoji_Package,
   Photos,
   Users,
+  VideoStorage,
   VoiceStorage,
 } from '@prisma/client';
 
@@ -15,7 +16,7 @@ export type ChattingIncludeQueryType = Chattings & {
   Users: Users & { Photos_PhotosToUsers_profileId: Photos };
   Couples: Couples;
   Chatting_Photo: (Chatting_Photo & {
-    Photos: Photos;
+    Photos: Photos & { VideoStorage: VideoStorage };
   })[];
   VoiceStorage: VoiceStorage[];
   Chatting_Emoji: (Chatting_Emoji & {
@@ -31,13 +32,17 @@ export interface ChattingImgUrlsInterface extends ChattingInterface {
   imageUrls: string[];
 }
 
+export interface ChattingVideoUrlInterface extends ChattingImgUrlsInterface {
+  videoUrls: { thumbnailUrl: string; videoUrl: string; time: number }[];
+}
+
 export interface EmojiOrderPackage extends Emoji_Order {
   Emoji_Package: Emoji_Package;
 }
 
 export interface ChattingImgVoiceUrlsInterface
-  extends ChattingImgUrlsInterface {
-  voiceMsgUrls: string[];
+  extends ChattingVideoUrlInterface {
+  voiceMsgUrls: { url: string; time: number }[];
 }
 
 export interface ChattingImgVoiceEmojiUrlsInterface
