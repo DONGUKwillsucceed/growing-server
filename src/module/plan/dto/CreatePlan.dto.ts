@@ -12,7 +12,8 @@ export class CreatePlanDto {
   endAt: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description: string | null;
 
   @IsOptional()
   location: {

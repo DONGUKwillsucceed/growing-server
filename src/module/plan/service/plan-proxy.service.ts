@@ -12,8 +12,8 @@ export class PlanProxyService {
     private readonly createPatchPlanService: CreatePatchPlanService,
     private readonly removePlanService: RemovePlanService,
   ) {}
-  async findMany(coupleId: string, now: Date) {
-    return this.getPlanService.findMany(coupleId, now);
+  async findMany(coupleId: string, start: Date, end: Date) {
+    return this.getPlanService.findMany(coupleId, start, end);
   }
 
   async create(coupleId: string, dto: CreatePlanDto) {

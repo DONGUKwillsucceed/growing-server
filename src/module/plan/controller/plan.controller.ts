@@ -44,12 +44,19 @@ export class PlanController {
     if (!year || !month) {
       throw new BadRequestException(BAD_REQUEST);
     }
-    let now = `${year}-${month}`;
+    let start = new Date(`${year}-${month}`);
+    let end = new Date(
+      new Date(`${year}-${month}`).setMonth(start.getMonth() + 1),
+    );
     if (day) {
-      now = `${now}-${day}`;
+      start = new Date(`${year}-${month}-${day}`);
+      end = new Date(
+        new Date(`${year}-${month}-${day}`).setDate(start.getDate() + 1),
+      );
     }
+
     return this.planProxyService
-      .findMany(coupleId, new Date(now))
+      .findMany(coupleId, start, end)
       .then((plans) => this.PlanMapper.mapFromRelationForMany(plans));
   }
 

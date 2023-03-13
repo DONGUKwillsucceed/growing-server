@@ -45,7 +45,9 @@ export class NoticedChattingController {
     const userId = req.user.id;
     return await this.noticedChattingProxyService
       .findOne(userId)
-      .then((notice) => this.noticedChattingMapper.mapFromRelation(notice));
+      .then((notice) => {
+        if (notice) return this.noticedChattingMapper.mapFromRelation(notice);
+      });
   }
 
   @Post('notices/:noticeId/fold')

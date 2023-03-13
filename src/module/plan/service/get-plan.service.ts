@@ -4,22 +4,35 @@ import { PrismaService } from 'src/service/prisma.service';
 @Injectable()
 export class GetPlanService {
   constructor(private readonly prismaService: PrismaService) {}
-  async findMany(coupleId: string, now: Date) {
-    return this.getMany(coupleId, now);
+  async findMany(coupleId: string, start: Date, end: Date) {
+    return this.getMany(coupleId, start, end);
   }
 
-  async getMany(coupleId: string, now: Date) {
+  async getMany(coupleId: string, start: Date, end: Date) {
     return this.prismaService.plan.findMany({
       where: {
-        startAt: {
-          gte: now,
-        },
-        endAt: {
-          lte: now,
-        },
+        OR: [
+          {
+            startAt: { lte: start },
+            endAt: { gt: end },
+          },
+          {
+            startAt: { gte: start },
+            endAt: { lt: end },
+          },
+          {
+            startAt: { gte: start, lt: end },
+            endAt: { gt: end },
+          },
+          {
+            startAt: { lte: start },
+            endAt: { gte: start, lte: end },
+          },
+        ],
         coupleId,
         isDeleted: 0,
       },
+      orderBy: { startAt: 'asc' },
     });
   }
 }
