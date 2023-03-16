@@ -46,7 +46,8 @@ export class NoticedChattingController {
     return await this.noticedChattingProxyService
       .findOne(userId)
       .then((notice) => {
-        if (notice) return this.noticedChattingMapper.mapFromRelation(notice);
+        if (notice.NoticedChatting)
+          return this.noticedChattingMapper.mapFromRelation(notice);
       });
   }
 
