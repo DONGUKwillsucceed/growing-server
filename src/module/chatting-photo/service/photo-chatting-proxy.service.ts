@@ -14,8 +14,8 @@ export class PhotoChattingProxyService {
     private readonly getPhotoChattingService: GetPhotoChattingService,
   ) {}
 
-  async findMany(coupleId: string) {
-    return await this.getPhotoChattingService.findMany(coupleId);
+  async findMany(coupleId: string, userId: string) {
+    return await this.getPhotoChattingService.findMany(coupleId, userId);
   }
 
   async putGallery(photoId: string) {

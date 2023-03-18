@@ -28,8 +28,12 @@ export class PhotoChattingController {
   @ApiParam({ name: 'coupleId', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async findMany(@Param('coupleId') coupleId: string) {
-    return this.photoChattingProxyService.findMany(coupleId);
+  async findMany(
+    @Req() req: UserAuthRequest,
+    @Param('coupleId') coupleId: string,
+  ) {
+    const userId = req.user.id;
+    return this.photoChattingProxyService.findMany(coupleId, userId);
   }
 
   @Post(':photoId/put-gallery')

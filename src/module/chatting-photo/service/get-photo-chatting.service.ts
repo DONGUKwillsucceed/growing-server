@@ -14,8 +14,8 @@ export class GetPhotoChattingService {
     private readonly prismaService: PrismaService,
     private readonly s3Service: S3Service,
   ) {}
-  async findMany(coupleId: string) {
-    return await this.getMany(coupleId)
+  async findMany(coupleId: string, userId: string) {
+    return await this.getMany(coupleId, userId)
       .then((cp) => this.getPhotosFromChattingPhotos(cp))
       .then((photo) => this.getImageUrl(photo))
       .then((photo) => this.mapFromRelation(photo));
@@ -28,10 +28,16 @@ export class GetPhotoChattingService {
     });
   }
 
-  async getMany(coupleId: string) {
+  async getMany(coupleId: string, userId: string) {
     return await this.prismaService.chattings.findMany({
       where: {
         coupleId,
+        User_Chatting_IsDeleted: {
+          none: {
+            userId,
+            isDeleted: 1,
+          },
+        },
         Chatting_Photo: {
           some: {
             Photos: {
