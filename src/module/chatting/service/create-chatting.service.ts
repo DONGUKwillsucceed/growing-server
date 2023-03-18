@@ -23,6 +23,14 @@ export class CreateChattingService {
   async createManyForPhoto(chatting: CreateChattingInterface) {
     const { imageIds, chattingId } = chatting;
     for (const id of imageIds) {
+      const photo = await this.prismaService.photos.findUnique({
+        where: { id },
+      });
+      if (photo.where === Where.Gallery)
+        await this.prismaService.photos.update({
+          where: { id },
+          data: { where: Where.Both },
+        });
       await this.prismaService.chatting_Photo.create({
         data: { chattingId, photoId: id },
       });
