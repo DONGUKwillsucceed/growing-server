@@ -69,7 +69,9 @@ export class GetChattingService {
         const s3Paths = chatting.Chatting_Photo.map((cp) => {
           if (!cp.Photos.VideoStorage) return cp.Photos.s3Path;
         });
-        const imageUrls = await this.chattingS3Service.getSignedUrls(s3Paths);
+        let imageUrls = [];
+        if (s3Paths.length !== 0)
+          imageUrls = await this.chattingS3Service.getSignedUrls(s3Paths);
         return { imageUrls, ...chatting };
       }),
     );
