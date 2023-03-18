@@ -1,10 +1,10 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
-import { Type } from '../types/Type';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreatePhotoRequestDto {
   @IsString()
   s3Path: string;
 
   @IsNumber()
-  time: number;
+  @IsOptional()
+  time: number | null;
 }
