@@ -66,12 +66,14 @@ export class GetChattingService {
   async getImageUrl(chattings: ChattingInterface[]) {
     return await Promise.all(
       chattings.map(async (chatting) => {
-        const s3Paths = chatting.Chatting_Photo.map((cp) => {
-          if (!cp.Photos.VideoStorage) return cp.Photos.s3Path;
-        });
+        let s3Paths = [];
+        for (const cp of chatting.Chatting_Photo) {
+          if (!cp.Photos.VideoStorage) s3Paths.push(cp.Photos.s3Path);
+        }
         let imageUrls = [];
         if (s3Paths.length !== 0)
           imageUrls = await this.chattingS3Service.getSignedUrls(s3Paths);
+
         return { imageUrls, ...chatting };
       }),
     );
