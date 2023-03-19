@@ -32,6 +32,7 @@ export class CreateUserService {
         },
       });
     }
+    return user;
   }
 
   private createUserData(kakaoData: KakaoData, code: string) {
