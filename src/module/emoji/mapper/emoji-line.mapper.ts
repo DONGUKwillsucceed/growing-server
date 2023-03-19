@@ -8,7 +8,7 @@ export class EmojiLineMapper {
 
   mapFromRelationForOne(emoji: Emojis) {
     const dto: EmojiLineDto = {
-      id: emoji.packageId,
+      id: emoji.id,
       imageUrl: emoji.imageUrl,
       name: emoji.name,
     };
