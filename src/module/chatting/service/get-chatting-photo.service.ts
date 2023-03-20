@@ -23,9 +23,26 @@ export class GetChattingPhotoService {
   async getManyForImageUrl(photos: ChattingType[]) {
     return await Promise.all(
       photos.map(async (photo) => {
-        const s3Path = photo.Photos.s3Path;
-        const imageUrl = await this.chattingS3Service.getSingedUrl(s3Path);
-        return { imageUrl, ...photo };
+        if (!photo.Photos.VideoStorage) {
+          const s3Path = photo.Photos.s3Path;
+          const imageUrl = await this.chattingS3Service.getSingedUrl(s3Path);
+          return { imageUrl, ...photo, video: null };
+        } else {
+          const { VideoStorage } = photo.Photos;
+          const thumbnailUrl = await this.chattingS3Service.getSingedUrl(
+            photo.Photos.s3Path,
+          );
+          const videoUrl = await this.chattingS3Service.getSingedUrl(
+            VideoStorage.s3Path,
+          );
+          const video = {
+            thumbnailUrl,
+            videoUrl,
+            time: VideoStorage.time,
+            id: VideoStorage.id,
+          };
+          return { video, imageUrl: null, ...photo };
+        }
       }),
     );
   }
@@ -37,6 +54,7 @@ export class GetChattingPhotoService {
         Photos: {
           include: {
             Users: true,
+            VideoStorage: true,
           },
         },
       },
@@ -47,19 +65,31 @@ export class GetChattingPhotoService {
     const id = photos[0].chattingId;
     const createdAt = photos[0].Photos.createdAt;
     const name = photos[0].Photos.Users.nickName;
-    const photoType = photos.map((photo) => {
-      return {
-        id: photo.Photos.id,
-        url: photo.imageUrl,
+    if (photos[0].video) {
+      const photoDto: PhotoDto = {
+        id,
+        createdAt,
+        name,
+        photos: null,
+        video: photos[0].video,
       };
-    });
+      return photoDto;
+    } else {
+      const photoType = photos.map((photo) => {
+        return {
+          id: photo.Photos.id,
+          url: photo.imageUrl,
+        };
+      });
 
-    const photoDto: PhotoDto = {
-      id,
-      createdAt,
-      name,
-      photos: photoType,
-    };
-    return photoDto;
+      const photoDto: PhotoDto = {
+        id,
+        createdAt,
+        name,
+        photos: photoType,
+        video: null,
+      };
+      return photoDto;
+    }
   }
 }

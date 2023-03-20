@@ -6,4 +6,10 @@ export interface PhotoDto {
     id: string;
     url: string;
   }[];
+  video: {
+    id: string;
+    thumbnailUrl: string;
+    videoUrl: string;
+    time: number;
+  } | null;
 }
