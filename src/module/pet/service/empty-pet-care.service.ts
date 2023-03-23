@@ -4,7 +4,7 @@ import { PrismaService } from 'src/service/prisma.service';
 @Injectable()
 export class EmptyPetCareService {
   constructor(private readonly prismaService: PrismaService) {}
-  @Cron(CronExpression.EVERY_DAY_AT_11PM)
+  @Cron(CronExpression.EVERY_DAY_AT_3PM)
   async empty() {
     await this.prismaService.petCare.updateMany({
       where: { Pets: { some: { isDeleted: 0 } } },
