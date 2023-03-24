@@ -14,12 +14,12 @@ export class PhotoProxyService {
     private readonly removePhotoService: RemovePhotoService,
   ) {}
 
-  async findMany(coupleId: string) {
-    return this.getPhotoService.findMany(coupleId);
+  async findMany(coupleId: string, base: number, take: number) {
+    return this.getPhotoService.findMany(coupleId, base, take);
   }
 
-  async findManyWithAlbumId(albumId: string) {
-    return this.getPhotoService.findManyWithAlbumId(albumId);
+  async findManyWithAlbumId(albumId: string, base: number, take: number) {
+    return this.getPhotoService.findManyWithAlbumId(albumId, base, take);
   }
 
   async findOne(photoId: string) {

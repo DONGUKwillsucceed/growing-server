@@ -7,8 +7,17 @@ import {
   UseFilters,
   Param,
   Body,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
@@ -26,14 +35,23 @@ export class PhotoChattingController {
   ) {}
   @Get('')
   @ApiParam({ name: 'coupleId', required: true })
+  @ApiQuery({ name: 'base', required: true })
+  @ApiQuery({ name: 'offset', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
   async findMany(
     @Req() req: UserAuthRequest,
     @Param('coupleId') coupleId: string,
+    @Query('base', new DefaultValuePipe(0), ParseIntPipe) base: number,
+    @Query('limit', new DefaultValuePipe(30), ParseIntPipe) limit: number,
   ) {
     const userId = req.user.id;
-    return this.photoChattingProxyService.findMany(coupleId, userId);
+    return this.photoChattingProxyService.findMany(
+      coupleId,
+      userId,
+      base,
+      limit,
+    );
   }
 
   @Post(':photoId/put-gallery')

@@ -10,12 +10,16 @@ import {
   UseGuards,
   UseFilters,
   Body,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
@@ -55,11 +59,17 @@ export class AlbumPhotoController {
   @Get(':albumId/photos')
   @ApiParam({ name: 'coupleId', required: true })
   @ApiParam({ name: 'albumId', required: true })
+  @ApiQuery({ name: 'base', required: true })
+  @ApiQuery({ name: 'offset', required: true })
   @ApiBearerAuth('jwt-token')
   @UseGuards(UserAuthGuard)
-  async findManyForPhoto(@Param('albumId') albumId: string) {
+  async findManyForPhoto(
+    @Param('albumId') albumId: string,
+    @Query('base', new DefaultValuePipe(0), ParseIntPipe) base: number,
+    @Query('limit', new DefaultValuePipe(25), ParseIntPipe) limit: number,
+  ) {
     return this.photoProxyService
-      .findManyWithAlbumId(albumId)
+      .findManyWithAlbumId(albumId, base, limit)
       .then((photos) => this.photoLineMapper.mapFromRelation(photos));
   }
 

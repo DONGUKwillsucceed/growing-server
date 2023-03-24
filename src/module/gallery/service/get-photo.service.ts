@@ -14,14 +14,14 @@ export class GetPhotoService {
     private readonly prismaService: PrismaService,
     private readonly photoS3Service: PhotoS3Service,
   ) {}
-  async findMany(coupleId: string) {
-    return this.getMany(coupleId).then((photos) =>
+  async findMany(coupleId: string, skip: number, take: number) {
+    return this.getMany(coupleId, skip, take).then((photos) =>
       this.getManyForImageUrl(photos),
     );
   }
 
-  async findManyWithAlbumId(albumId: string) {
-    return this.getManyWithAlbumId(albumId)
+  async findManyWithAlbumId(albumId: string, skip: number, take: number) {
+    return this.getManyWithAlbumId(albumId, skip, take)
       .then((photos) => photos.map((photo) => photo.Photos))
       .then((photos) => this.getManyForImageUrl(photos));
   }
@@ -32,22 +32,26 @@ export class GetPhotoService {
       .then((photo) => this.getOneForVideoUrl(photo));
   }
 
-  async getMany(coupleId: string) {
+  async getMany(coupleId: string, skip: number, take: number) {
     return this.prismaService.photos.findMany({
       where: {
         coupleId,
         isDeleted: 0,
         OR: [{ where: Where.Both }, { where: Where.Gallery }],
       },
+      skip,
+      take,
       include: { VideoStorage: true },
       orderBy: { createdAt: 'desc' },
     });
   }
 
-  async getManyWithAlbumId(albumId: string) {
+  async getManyWithAlbumId(albumId: string, skip: number, take: number) {
     return this.prismaService.albums_Photos.findMany({
       where: { albumId, Photos: { isDeleted: 0 } },
       include: { Photos: { include: { VideoStorage: true } } },
+      skip,
+      take,
     });
   }
 
