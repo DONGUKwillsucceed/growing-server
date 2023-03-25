@@ -27,7 +27,7 @@ export class CreatePetService {
       name: '',
       careId,
       coupleId,
-      petImageId: '1',
+      petImageId: String(Math.floor(Math.random() * 3) + 1),
     };
     return data;
   }

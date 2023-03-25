@@ -15,7 +15,7 @@ export class CreatePhotoService {
   ) {}
 
   async create(dto: CreatePhotoRequestDto, coupleId: string, userId: string) {
-    let thumbnailPath: string; //
+    let thumbnailPath = dto.s3Path; //
 
     if (dto.time)
       thumbnailPath = await this.extractThumbnailService.extract(
