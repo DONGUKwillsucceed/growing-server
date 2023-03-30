@@ -29,7 +29,7 @@ export class PostPetService {
     return pets.map((pet) => {
       const dto: PostPetLineDto = {
         id: pet.id,
-        imageUrl: pet.PetImages.normalReactionUrl,
+        imageUrl: pet.PetImages.graduateReactionUrl,
         name: pet.name,
         endedAt: pet.endedAt,
       };
@@ -40,7 +40,7 @@ export class PostPetService {
   mapFromRelationForOne(pet: PetImageInterface) {
     const dto: PostPetDto = {
       id: pet.id,
-      imageUrl: pet.PetImages.normalReactionUrl,
+      imageUrl: pet.PetImages.graduateReactionUrl,
       name: pet.name,
       createdAt: pet.createdAt,
       endedAt: pet.endedAt,

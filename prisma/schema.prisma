@@ -108,13 +108,14 @@ model PetCare {
 }
 
 model PetImages {
-  id                String @id @db.VarChar(64)
-  name              String @db.VarChar(100)
-  level             Int    @default(1) @db.TinyInt
-  normalReactionUrl String @db.VarChar(500)
-  eatReactionUrl    String @db.VarChar(500)
-  touchReactionUrl  String @db.VarChar(500)
-  Pets              Pets[]
+  id                  String @id @db.VarChar(64)
+  name                String @db.VarChar(100)
+  level               Int    @default(1) @db.TinyInt
+  normalReactionUrl   String @db.VarChar(500)
+  eatReactionUrl      String @db.VarChar(500)
+  touchReactionUrl    String @db.VarChar(500)
+  graduateReactionUrl String @db.VarChar(255)
+  Pets                Pets[]
 }
 
 model Pets {
