@@ -32,9 +32,9 @@ export class CreatePatchPlanService {
       endAt: dto.endAt,
       description: dto.description,
       alarm: dto.alarm,
-      latitude: dto.location.latitude,
-      longitude: dto.location.longitude,
-      address: dto.location.address,
+      latitude: dto.location ? dto.location.latitude : undefined,
+      longitude: dto.location ? dto.location.longitude : undefined,
+      address: dto.location ? dto.location.address : undefined,
     };
 
     return this.prismaService.plan.update({ where: { id: planId }, data });

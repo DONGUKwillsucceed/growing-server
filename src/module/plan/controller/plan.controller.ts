@@ -11,7 +11,13 @@ import {
   Delete,
   UseFilters,
 } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthGuard } from 'src/common/guard/user.guard';
 import { ValidationPipe } from 'src/common/validation/validation.pipe';
@@ -23,6 +29,7 @@ import { PlanProxyService } from '../service/plan-proxy.service';
 
 @Controller('couples/:coupleId/plans')
 @UseGuards(UserAuthGuard)
+@ApiBearerAuth('jwt-token')
 @UseFilters(HttpExceptionFilter)
 @ApiTags('Plan에 대한 Rest API')
 export class PlanController {
