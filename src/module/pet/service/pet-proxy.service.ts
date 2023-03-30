@@ -31,8 +31,8 @@ export class PetProxyService {
   }
 
   async graduate(coupleId: string, petId: string) {
-    await this.patchPetService.graduate(petId);
-    const newPetId = await this.createPetService.create(coupleId);
+    const pet = await this.patchPetService.graduate(petId);
+    const newPetId = await this.createPetService.create(coupleId, pet);
     return this.getPetService.findPetDto(newPetId);
   }
 }

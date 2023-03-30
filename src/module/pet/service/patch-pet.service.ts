@@ -21,7 +21,7 @@ export class PatchPetService {
   }
 
   async graduate(petId: string) {
-    await this.prisamService.pets.update({
+    return await this.prisamService.pets.update({
       where: { id: petId },
       data: {
         isDeleted: 1,
