@@ -22,6 +22,7 @@ export class InitCoupleService {
       this.createPetCareData(),
     );
     this.userDBService.update(userId, couple.id);
+    this.userDBService.update(dto.partnerId, couple.id);
     await this.petDBService.create(this.createPetData(couple.id, petCare.id));
 
     return couple;
