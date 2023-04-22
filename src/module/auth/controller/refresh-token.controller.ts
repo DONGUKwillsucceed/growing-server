@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Post, Req } from '@nestjs/common';
+import { Controller, UseFilters, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
 import { UserAuthRequest } from 'src/common/interface/UserAuthRequest';
 import { AuthProxyService } from '../service/auth-proxy.service';
@@ -10,6 +10,7 @@ export class RefreshController {
 
   @Post()
   async refresh(@Req() req: UserAuthRequest) {
+    if(!req.user) throw new UnauthorizedException("refresh token needed");
     const userId = req.user.id;
     const { accessToken } = await this.authProxyService.getAccessToken(userId);
     const { refreshToken } = await this.authProxyService.getRefreshToken(
