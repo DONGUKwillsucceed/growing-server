@@ -13,7 +13,7 @@ export class CreateQuestionService {
     private readonly fCMService: FCMService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_11PM)
+  @Cron(CronExpression.EVERY_MINUTE)
   async create() {
     const ids = await this.getManyForCoupleIdWithBothAnswered();
     ids.forEach(async (id) => {
@@ -100,6 +100,14 @@ export class CreateQuestionService {
         coupleIds.push(coupleId);
       }
     }
-    return coupleIds;
+    const coupleIdsNoQuestion = await this.prismaService.couples
+      .findMany({
+        where: {
+          QuestionStorage: { none: {} },
+        },
+      })
+      .then((couples) => couples.map((couple) => couple.id));
+
+    return coupleIds.concat(coupleIdsNoQuestion);
   }
 }
