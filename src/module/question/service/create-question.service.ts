@@ -16,7 +16,6 @@ export class CreateQuestionService {
   @Cron(CronExpression.EVERY_MINUTE)
   async create() {
     const ids = await this.getManyForCoupleIdWithBothAnswered();
-    console.log(ids);
     ids.forEach(async (id) => {
       const content = await this.generateContent(id);
       if (content) {
@@ -52,7 +51,6 @@ export class CreateQuestionService {
     let content: string = '';
     while (true) {
       const randomId = Math.floor(Math.random() * length);
-      console.log(length, randomId);
       content = await this.getOneForContentWithRandomId(randomId);
       if (!content) {
         return content;
