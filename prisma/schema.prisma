@@ -78,22 +78,23 @@ model Chattings {
 }
 
 model Couples {
-  id              String            @id @db.VarChar(64)
-  createdAt       DateTime          @default(now()) @db.DateTime(0)
-  modifiedAt      DateTime          @default(now()) @db.DateTime(0)
-  isDeleted       Int               @default(0) @db.TinyInt
-  anniversaryDay  DateTime          @db.DateTime(0)
-  lastVistADay    Int               @default(0)
-  Albums          Albums[]
-  ChattingStorage ChattingStorage[]
-  Chattings       Chattings[]
-  Pets            Pets[]
-  Photos          Photos[]
-  Plan            Plan[]
-  QuestionStorage QuestionStorage[]
-  Users           Users[]
-  VideoStorage    VideoStorage[]
-  VoiceStorage    VoiceStorage[]
+  id               String             @id @db.VarChar(64)
+  createdAt        DateTime           @default(now()) @db.DateTime(0)
+  modifiedAt       DateTime           @default(now()) @db.DateTime(0)
+  isDeleted        Int                @default(0) @db.TinyInt
+  anniversaryDay   DateTime           @db.DateTime(0)
+  lastVistADay     Int                @default(0)
+  Albums           Albums[]
+  ChattingStorage  ChattingStorage[]
+  Chattings        Chattings[]
+  FSM_Device_Token FSM_Device_Token[]
+  Pets             Pets[]
+  Photos           Photos[]
+  Plan             Plan[]
+  QuestionStorage  QuestionStorage[]
+  Users            Users[]
+  VideoStorage     VideoStorage[]
+  VoiceStorage     VoiceStorage[]
 }
 
 model PetCare {
@@ -219,6 +220,7 @@ model Users {
   Chattings                      Chattings[]
   Emoji_Order                    Emoji_Order[]
   Emoji_Package                  Emoji_Package[]
+  FSM_Device_Token               FSM_Device_Token[]
   NoticedChatting                NoticedChatting[]
   PhotoComments                  PhotoComments[]
   Photos                         Photos[]
@@ -402,4 +404,18 @@ model VideoStorage {
 
   @@index([coupleId], map: "VideoStorage_Couples_id_fk")
   @@index([userId], map: "VideoStorage_Users_id_fk")
+}
+
+model FSM_Device_Token {
+  id        Int      @id @default(autoincrement())
+  userId    String   @db.VarChar(64)
+  coupleId  String   @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  token     String   @db.VarChar(800)
+  Couples   Couples  @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FSM_Device_Token_Couples_id_fk")
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FSM_Device_Token_Users_id_fk")
+
+  @@index([coupleId], map: "FSM_Device_Token_Couples_id_fk")
+  @@index([userId], map: "FSM_Device_Token_Users_id_fk")
 }
