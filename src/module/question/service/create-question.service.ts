@@ -13,7 +13,7 @@ export class CreateQuestionService {
     private readonly fCMService: FCMService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_11_HOURS)
   async create() {
     const ids = await this.getManyForCoupleIdWithBothAnswered();
     ids.forEach(async (id) => {
