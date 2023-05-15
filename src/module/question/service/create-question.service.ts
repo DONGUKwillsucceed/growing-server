@@ -16,11 +16,16 @@ export class CreateQuestionService {
   @Cron(CronExpression.EVERY_MINUTE)
   async create() {
     const ids = await this.getManyForCoupleIdWithBothAnswered();
+    console.log(ids);
     ids.forEach(async (id) => {
       const content = await this.generateContent(id);
-      const data = this.createQuestion(id, content);
-      await this.prismaService.questionStorage.create({ data });
-      this.logger.log(`커플 ${id}를 위한 질문이 생성됨`);
+      if (content) {
+        const data = this.createQuestion(id, content);
+        await this.prismaService.questionStorage.create({ data });
+        this.logger.log(`커플 ${id}를 위한 질문이 생성됨`);
+      } else {
+        this.logger.verbose(`더 이상 보낼 질문이 없음. 질문 추가 요망`);
+      }
     });
   }
 
@@ -47,7 +52,11 @@ export class CreateQuestionService {
     let content: string = '';
     while (true) {
       const randomId = Math.floor(Math.random() * length);
+      console.log(length, randomId);
       content = await this.getOneForContentWithRandomId(randomId);
+      if (!content) {
+        return content;
+      }
       const isUsed = await this.isUsed(id, content);
       if (!isUsed) {
         return content;
@@ -56,11 +65,16 @@ export class CreateQuestionService {
   }
 
   async getOneForContentWithRandomId(randomId: number) {
+    const base = await this.prismaService.questions_Warehouse
+      .findFirst({
+        orderBy: { id: 'asc' },
+      })
+      .then((q) => q.id);
     const question = await this.prismaService.questions_Warehouse.findFirst({
-      where: { id: randomId },
+      where: { id: randomId + base },
       select: { content: true },
     });
-    return question.content;
+    return question ? question.content : null;
   }
 
   async isUsed(coupleId: string, content: string) {
