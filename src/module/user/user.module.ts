@@ -12,6 +12,7 @@ import { UserCodeService } from './service/user-code.service';
 import { UserDBService } from './service/user-db.service';
 import { UserProxyService } from './service/user-proxy.service';
 import { UserS3Service } from './service/user-s3.service';
+import { UserDeviceService } from './service/user-device.service';
 
 @Module({
   controllers: [UserController],
@@ -25,6 +26,7 @@ import { UserS3Service } from './service/user-s3.service';
     UserProxyService,
     GetUserService,
     UpdateUserService,
+    UserDeviceService,
     {
       provide: INJECTION_TOKEN,
       useValue: USER_LABEL,

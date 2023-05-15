@@ -22,6 +22,7 @@ import { PatchProfileImageDto } from '../dto/PatchProfileImage.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { VerifyCodeDto } from '../dto/VerifyCode.dto';
 import { UserProxyService } from '../service/user-proxy.service';
+import { DeviceTokenDto } from '../dto/DeviceToken.dto';
 
 @ApiTags('users에 대한 Rest API')
 @Controller('users')
@@ -46,6 +47,16 @@ export class UserController {
   @ApiBearerAuth('jwt-token')
   async isCouple(@Param('userId') userId: string) {
     return await this.userProxyService.isCouple(userId);
+  }
+
+  @Post(':userId/devices/register')
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  async registerDevice(
+    @Param('userId') userId: string,
+    @Body(ValidationPipe) dto: DeviceTokenDto,
+  ) {
+    await this.userProxyService.registerDevice(userId, dto.token);
   }
 
   @Patch(':userId/update')

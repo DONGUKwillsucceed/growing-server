@@ -3,6 +3,7 @@ import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { GetUserService } from './get-user.service';
 import { UpdateUserService } from './update-user.service';
 import { UserCodeService } from './user-code.service';
+import { UserDeviceService } from './user-device.service';
 
 @Injectable()
 export class UserProxyService {
@@ -10,6 +11,7 @@ export class UserProxyService {
     private readonly userCodeService: UserCodeService,
     private readonly getUserService: GetUserService,
     private readonly updateUserService: UpdateUserService,
+    private readonly userDeviceService: UserDeviceService,
   ) {}
 
   async findUnique(userId: string) {
@@ -41,5 +43,9 @@ export class UserProxyService {
 
   async verifyPassword(userId: string, password: string) {
     return this.getUserService.verifyPassword(userId, password);
+  }
+
+  async registerDevice(userId: string, token: string) {
+    await this.userDeviceService.create(userId, token);
   }
 }
