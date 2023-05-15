@@ -22,6 +22,7 @@ export class CreateQuestionService {
         const data = this.createQuestion(id, content);
         await this.prismaService.questionStorage.create({ data });
         this.logger.log(`커플 ${id}를 위한 질문이 생성됨`);
+        this.sendPushMessage(id);
       } else {
         this.logger.verbose(`더 이상 보낼 질문이 없음. 질문 추가 요망`);
       }
@@ -38,12 +39,18 @@ export class CreateQuestionService {
   }
 
   async sendPushMessage(coupleId: string) {
-    const fcm: ISendFirebaseMessages = {
-      title: '새로운 질문',
-      message: '새로운 질문이 왔어요! 어서 확인해보세요!!',
-      token: '12',
-    };
-    await this.fCMService.sendMessages(fcm);
+    const deviceToken = await this.prismaService.fSM_Device_Token.findFirst({
+      where: { coupleId },
+      select: { token: true },
+    });
+    if (deviceToken) {
+      const fcm: ISendFirebaseMessages = {
+        title: 'Growing',
+        message: '새로운 질문이 왔어요! 어서 확인해보세요!!',
+        token: deviceToken.token,
+      };
+      await this.fCMService.sendMessages(fcm);
+    }
   }
 
   async generateContent(id: string) {
