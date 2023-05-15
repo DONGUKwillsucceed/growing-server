@@ -10,6 +10,7 @@ import { CreateAnswerService } from './service/create-answer.service';
 import { CreateQuestionService } from './service/create-question.service';
 import { GetQuestionService } from './service/get-question.service';
 import { QuestionProxyService } from './service/question-proxy.service';
+import { FCMService } from 'src/service/FCM.service';
 
 @Module({
   controllers: [QuestionController],
@@ -20,6 +21,7 @@ import { QuestionProxyService } from './service/question-proxy.service';
     CreateAnswerService,
     CreateQuestionService,
     QuestionMapper,
+    FCMService,
     {
       provide: INJECTION_TOKEN,
       useValue: QUESTION_LABEL,

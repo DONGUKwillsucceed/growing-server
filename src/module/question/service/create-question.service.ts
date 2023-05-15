@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Prisma } from '@prisma/client';
+import { FCMService, ISendFirebaseMessages } from 'src/service/FCM.service';
 import { PrismaService } from 'src/service/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class CreateQuestionService {
-  constructor(private readonly prismaService: PrismaService) {}
+  logger = new Logger(CreateQuestionService.name);
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly fCMService: FCMService,
+  ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async create() {
@@ -15,7 +20,7 @@ export class CreateQuestionService {
       const content = await this.generateContent(id);
       const data = this.createQuestion(id, content);
       await this.prismaService.questionStorage.create({ data });
-      console.log('created');
+      this.logger.log(`커플 ${id}를 위한 질문이 생성됨`);
     });
   }
 
@@ -26,6 +31,15 @@ export class CreateQuestionService {
       content,
     };
     return data;
+  }
+
+  async sendPushMessage(coupleId: string) {
+    const fcm: ISendFirebaseMessages = {
+      title: '새로운 질문',
+      message: '새로운 질문이 왔어요! 어서 확인해보세요!!',
+      token: '12',
+    };
+    await this.fCMService.sendMessages(fcm);
   }
 
   async generateContent(id: string) {
