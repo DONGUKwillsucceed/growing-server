@@ -11,23 +11,9 @@ export class GetPlanService {
   async getMany(coupleId: string, start: Date, end: Date) {
     return this.prismaService.plan.findMany({
       where: {
-        OR: [
-          {
-            startAt: { lte: start },
-            endAt: { gt: end },
-          },
-          {
-            startAt: { gte: start },
-            endAt: { lt: end },
-          },
-          {
-            startAt: { gte: start, lt: end },
-            endAt: { gt: end },
-          },
-          {
-            startAt: { lte: start },
-            endAt: { gte: start, lte: end },
-          },
+        NOT: [
+          { startAt: { lt: start }, endAt: { lt: start } },
+          { startAt: { gte: end }, endAt: { gte: end } },
         ],
         coupleId,
         isDeleted: 0,
