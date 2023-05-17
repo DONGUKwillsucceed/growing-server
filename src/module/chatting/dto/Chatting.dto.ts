@@ -7,6 +7,7 @@ export interface ChattingDto {
   voiceMsgUrls: { url: string; time: number }[];
   createdAt: Date;
   isMine: boolean;
+  isConfirmed: boolean;
   Writer: {
     id: string;
     name: string;

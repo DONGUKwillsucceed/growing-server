@@ -175,6 +175,7 @@ export class GetChattingService {
       imageUrls: chatting.imageUrls,
       createdAt: chatting.createdAt,
       isMine,
+      isConfirmed: !!chatting.isConfirmed,
       Writer: {
         id: chatting.userId,
         name: chatting.Users.nickName,
