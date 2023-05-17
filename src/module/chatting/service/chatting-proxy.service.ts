@@ -4,6 +4,8 @@ import { CreateChattingService } from './create-chatting.service';
 import { DeleteChattingService } from './delete-chatting.service';
 import { GetChattingPhotoService } from './get-chatting-photo.service';
 import { GetChattingService } from './get-chatting.service';
+import { ConfirmChattingDto } from '../dto/ConfirmChatting.dto';
+import { UpdateChattingService } from './update-chatting.service';
 
 @Injectable()
 export class ChattingProxyService {
@@ -12,6 +14,7 @@ export class ChattingProxyService {
     private readonly deleteChattingService: DeleteChattingService,
     private readonly getChattingPhotoService: GetChattingPhotoService,
     private readonly createChattingService: CreateChattingService,
+    private readonly updateChattingService: UpdateChattingService,
   ) {}
   async findMany(
     coupleId: string,
@@ -37,6 +40,10 @@ export class ChattingProxyService {
 
   async create(dto: CreateChattingDto) {
     return this.createChattingService.create(dto);
+  }
+
+  async confirm(dto: ConfirmChattingDto) {
+    return this.updateChattingService.confirm(dto);
   }
 
   async removeOneForOurs(chattingId: string) {

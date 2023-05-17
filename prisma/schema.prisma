@@ -61,6 +61,7 @@ model Chattings {
   coupleId                String                    @db.VarChar(64)
   userId                  String                    @db.VarChar(64)
   parentId                String?                   @db.VarChar(64)
+  isConfirmed             Int                       @default(0) @db.TinyInt
   Chattings               Chattings?                @relation("ChattingsToChattings", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Chattings_FK")
   Couples                 Couples                   @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Couples_FK")
   Users                   Users                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Chattings_Users_FK")

@@ -13,6 +13,7 @@ import { GetChattingService } from './service/get-chatting.service';
 import { CreateChattingService } from './service/create-chatting.service';
 import { INJECTION_TOKEN } from 'src/common/const';
 import { CHATTING_LABEL } from './const';
+import { UpdateChattingService } from './service/update-chatting.service';
 
 @Module({
   controllers: [ChattingController],
@@ -27,6 +28,7 @@ import { CHATTING_LABEL } from './const';
     GetChattingPhotoService,
     ChattingGateway,
     CreateChattingService,
+    UpdateChattingService,
     {
       provide: INJECTION_TOKEN,
       useValue: CHATTING_LABEL,
