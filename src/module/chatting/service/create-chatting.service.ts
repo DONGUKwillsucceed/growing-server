@@ -65,6 +65,21 @@ export class CreateChattingService {
       data: { userId: dto.userId, chattingId: id },
     });
 
+    const partnerId = await this.prismaService.couples
+      .findUnique({
+        where: { id: dto.coupleId },
+        select: { Users: true },
+      })
+      .then((result) => {
+        return result.Users.map((user) => user.id).find(
+          (ids) => ids !== dto.userId,
+        );
+      });
+
+    await this.prismaService.user_Chatting_IsDeleted.create({
+      data: { userId: partnerId, chattingId: id },
+    });
+
     await this.increaseLoveGaugeForPet(dto.coupleId, dto.userId);
     return { chattingId: id, ...dto };
   }
