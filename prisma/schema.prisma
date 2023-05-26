@@ -420,3 +420,12 @@ model FSM_Device_Token {
   @@index([coupleId], map: "FSM_Device_Token_Couples_id_fk")
   @@index([userId], map: "FSM_Device_Token_Users_id_fk")
 }
+
+model Notice {
+  id        Int      @id
+  title     String   @db.VarChar(255)
+  context   String   @db.LongText
+  isDeleted Int      @db.TinyInt
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+}

@@ -21,6 +21,7 @@ import { AdminJSModule } from './module/admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { EmojiModule } from './module/emoji/emoji.module';
 import { FFMPEGModule } from './module/ffmpeg/ffmpeg.module';
+import { NoticeModule } from './module/notice/notice.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { FFMPEGModule } from './module/ffmpeg/ffmpeg.module';
     AdminJSModule,
     EmojiModule,
     FFMPEGModule,
+    NoticeModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
