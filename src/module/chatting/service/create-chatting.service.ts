@@ -1,13 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Where } from 'src/module/chatting-photo/types/Where.enum';
 import { Gender } from 'src/module/user/types/Gender.enum';
 import { PrismaService } from 'src/service/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateChattingDto } from '../dto/Create-Chatting.dto';
 import { CreateChattingInterface } from '../types/ChattingInterfaces';
+import { FCMService, ISendFirebaseMessages } from 'src/service/FCM.service';
 @Injectable()
 export class CreateChattingService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly fCMService: FCMService,
+  ) {}
+
+  logger = new Logger(CreateChattingService.name);
+
   async create(dto: CreateChattingDto) {
     return this.createForChatting(dto)
       .then((chatting) => this.createManyForPhoto(chatting))
@@ -16,6 +23,7 @@ export class CreateChattingService {
         if (chatting.emojiId) {
           return this.linkEmoji(chatting);
         }
+        this.sendPushMessage(dto.userId);
         return chatting;
       });
   }
@@ -138,5 +146,31 @@ export class CreateChattingService {
       select: { id: true },
     });
     return id;
+  }
+
+  async sendPushMessage(userId: string) {
+    const user = await this.prismaService.users.findUnique({
+      where: { id: userId },
+      include: { Couples: { include: { Users: true } } },
+    });
+
+    const partner = user.Couples.Users.filter((user) => user.id !== userId)[0];
+    if (!partner) {
+      this.logger.verbose('커플인데 파트너가 없음');
+      throw new Error('커플인데 파트너가 없음.');
+    }
+
+    const deviceToken = await this.prismaService.fSM_Device_Token.findFirst({
+      where: { userId: partner.id },
+      select: { token: true },
+    });
+    if (deviceToken) {
+      const fcm: ISendFirebaseMessages = {
+        title: `${partner.nickName}`,
+        message: `메시지가 왔어요! ${partner.nickName}님이 답장을 기다리고 있을지 몰라요!`,
+        token: deviceToken.token,
+      };
+      await this.fCMService.sendMessages(fcm);
+    }
   }
 }
