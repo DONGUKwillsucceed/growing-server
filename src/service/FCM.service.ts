@@ -13,10 +13,6 @@ export class FCMService {
   constructor() {
     // For simplicity these credentials are just stored in the environment
     // However these should be stored in a key management system
-    const firebaseCredentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-    firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials),
-    });
   }
 
   async sendMessages(fCMs: ISendFirebaseMessages) {

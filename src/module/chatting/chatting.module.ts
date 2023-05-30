@@ -14,6 +14,7 @@ import { CreateChattingService } from './service/create-chatting.service';
 import { INJECTION_TOKEN } from 'src/common/const';
 import { CHATTING_LABEL } from './const';
 import { UpdateChattingService } from './service/update-chatting.service';
+import { FCMService } from 'src/service/FCM.service';
 
 @Module({
   controllers: [ChattingController],
@@ -29,6 +30,7 @@ import { UpdateChattingService } from './service/update-chatting.service';
     ChattingGateway,
     CreateChattingService,
     UpdateChattingService,
+    FCMService,
     {
       provide: INJECTION_TOKEN,
       useValue: CHATTING_LABEL,
