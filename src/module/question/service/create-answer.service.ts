@@ -54,8 +54,10 @@ export class CreateAnswerService {
     });
     if (deviceToken) {
       const fcm: ISendFirebaseMessages = {
-        title: 'Growing',
-        message: `${user.nickName}님이 질문에 답변했어요! 어서 확인해보세요!`,
+        data: {
+          title: 'Growing',
+          body: `${user.nickName}님이 질문에 답변했어요! 어서 확인해보세요!`,
+        },
         token: deviceToken.token,
       };
       await this.fCMService.sendMessages(fcm);

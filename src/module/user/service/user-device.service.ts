@@ -5,18 +5,23 @@ export class UserDeviceService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(userId: string, token: string) {
-    const user = await this.prismaService.users.findUnique({
-      where: { id: userId },
-      select: { coupleId: true },
+    const device = await this.prismaService.fSM_Device_Token.findFirst({
+      where: { userId, token },
     });
+    if (!device) {
+      const user = await this.prismaService.users.findUnique({
+        where: { id: userId },
+        select: { coupleId: true },
+      });
 
-    await this.prismaService.fSM_Device_Token.create({
-      data: {
-        userId,
-        coupleId: user.coupleId,
-        token,
-      },
-    });
+      await this.prismaService.fSM_Device_Token.create({
+        data: {
+          userId,
+          coupleId: user.coupleId,
+          token,
+        },
+      });
+    }
   }
 
   async remove(userId: string) {

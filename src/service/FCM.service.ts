@@ -3,8 +3,10 @@ import * as firebase from 'firebase-admin';
 
 export interface ISendFirebaseMessages {
   token: string;
-  title?: string;
-  message: string;
+  data: {
+    title?: string;
+    body: string;
+  };
 }
 
 @Injectable()
@@ -20,10 +22,10 @@ export class FCMService {
       .messaging()
       .send(fCMs)
       .then((res) =>
-        this.logger.log(`${fCMs.title}이 발송되었습니다. \n ${res}`),
+        this.logger.log(`${fCMs.data.title}이 발송되었습니다. \n ${res}`),
       )
       .catch((err) => {
-        this.logger.log(`${fCMs.title}의 전송에 실패했습니다. \n ${err}`);
+        this.logger.log(`${fCMs.data.title}의 전송에 실패했습니다. \n ${err}`);
         throw new Error(err);
       });
   }
