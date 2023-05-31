@@ -45,11 +45,11 @@ export class CreateQuestionService {
     });
     if (deviceToken) {
       const fcm: ISendFirebaseMessages = {
-        data: {
+        notification: {
           title: 'Growing',
           body: '새로운 질문이 왔어요! 어서 확인해보세요!!',
         },
-        token: deviceToken.token,
+        to: deviceToken.token,
       };
       await this.fCMService.sendMessages(fcm);
     }

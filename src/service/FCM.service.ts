@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
+import axios from 'axios';
 
 export interface ISendFirebaseMessages {
-  token: string;
-  data: {
+  to: string;
+  notification: {
     title?: string;
     body: string;
   };
@@ -12,21 +12,43 @@ export interface ISendFirebaseMessages {
 @Injectable()
 export class FCMService {
   logger = new Logger(FCMService.name);
-  constructor() {
-    // For simplicity these credentials are just stored in the environment
-    // However these should be stored in a key management system
-  }
+  fcmURI = ' https://fcm.googleapis.com/fcm/send';
+  constructor() {}
 
   async sendMessages(fCMs: ISendFirebaseMessages) {
-    await firebase
-      .messaging()
-      .send(fCMs)
+    axios
+      .post(this.fcmURI, fCMs, {
+        headers: { Authorization: 'Bearer ' + process.env.GOOGLE_SERVER_KEY },
+      })
       .then((res) =>
-        this.logger.log(`${fCMs.data.title}이 발송되었습니다. \n ${res}`),
+        this.logger.log(
+          `${fCMs.notification.title}이 발송되었습니다. \n ${res}`,
+        ),
       )
       .catch((err) => {
-        this.logger.log(`${fCMs.data.title}의 전송에 실패했습니다. \n ${err}`);
+        this.logger.log(
+          `${fCMs.notification.title}의 전송에 실패했습니다. \n ${err}`,
+        );
         throw new Error(err);
       });
+    // await firebase
+    //   .messaging()
+    //   .send(fCMs)
+    //   .then((res) =>
+    //     this.logger.log(
+    //       `${fCMs.notification.title}이 발송되었습니다. \n ${res}`,
+    //     ),
+    //   )
+    //   .catch((err) => {
+    //     this.logger.log(
+    //       `${fCMs.notification.title}의 전송에 실패했습니다. \n ${err}`,
+    //     );
+    //     throw new Error(err);
+    //   });
+  }
+
+  async getToken() {
+    const firebaseCredentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    const key = JSON.parse(firebaseCredentials);
   }
 }

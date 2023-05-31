@@ -168,11 +168,11 @@ export class CreateChattingService {
     console.log('device token = ' + deviceToken.token);
     if (deviceToken) {
       const fcm: ISendFirebaseMessages = {
-        data: {
+        notification: {
           title: `${partner.nickName}`,
           body: `메시지가 왔어요! ${partner.nickName}님이 답장을 기다리고 있을지 몰라요!`,
         },
-        token: deviceToken.token,
+        to: deviceToken.token,
       };
       await this.fCMService.sendMessages(fcm);
     }
