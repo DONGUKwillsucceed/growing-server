@@ -159,11 +159,13 @@ export class CreateChattingService {
       this.logger.verbose('커플인데 파트너가 없음');
       throw new Error('커플인데 파트너가 없음.');
     }
+    console.log(partner.nickName);
 
     const deviceToken = await this.prismaService.fSM_Device_Token.findFirst({
       where: { userId: partner.id },
       select: { token: true },
     });
+    console.log('device token = ' + deviceToken.token);
     if (deviceToken) {
       const fcm: ISendFirebaseMessages = {
         title: `${partner.nickName}`,
