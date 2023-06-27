@@ -41,7 +41,10 @@ export class GetPhotoChattingService {
         Chatting_Photo: {
           some: {
             Photos: {
-              OR: [{ where: Where.Both }, { where: Where.Chatting }],
+              OR: [
+                { where: Where.Both, isDeleted: 0 },
+                { where: Where.Chatting, isDeleted: 0 },
+              ],
             },
           },
         },
