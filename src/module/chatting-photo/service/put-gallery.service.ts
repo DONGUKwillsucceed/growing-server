@@ -12,7 +12,7 @@ export class PutGalleryService {
   async updateOneWithWhere(photoId: string) {
     await this.prismaService.photos.update({
       where: { id: photoId },
-      data: { where: Where.Both },
+      data: { where: Where.Both, isDeleted: 0 },
     });
   }
 }
