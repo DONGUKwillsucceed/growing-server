@@ -214,6 +214,7 @@ model Users {
   verificationCode               String                           @db.VarChar(45)
   kakaoId                        String                           @db.VarChar(100)
   profileId                      String?                          @db.VarChar(64)
+  termOfUse                      Int                              @default(1) @db.TinyInt
   Couples                        Couples?                         @relation(fields: [coupleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Couples_FK")
   Photos_PhotosToUsers_profileId Photos?                          @relation("PhotosToUsers_profileId", fields: [profileId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_Photos_id_fk")
   Albums                         Albums[]
