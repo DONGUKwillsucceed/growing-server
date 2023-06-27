@@ -13,6 +13,7 @@ import { UserDBService } from './service/user-db.service';
 import { UserProxyService } from './service/user-proxy.service';
 import { UserS3Service } from './service/user-s3.service';
 import { UserDeviceService } from './service/user-device.service';
+import { DeleteUserService } from './service/delete-user.service';
 
 @Module({
   controllers: [UserController],
@@ -27,6 +28,7 @@ import { UserDeviceService } from './service/user-device.service';
     GetUserService,
     UpdateUserService,
     UserDeviceService,
+    DeleteUserService,
     {
       provide: INJECTION_TOKEN,
       useValue: USER_LABEL,

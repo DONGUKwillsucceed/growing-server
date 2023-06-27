@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { prisma, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { KakaoData } from 'src/module/auth/types/KakaoData';
 import { PrismaService } from 'src/service/prisma.service';
 import { v4 as uuidv4 } from 'uuid';

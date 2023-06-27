@@ -4,6 +4,7 @@ import { GetUserService } from './get-user.service';
 import { UpdateUserService } from './update-user.service';
 import { UserCodeService } from './user-code.service';
 import { UserDeviceService } from './user-device.service';
+import { DeleteUserService } from './delete-user.service';
 
 @Injectable()
 export class UserProxyService {
@@ -12,6 +13,7 @@ export class UserProxyService {
     private readonly getUserService: GetUserService,
     private readonly updateUserService: UpdateUserService,
     private readonly userDeviceService: UserDeviceService,
+    private readonly deleteUserService: DeleteUserService,
   ) {}
 
   async findUnique(userId: string) {
@@ -26,6 +28,10 @@ export class UserProxyService {
 
   async update(userId: string, dto: UpdateUserDto) {
     return this.updateUserService.update(userId, dto);
+  }
+
+  async remove(userId: string) {
+    await this.deleteUserService.execute(userId);
   }
 
   async updateProfileImage(userId: string, imageId: string) {

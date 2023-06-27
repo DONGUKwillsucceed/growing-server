@@ -44,4 +44,11 @@ export class UserDBService {
       },
     });
   }
+
+  async remove(userId: string) {
+    return await this.prismaService.users.update({
+      where: { id: userId },
+      data: { isDeleted: 1 },
+    });
+  }
 }

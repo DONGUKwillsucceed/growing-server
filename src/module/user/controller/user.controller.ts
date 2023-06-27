@@ -10,6 +10,7 @@ import {
   UseGuards,
   Put,
   UseFilters,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { HttpExceptionFilter } from 'src/common/exception/exception.filter';
@@ -113,5 +114,13 @@ export class UserController {
   ) {
     const userId = req.user.id;
     return await this.userProxyService.verifyPassword(userId, dto.password);
+  }
+
+  @Delete(':userId')
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('jwt-token')
+  @ApiParam({ name: 'userId', required: true })
+  async remove(@Param('userId') userId: string) {
+    await this.userProxyService.remove(userId);
   }
 }
