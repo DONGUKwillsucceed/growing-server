@@ -51,8 +51,8 @@ export class KakaoAuthService {
         },
       )
       .catch((err) => {
-        console.log(err.response);
-        throw new Error(err.reponse);
+        console.log(err);
+        throw new Error(err);
       });
     return res.data.access_token;
   }

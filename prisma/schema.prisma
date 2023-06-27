@@ -373,7 +373,7 @@ model Error_Log {
   id        Int      @id @default(autoincrement())
   label     String   @db.VarChar(100)
   message   String   @db.VarChar(100)
-  stack     String   @db.VarChar(800)
+  stack     String   @db.Text
   createdAt DateTime @default(now()) @db.DateTime(0)
   name      String   @db.VarChar(100)
 }
@@ -422,7 +422,7 @@ model FSM_Device_Token {
 }
 
 model Notice {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
   context   String   @db.LongText
   isDeleted Int      @db.TinyInt
